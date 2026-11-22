@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BirthdayLayout } from '../layouts/BirthdayLayout';
 import { SceneTransition } from '../components/common/SceneTransition';
 import { SecretInvitation } from '../components/chapters/SecretInvitation';
@@ -10,9 +10,16 @@ import { BirthdayChallenge } from '../components/chapters/BirthdayChallenge';
 import { SecretLetter } from '../components/chapters/SecretLetter';
 import { FinalSurprise } from '../components/chapters/FinalSurprise';
 import { QRPage } from './QRPage';
+import { CardCreatorModal } from '../components/creator/CardCreatorModal';
 import { useBirthdayExperience } from '../hooks/useBirthdayExperience';
+import { BirthdayConfig } from '../config/birthday.config';
+import { getInitialBirthdayConfig, encodeConfigToUrl } from '../utils/configStorage';
 
 export const BirthdayPage: React.FC = () => {
+  const [config, setConfig] = useState<BirthdayConfig>(getInitialBirthdayConfig);
+  const [isCreatorOpen, setIsCreatorOpen] = useState(false);
+  const [generatedUrl, setGeneratedUrl] = useState<string>('');
+
   const {
     currentChapter,
     goToChapter,
@@ -22,49 +29,85 @@ export const BirthdayPage: React.FC = () => {
     setIsQRModalOpen,
   } = useBirthdayExperience();
 
+  const handleOpenCreator = () => {
+    setIsCreatorOpen(true);
+  };
+
+  const handleSaveConfig = (updated: BirthdayConfig) => {
+    setConfig(updated);
+  };
+
+  const handleGenerateQR = (updated: BirthdayConfig) => {
+    const url = encodeConfigToUrl(updated);
+    setGeneratedUrl(url);
+    setIsCreatorOpen(false);
+    setIsQRModalOpen(true);
+  };
+
   const renderCurrentChapter = () => {
     switch (currentChapter) {
       case 1:
-        return <SecretInvitation onProceed={nextChapter} />;
+        return <SecretInvitation config={config} onProceed={nextChapter} />;
       case 2:
-        return <GiftOpening onProceed={nextChapter} />;
+        return <GiftOpening config={config} onProceed={nextChapter} />;
       case 3:
-        return <BirthdayCelebration onProceed={nextChapter} />;
+        return <BirthdayCelebration config={config} onProceed={nextChapter} />;
       case 4:
-        return <MakeAWish onProceed={nextChapter} />;
+        return <MakeAWish config={config} onProceed={nextChapter} />;
       case 5:
-        return <MemoryGallery onProceed={nextChapter} />;
+        return <MemoryGallery config={config} onProceed={nextChapter} />;
       case 6:
-        return <BirthdayChallenge onProceed={nextChapter} />;
+        return <BirthdayChallenge config={config} onProceed={nextChapter} />;
       case 7:
-        return <SecretLetter onProceed={nextChapter} />;
+        return <SecretLetter config={config} onProceed={nextChapter} />;
       case 8:
         return (
           <FinalSurprise
+            config={config}
             onReplay={resetExperience}
             onGoToMemories={() => goToChapter(5)}
-            onOpenQRModal={() => setIsQRModalOpen(true)}
+            onOpenQRModal={() => {
+              setGeneratedUrl(encodeConfigToUrl(config));
+              setIsQRModalOpen(true);
+            }}
+            onOpenCreator={handleOpenCreator}
           />
         );
       default:
-        return <SecretInvitation onProceed={nextChapter} />;
+        return <SecretInvitation config={config} onProceed={nextChapter} />;
     }
   };
 
   return (
     <BirthdayLayout
       currentChapter={currentChapter}
+      config={config}
       onSelectChapter={goToChapter}
-      onOpenQR={() => setIsQRModalOpen(true)}
+      onOpenQR={() => {
+        setGeneratedUrl(encodeConfigToUrl(config));
+        setIsQRModalOpen(true);
+      }}
+      onOpenCreator={handleOpenCreator}
     >
       <SceneTransition currentKey={currentChapter}>
         {renderCurrentChapter()}
       </SceneTransition>
 
+      {/* Card Creator Studio Modal */}
+      <CardCreatorModal
+        isOpen={isCreatorOpen}
+        onClose={() => setIsCreatorOpen(false)}
+        currentConfig={config}
+        onSaveConfig={handleSaveConfig}
+        onGenerateQR={handleGenerateQR}
+      />
+
       {/* QR Code and Printable Card Modal */}
       <QRPage
         isOpen={isQRModalOpen}
         onClose={() => setIsQRModalOpen(false)}
+        config={config}
+        initialUrl={generatedUrl || encodeConfigToUrl(config)}
       />
     </BirthdayLayout>
   );

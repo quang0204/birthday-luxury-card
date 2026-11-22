@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trophy, CheckCircle2, ArrowRight, Gift, HelpCircle, Layers } from 'lucide-react';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { Sparkles, Trophy, ArrowRight, HelpCircle, Layers } from 'lucide-react';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti } from '../../utils/animation';
 
 interface BirthdayChallengeProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ onProceed }) => {
+export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedBox, setSelectedBox] = useState<number | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const { playClick, playFanfare, playGiftPop } = useAudio();
-  const gameData = BIRTHDAY_CONFIG.game;
+  const gameData = cfg.game;
 
   const handleBoxSelect = (id: number) => {
     setSelectedBox(id);
@@ -184,7 +186,7 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ onProceed 
             exit={{ opacity: 0, scale: 0.95 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-champagne font-semibold mb-1">
+            <div className="flex items-center justify-center gap-1.5 text-champagne font-semibold mb-1">
               <Layers size={14} />
               <span>Thử Thách 3: Lá Bài May Mắn</span>
             </div>

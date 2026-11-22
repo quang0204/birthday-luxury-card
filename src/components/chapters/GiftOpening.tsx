@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { GiftBox3D } from '../3d/GiftBox3D';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti } from '../../utils/animation';
 
 interface GiftOpeningProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const GiftOpening: React.FC<GiftOpeningProps> = ({ onProceed }) => {
+export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [isOpened, setIsOpened] = useState(false);
-  const { playGiftPop, playClick } = useAudio();
+  const { playGiftPop } = useAudio();
 
   const handleOpenGift = () => {
     if (isOpened) return;
@@ -44,7 +46,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ onProceed }) => {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-warm-white text-glow-pink max-w-sm"
       >
-        {BIRTHDAY_CONFIG.giftOpening.promptText}
+        {cfg.giftOpening.promptText}
       </motion.h2>
 
       {/* 3D Gift Box */}
@@ -57,7 +59,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ onProceed }) => {
         <GiftBox3D
           isOpened={isOpened}
           onOpen={handleOpenGift}
-          recipientName={BIRTHDAY_CONFIG.recipientName}
+          recipientName={cfg.recipientName}
         />
       </motion.div>
 
@@ -80,7 +82,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ onProceed }) => {
             </>
           ) : (
             <>
-              <span>{BIRTHDAY_CONFIG.giftOpening.buttonText}</span>
+              <span>{cfg.giftOpening.buttonText}</span>
               <ArrowRight size={18} />
             </>
           )}

@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Envelope3D } from '../3d/Envelope3D';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti } from '../../utils/animation';
 
 interface SecretInvitationProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const SecretInvitation: React.FC<SecretInvitationProps> = ({ onProceed }) => {
+export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [isOpened, setIsOpened] = useState(false);
   const { playEnvelopeOpen, startMusic } = useAudio();
 
@@ -36,7 +38,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ onProceed })
         className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel-subtle text-xs font-medium text-rose-soft mb-4 border border-rose-400/20"
       >
         <Sparkles size={14} className="text-champagne animate-pulse" />
-        <span>{BIRTHDAY_CONFIG.invitation.badgeText}</span>
+        <span>{cfg.invitation.badgeText}</span>
       </motion.div>
 
       {/* Main Teaser Titles */}
@@ -46,7 +48,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ onProceed })
         transition={{ duration: 0.7, delay: 0.15 }}
         className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-warm-white via-rose-soft to-lavender-light text-glow-pink"
       >
-        {BIRTHDAY_CONFIG.invitation.teaser}
+        {cfg.invitation.teaser}
       </motion.h1>
 
       <motion.p
@@ -55,7 +57,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ onProceed })
         transition={{ duration: 0.7, delay: 0.3 }}
         className="text-sm sm:text-base text-lavender-muted mt-2 font-sans max-w-xs sm:max-w-sm"
       >
-        {BIRTHDAY_CONFIG.invitation.subTeaser}
+        {cfg.invitation.subTeaser}
       </motion.p>
 
       {/* 3D Envelope */}
@@ -80,7 +82,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ onProceed })
           disabled={isOpened}
           className="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-rose-glow via-rose-600 to-lavender text-white shadow-glow-pink hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-75 disabled:pointer-events-none"
         >
-          <span>{isOpened ? 'ĐANG MỞ MÓN QUÀ...' : BIRTHDAY_CONFIG.invitation.buttonText}</span>
+          <span>{isOpened ? 'ĐANG MỞ MÓN QUÀ...' : cfg.invitation.buttonText}</span>
           <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
         </button>
 

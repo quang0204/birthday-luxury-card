@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { RotateCcw, Share2, Heart, Sparkles, Image, QrCode, Check } from 'lucide-react';
+import { RotateCcw, Share2, Heart, Sparkles, Image, QrCode, Check, PenTool } from 'lucide-react';
 import { Fireworks } from '../common/Fireworks';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti, triggerContinuousConfetti } from '../../utils/animation';
 
 interface FinalSurpriseProps {
+  config?: BirthdayConfig;
   onReplay: () => void;
   onGoToMemories: () => void;
   onOpenQRModal: () => void;
+  onOpenCreator?: () => void;
 }
 
 export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
+  config,
   onReplay,
   onGoToMemories,
   onOpenQRModal,
+  onOpenCreator,
 }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [isRevealed, setIsRevealed] = useState(false);
   const [copied, setCopied] = useState(false);
   const { playGiftPop, playFanfare, playFirework, playClick } = useAudio();
-  const surprise = BIRTHDAY_CONFIG.finalSurprise;
+  const surprise = cfg.finalSurprise;
 
   const handleReveal = () => {
     setIsRevealed(true);
@@ -52,7 +57,6 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       } catch (e) {
-        // Fallback prompt
         window.prompt('Sao chép đường link này để gửi tặng:', window.location.href);
       }
     }
@@ -110,7 +114,7 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
           </motion.div>
 
           <h1 className="font-display text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-glow via-warm-white to-champagne text-glow-pink">
-            HAPPY BIRTHDAY, {BIRTHDAY_CONFIG.recipientName.toUpperCase()}!
+            HAPPY BIRTHDAY, {cfg.recipientName.toUpperCase()}!
           </h1>
 
           {/* Warm closing emotional card */}
@@ -141,7 +145,7 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
                 playClick();
                 onReplay();
               }}
-              className="flex-1 min-w-[140px] px-4 py-3 rounded-xl glass-card-interactive flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-rose-soft"
+              className="flex-1 min-w-[140px] px-4 py-3 rounded-xl glass-card-interactive flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-rose-soft cursor-pointer"
             >
               <RotateCcw size={16} />
               <span>Xem Lại Từ Đầu</span>
@@ -153,7 +157,7 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
                 playClick();
                 onGoToMemories();
               }}
-              className="flex-1 min-w-[140px] px-4 py-3 rounded-xl glass-card-interactive flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-rose-soft"
+              className="flex-1 min-w-[140px] px-4 py-3 rounded-xl glass-card-interactive flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-rose-soft cursor-pointer"
             >
               <Image size={16} />
               <span>Xem Kỷ Niệm</span>
@@ -179,6 +183,20 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
               <QrCode size={16} />
               <span>Thiệp Giấy & Tải Mã QR In</span>
             </button>
+
+            {/* Create Another Card CTA */}
+            {onOpenCreator && (
+              <button
+                onClick={() => {
+                  playClick();
+                  onOpenCreator();
+                }}
+                className="w-full mt-1 px-4 py-2.5 rounded-xl border border-rose-400/30 text-rose-soft text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-rose-500/10 transition-all cursor-pointer"
+              >
+                <PenTool size={14} />
+                <span>Tự Tạo Thiệp Riêng Của Bạn</span>
+              </button>
+            )}
           </div>
         </motion.div>
       )}

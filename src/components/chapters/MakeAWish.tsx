@@ -3,15 +3,17 @@ import { motion } from 'framer-motion';
 import { Mic, MicOff, Wind, Sparkles, ArrowRight, Heart } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti, triggerContinuousConfetti } from '../../utils/animation';
 
 interface MakeAWishProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const MakeAWish: React.FC<MakeAWishProps> = ({ onProceed }) => {
+export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [candlesLit, setCandlesLit] = useState(true);
   const [isBlowing, setIsBlowing] = useState(false);
   const [blowProgress, setBlowProgress] = useState(0); // 0 to 100
@@ -110,7 +112,6 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ onProceed }) => {
         if (!candlesLit || !analyserRef.current) return;
         analyserRef.current.getByteFrequencyData(buffer);
 
-        // Sum lower-mid frequencies typical of wind blowing onto mic
         let sum = 0;
         for (let i = 2; i < 24; i++) {
           sum += buffer[i];
@@ -182,13 +183,13 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ onProceed }) => {
       >
         <h2 className="font-display text-lg sm:text-2xl font-bold text-warm-white">
           {candlesLit
-            ? BIRTHDAY_CONFIG.makeAWish.title
-            : BIRTHDAY_CONFIG.makeAWish.blownTitle}
+            ? cfg.makeAWish.title
+            : cfg.makeAWish.blownTitle}
         </h2>
         <p className="text-xs sm:text-sm text-lavender-muted mt-1">
           {candlesLit
-            ? BIRTHDAY_CONFIG.makeAWish.instructionHold
-            : BIRTHDAY_CONFIG.makeAWish.blownSubtitle}
+            ? cfg.makeAWish.instructionHold
+            : cfg.makeAWish.blownSubtitle}
         </p>
       </motion.div>
 
@@ -256,7 +257,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ onProceed }) => {
           )}
 
           <p className="text-xs text-lavender-muted/70 italic">
-            {BIRTHDAY_CONFIG.makeAWish.micFallbackHint}
+            {cfg.makeAWish.micFallbackHint}
           </p>
         </div>
       ) : (
@@ -277,7 +278,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ onProceed }) => {
             onClick={onProceed}
             className="w-full sm:w-auto px-9 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-400 via-rose-500 to-lavender text-white shadow-glow-gold hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
           >
-            <span>{BIRTHDAY_CONFIG.makeAWish.continueButton}</span>
+            <span>{cfg.makeAWish.continueButton}</span>
             <ArrowRight size={18} />
           </button>
         </motion.div>

@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Heart, Sparkles, ArrowRight, Calendar } from 'lucide-react';
-import { BIRTHDAY_CONFIG, MemoryItem } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG, MemoryItem } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 
 interface MemoryGalleryProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
+export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
+  const memories = cfg.memories;
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxItem, setLightboxItem] = useState<MemoryItem | null>(null);
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
   const { playClick } = useAudio();
-
-  const memories = BIRTHDAY_CONFIG.memories;
 
   const nextMemory = () => {
     playClick();
@@ -32,7 +33,15 @@ export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
     setLikedMap((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const currentItem = memories[activeIndex];
+  const currentItem = memories[activeIndex] || memories[0];
+
+  if (!currentItem) {
+    return (
+      <div className="text-center p-8">
+        <p>Chưa có kỷ niệm nào. Hãy thêm ảnh trong phần tạo thiệp nhé!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative">
@@ -66,7 +75,7 @@ export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentItem.id}
+            key={currentItem.id || activeIndex}
             initial={{ opacity: 0, scale: 0.9, rotate: (currentItem.rotation || 0) - 5 }}
             animate={{ opacity: 1, scale: 1, rotate: currentItem.rotation || 0 }}
             exit={{ opacity: 0, scale: 0.85, rotate: (currentItem.rotation || 0) + 5 }}
@@ -96,7 +105,7 @@ export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
               {/* Heart like badge */}
               <button
                 onClick={(e) => toggleHeart(currentItem.id, e)}
-                className="absolute top-2.5 right-2.5 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white hover:scale-110 active:scale-90 transition-all z-10"
+                className="absolute top-2.5 right-2.5 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white hover:scale-110 active:scale-90 transition-all z-10 cursor-pointer"
                 aria-label="Thả tim kỷ niệm này"
               >
                 <Heart
@@ -129,42 +138,48 @@ export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
         </AnimatePresence>
 
         {/* Previous Button */}
-        <button
-          onClick={prevMemory}
-          className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all shadow-lg"
-          aria-label="Kỷ niệm trước"
-        >
-          <ChevronLeft size={20} />
-        </button>
+        {memories.length > 1 && (
+          <button
+            onClick={prevMemory}
+            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all shadow-lg cursor-pointer"
+            aria-label="Kỷ niệm trước"
+          >
+            <ChevronLeft size={20} />
+          </button>
+        )}
 
         {/* Next Button */}
-        <button
-          onClick={nextMemory}
-          className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all shadow-lg"
-          aria-label="Kỷ niệm tiếp theo"
-        >
-          <ChevronRight size={20} />
-        </button>
+        {memories.length > 1 && (
+          <button
+            onClick={nextMemory}
+            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full glass-panel flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all shadow-lg cursor-pointer"
+            aria-label="Kỷ niệm tiếp theo"
+          >
+            <ChevronRight size={20} />
+          </button>
+        )}
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex items-center gap-2 mb-6">
-        {memories.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              playClick();
-              setActiveIndex(idx);
-            }}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              idx === activeIndex
-                ? 'w-6 bg-rose-soft shadow-glow-pink'
-                : 'w-2 bg-white/20 hover:bg-white/40'
-            }`}
-            aria-label={`Xem ảnh ${idx + 1}`}
-          />
-        ))}
-      </div>
+      {memories.length > 1 && (
+        <div className="flex items-center gap-2 mb-6">
+          {memories.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                playClick();
+                setActiveIndex(idx);
+              }}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                idx === activeIndex
+                  ? 'w-6 bg-rose-soft shadow-glow-pink'
+                  : 'w-2 bg-white/20 hover:bg-white/40'
+              }`}
+              aria-label={`Xem ảnh ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Next Chapter Button */}
       <div className="w-full px-6 flex justify-center">
@@ -200,7 +215,7 @@ export const MemoryGallery: React.FC<MemoryGalleryProps> = ({ onProceed }) => {
               {/* Close Button */}
               <button
                 onClick={() => setLightboxItem(null)}
-                className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80"
+                className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 cursor-pointer"
                 aria-label="Đóng"
               >
                 <X size={18} />

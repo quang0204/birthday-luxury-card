@@ -3,14 +3,16 @@ import { motion } from 'framer-motion';
 import { Sparkles, Flame, Heart } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 
 interface BirthdayCelebrationProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onProceed }) => {
+export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const { playClick } = useAudio();
 
   const handleMakeWish = () => {
@@ -61,13 +63,13 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onProc
         className="space-y-1"
       >
         <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-rose-glow via-warm-white to-champagne text-glow-pink">
-          {BIRTHDAY_CONFIG.celebration.headline}
+          {cfg.celebration.headline}
         </h1>
 
         <div className="inline-flex items-center justify-center gap-2 mt-1">
           <Heart size={20} className="text-rose-accent fill-rose-accent animate-pulse" />
           <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-300 to-lavender-light text-glow-gold">
-            {BIRTHDAY_CONFIG.recipientName}
+            {cfg.recipientName}
           </h2>
           <Heart size={20} className="text-rose-accent fill-rose-accent animate-pulse" />
         </div>
@@ -81,10 +83,10 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onProc
         className="mt-3 px-4"
       >
         <p className="text-sm sm:text-base font-semibold text-rose-soft">
-          {BIRTHDAY_CONFIG.celebration.subheadline}
+          {cfg.celebration.subheadline}
         </p>
         <p className="text-xs sm:text-sm text-lavender-muted max-w-sm mx-auto mt-1 italic">
-          "{BIRTHDAY_CONFIG.celebration.quote}"
+          "{cfg.celebration.quote}"
         </p>
       </motion.div>
 
@@ -110,7 +112,7 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onProc
           className="w-full sm:w-auto px-9 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-400 via-rose-500 to-purple-600 text-white shadow-glow-gold hover:shadow-glow-pink hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer"
         >
           <Flame size={19} className="text-amber-200 animate-pulse" />
-          <span>{BIRTHDAY_CONFIG.celebration.buttonText}</span>
+          <span>{cfg.celebration.buttonText}</span>
           <Sparkles size={16} />
         </button>
 

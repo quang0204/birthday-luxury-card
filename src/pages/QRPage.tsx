@@ -1,27 +1,32 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
 import { Download, Printer, Copy, Check, X, Sparkles, Heart } from 'lucide-react';
-import { BIRTHDAY_CONFIG } from '../config/birthday.config';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../config/birthday.config';
 
 interface QRPageProps {
   isOpen: boolean;
   onClose: () => void;
+  config?: BirthdayConfig;
+  initialUrl?: string;
 }
 
-export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
-  const [qrUrl, setQrUrl] = useState('');
+export const QRPage: React.FC<QRPageProps> = ({ 
+  isOpen, 
+  onClose, 
+  config = BIRTHDAY_CONFIG,
+  initialUrl 
+}) => {
   const [customUrl, setCustomUrl] = useState('');
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const current = window.location.href;
-      setQrUrl(current);
-      setCustomUrl(current);
+    if (initialUrl) {
+      setCustomUrl(initialUrl);
+    } else if (typeof window !== 'undefined') {
+      setCustomUrl(window.location.href);
     }
-  }, []);
+  }, [initialUrl, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !customUrl) return;
@@ -29,10 +34,10 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
     QRCode.toDataURL(
       customUrl,
       {
-        width: 320,
+        width: 340,
         margin: 2,
         color: {
-          dark: '#1E1235',
+          dark: '#1C1032',
           light: '#FFFFFF',
         },
       },
@@ -50,7 +55,7 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
     if (!qrDataUrl) return;
     const a = document.createElement('a');
     a.href = qrDataUrl;
-    a.download = `QR-SinhNhat-${BIRTHDAY_CONFIG.recipientName}.png`;
+    a.download = `QR-SinhNhat-${config.recipientName}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -72,7 +77,7 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all"
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
           aria-label="Đóng"
         >
           <X size={18} />
@@ -85,11 +90,11 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
         </div>
 
         <h3 className="font-display text-xl sm:text-2xl font-bold text-warm-white">
-          In Thiệp Quét Mã QR
+          Thiệp Quà Kèm Mã QR
         </h3>
 
-        <p className="text-xs text-lavender-muted mt-1 mb-4">
-          In ra thiệp giấy hoặc gửi mã QR này cho {BIRTHDAY_CONFIG.recipientName} để mở món quà bí mật!
+        <p className="text-xs text-lavender-muted mt-1 mb-3">
+          Gửi link này hoặc in thiệp giấy tặng cho <span className="text-rose-soft font-semibold">{config.recipientName}</span>!
         </p>
 
         {/* Printable Card Area */}
@@ -99,12 +104,12 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
         >
           <div className="flex items-center gap-1.5 text-xs font-bold text-rose-600 uppercase tracking-widest font-sans mb-1">
             <Heart size={13} className="fill-rose-600" />
-            <span>Món Quà Bí Mật</span>
+            <span>Món Quà Sinh Nhật Bí Mật</span>
             <Heart size={13} className="fill-rose-600" />
           </div>
 
           <h4 className="font-display text-xl font-extrabold text-neutral-900">
-            Happy Birthday, {BIRTHDAY_CONFIG.recipientName}!
+            Happy Birthday, {config.recipientName}!
           </h4>
 
           {/* QR Code Graphic */}
@@ -112,7 +117,7 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
             {qrDataUrl ? (
               <img
                 src={qrDataUrl}
-                alt={`Mã QR Sinh Nhật ${BIRTHDAY_CONFIG.recipientName}`}
+                alt={`Mã QR Sinh Nhật ${config.recipientName}`}
                 className="w-44 h-44 object-contain"
               />
             ) : (
@@ -126,26 +131,26 @@ export const QRPage: React.FC<QRPageProps> = ({ isOpen, onClose }) => {
             Quét mã để bước vào thế giới sinh nhật riêng của bạn ✨
           </p>
           <p className="text-[11px] text-neutral-400 font-sans mt-0.5">
-            Dành tặng riêng cho {BIRTHDAY_CONFIG.recipientNickname || BIRTHDAY_CONFIG.recipientName}
+            Dành tặng riêng cho {config.recipientNickname || config.recipientName}
           </p>
         </div>
 
         {/* Change URL Input */}
         <div className="my-3 text-left">
           <label className="text-[11px] text-lavender-light font-medium block mb-1">
-            Đường link website của bạn:
+            Đường link thiệp riêng của bạn:
           </label>
           <div className="flex items-center gap-1.5">
             <input
               type="text"
               value={customUrl}
               onChange={(e) => setCustomUrl(e.target.value)}
-              placeholder="https://your-domain.vercel.app"
+              placeholder="https://..."
               className="flex-1 bg-black/40 border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-400"
             />
             <button
               onClick={handleCopyLink}
-              className="px-3 py-2 rounded-xl glass-panel text-xs font-medium text-white hover:text-champagne flex items-center gap-1"
+              className="px-3 py-2 rounded-xl glass-panel text-xs font-medium text-white hover:text-champagne flex items-center gap-1 cursor-pointer shrink-0"
             >
               {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
               <span>{copied ? 'Đã chép' : 'Sao chép'}</span>

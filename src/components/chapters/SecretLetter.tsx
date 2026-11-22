@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Sparkles, Heart, ArrowRight, BookOpen } from 'lucide-react';
-import { BIRTHDAY_CONFIG } from '../../config/birthday.config';
+import { motion } from 'framer-motion';
+import { Mail, Sparkles, Heart, ArrowRight } from 'lucide-react';
+import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 
 interface SecretLetterProps {
+  config?: BirthdayConfig;
   onProceed: () => void;
 }
 
-export const SecretLetter: React.FC<SecretLetterProps> = ({ onProceed }) => {
+export const SecretLetter: React.FC<SecretLetterProps> = ({ config, onProceed }) => {
+  const cfg = config || BIRTHDAY_CONFIG;
   const [isOpen, setIsOpen] = useState(false);
   const { playEnvelopeOpen, playClick } = useAudio();
-  const letter = BIRTHDAY_CONFIG.secretLetter;
+  const letter = cfg.secretLetter;
 
   const handleOpenLetter = () => {
     setIsOpen(true);
@@ -81,13 +83,13 @@ export const SecretLetter: React.FC<SecretLetterProps> = ({ onProceed }) => {
           {/* Golden stamp corner */}
           <div className="absolute top-4 right-4 flex items-center gap-1 text-[11px] font-sans text-amber-800 bg-amber-100/90 px-2.5 py-1 rounded-md border border-amber-300/50">
             <Heart size={12} className="text-rose-600 fill-rose-600" />
-            <span>For {BIRTHDAY_CONFIG.recipientName}</span>
+            <span>For {cfg.recipientName}</span>
           </div>
 
           {/* Letter header */}
           <div className="mb-4 pr-16">
             <h3 className="font-handwriting text-2xl sm:text-3xl font-bold text-rose-700">
-              Gửi {BIRTHDAY_CONFIG.recipientName} thân mến,
+              Gửi {cfg.recipientName} thân mến,
             </h3>
             <p className="text-xs text-neutral-500 font-sans mt-0.5">{letter.date}</p>
           </div>
