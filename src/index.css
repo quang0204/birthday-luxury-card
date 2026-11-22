@@ -189,3 +189,138 @@
 .safe-top {
   padding-top: max(1rem, env(safe-area-inset-top));
 }
+
+/* =========================================================================
+   LUXURY MOTION & MICRO-INTERACTIONS (IMPECCABLE & UI/UX PRO MAX)
+   ========================================================================= */
+
+/* Shimmer Light Glint Animation */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmerSweep 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Luxury Interactive CTA Button */
+.btn-luxury {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #D4627A 0%, #992244 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(254, 235, 239, 0.35);
+  box-shadow: 0 8px 24px -4px rgba(212, 98, 122, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-luxury::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-luxury:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -2px rgba(212, 98, 122, 0.55), 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-color: rgba(254, 235, 239, 0.6);
+}
+
+.btn-luxury:hover::before {
+  transform: translateX(250%) skewX(-20deg);
+}
+
+.btn-luxury:active {
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 4px 14px -2px rgba(212, 98, 122, 0.3);
+}
+
+/* Glass Interactive Secondary Button */
+.btn-glass-interactive {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FAF4F0;
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s ease,
+              border-color 0.22s ease,
+              box-shadow 0.22s ease;
+  cursor: pointer;
+}
+
+.btn-glass-interactive:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(212, 98, 122, 0.45);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px -4px rgba(212, 98, 122, 0.2);
+}
+
+.btn-glass-interactive:active {
+  transform: scale(0.96) translateY(0);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Luxury Interactive Card Motion */
+.card-luxury {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.32s ease,
+              background-color 0.32s ease;
+  will-change: transform, box-shadow;
+}
+
+.card-luxury:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7),
+              0 0 35px -5px rgba(212, 98, 122, 0.18);
+  border-color: rgba(212, 98, 122, 0.45);
+}
+
+.card-luxury:active {
+  transform: translateY(-2px) scale(0.99);
+}
+
+/* Respect Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn-luxury,
+  .btn-glass-interactive,
+  .card-luxury,
+  .btn-editorial-primary,
+  .btn-editorial-secondary {
+    transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease !important;
+    transform: none !important;
+  }
+
+  .btn-luxury::before,
+  .animate-shimmer {
+    animation: none !important;
+    display: none !important;
+  }
+}

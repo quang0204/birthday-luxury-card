@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BirthdayPage } from './pages/BirthdayPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { CardCreatorModal } from './components/creator/CardCreatorModal';
@@ -132,124 +133,140 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Quick Create Modal */}
-      {isQuickCreateOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-md w-full bg-[#1A0B14] border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl text-[#FCFAF7]">
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <span className="text-[10px] tracking-widest text-[#E77C92] uppercase font-bold">Tạo thiệp siêu nhanh</span>
-                <h3 className="font-serif text-xl text-[#FCFAF7]">Thiệp Sinh Nhật Mới</h3>
-              </div>
-              <button
-                onClick={() => setIsQuickCreateOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm cursor-pointer transition-all"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmitQuickCreate} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
-                  Tên người nhận <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Ví dụ: Lan Anh, Tuấn Kiệt, Mẹ..."
-                  value={quickName}
-                  onChange={(e) => setQuickName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92] transition-colors"
-                  autoFocus
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+      {/* Quick Create Modal with Smooth Motion */}
+      <AnimatePresence>
+        {isQuickCreateOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            onClick={() => setIsQuickCreateOpen(false)}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 12 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] as const }}
+              className="relative max-w-md w-full bg-[#1A0B14] border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl text-[#FCFAF7]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-5">
                 <div>
-                  <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
-                    Biệt danh (tuỳ chọn)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Bé Heo, Cún..."
-                    value={quickNickname}
-                    onChange={(e) => setQuickNickname(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92]"
-                  />
+                  <span className="text-[10px] tracking-widest text-[#E77C92] uppercase font-bold">Tạo thiệp siêu nhanh</span>
+                  <h3 className="font-serif text-xl text-[#FCFAF7]">Thiệp Sinh Nhật Mới</h3>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
-                    Ngày sinh (tuỳ chọn)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="25.12"
-                    value={quickDate}
-                    onChange={(e) => setQuickDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
-                  Mối quan hệ (để gợi ý lời chúc phù hợp)
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setQuickRelation('friend')}
-                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                      quickRelation === 'friend'
-                        ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    Bạn Thân ✨
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQuickRelation('lover')}
-                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                      quickRelation === 'lover'
-                        ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    Người Yêu ❤️
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQuickRelation('family')}
-                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                      quickRelation === 'family'
-                        ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
-                        : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
-                    }`}
-                  >
-                    Gia Đình 🌸
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2">
                 <button
-                  type="submit"
-                  disabled={!quickName.trim()}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#D4627A] to-[#992244] hover:from-[#E77C92] hover:to-[#B32D52] disabled:opacity-40 text-white font-semibold text-sm tracking-wide transition-all shadow-lg shadow-rose-950/40 cursor-pointer"
+                  onClick={() => setIsQuickCreateOpen(false)}
+                  className="btn-glass-interactive w-8 h-8 rounded-full flex items-center justify-center text-xs"
                 >
-                  ✨ Tạo Thiệp 3D Ngay
+                  ✕
                 </button>
               </div>
 
-              <p className="text-[11px] text-center text-white/40">
-                Sau khi tạo, bạn có thể xem ngay quả cầu 3D hoặc bấm Sửa để thay ảnh & thư tay bất kỳ lúc nào.
-              </p>
-            </form>
-          </div>
-        </div>
-      )}
+              <form onSubmit={handleSubmitQuickCreate} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
+                    Tên người nhận <span className="text-rose-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Ví dụ: Lan Anh, Tuấn Kiệt, Mẹ..."
+                    value={quickName}
+                    onChange={(e) => setQuickName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92] transition-colors"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
+                      Biệt danh (tuỳ chọn)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Bé Heo, Cún..."
+                      value={quickNickname}
+                      onChange={(e) => setQuickNickname(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
+                      Ngày sinh (tuỳ chọn)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="25.12"
+                      value={quickDate}
+                      onChange={(e) => setQuickDate(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#E77C92]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#FCFAF7]/80 mb-1.5">
+                    Mối quan hệ (để gợi ý lời chúc phù hợp)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setQuickRelation('friend')}
+                      className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                        quickRelation === 'friend'
+                          ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
+                          : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
+                      }`}
+                    >
+                      Bạn Thân ✨
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuickRelation('lover')}
+                      className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                        quickRelation === 'lover'
+                          ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
+                          : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
+                      }`}
+                    >
+                      Người Yêu ❤️
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuickRelation('family')}
+                      className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                        quickRelation === 'family'
+                          ? 'bg-[#D4627A] border-[#D4627A] text-white shadow-md'
+                          : 'bg-white/5 border-white/10 text-white/60 hover:text-white'
+                      }`}
+                    >
+                      Gia Đình 🌸
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={!quickName.trim()}
+                    className="btn-luxury w-full py-3.5 text-sm font-semibold tracking-wide disabled:opacity-40"
+                  >
+                    ✨ Tạo Thiệp 3D Ngay
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-center text-white/40">
+                  Sau khi tạo, bạn có thể xem ngay quả cầu 3D hoặc bấm Sửa để thay ảnh & thư tay bất kỳ lúc nào.
+                </p>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Full Studio Editor Modal */}
       <CardCreatorModal

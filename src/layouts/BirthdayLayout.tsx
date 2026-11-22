@@ -83,7 +83,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
             {onOpenDashboard && (
               <button
                 onClick={onOpenDashboard}
-                className="px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#FAF4F0]/10 hover:bg-[#FAF4F0]/18 text-[#FAF4F0] border border-[#FAF4F0]/20 backdrop-blur-md transition-all cursor-pointer"
+                className="btn-glass-interactive px-3.5 py-1.5 text-xs tracking-wide flex items-center gap-1.5"
                 title="Quản lý tất cả các thiệp sinh nhật"
               >
                 <Layers size={12} className="text-[#E77C92]" />
@@ -93,7 +93,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
             <button
               onClick={onOpenCreator}
-              className="px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#FAF4F0]/10 hover:bg-[#FAF4F0]/18 text-[#FAF4F0] border border-[#FAF4F0]/20 backdrop-blur-md transition-all cursor-pointer"
+              className="btn-glass-interactive px-3.5 py-1.5 text-xs tracking-wide flex items-center gap-1.5"
               title="Tự tạo hoặc chỉnh sửa thiệp này"
             >
               <PenTool size={12} className="text-[#E77C92]" />
@@ -102,7 +102,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
             <button
               onClick={onOpenQR}
-              className="px-3 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#D4627A]/20 hover:bg-[#D4627A]/30 text-[#FEEBEF] border border-[#D4627A]/40 backdrop-blur-md transition-all cursor-pointer"
+              className="btn-glass-interactive px-3.5 py-1.5 text-xs tracking-wide flex items-center gap-1.5 bg-[#D4627A]/20 hover:bg-[#D4627A]/35 border-[#D4627A]/40 text-[#FEEBEF]"
               title="Mở mã QR & thiệp in"
             >
               <QrCode size={12} className="text-[#FAF4F0]" />

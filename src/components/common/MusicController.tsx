@@ -45,9 +45,9 @@ export const MusicController: React.FC = () => {
       {/* Main Music Pill Button */}
       <button
         onClick={toggleMute}
-        className={`glass-panel px-3.5 py-2 rounded-full flex items-center gap-2.5 transition-all duration-300 shadow-glass ${
+        className={`btn-glass-interactive px-3.5 py-2 flex items-center gap-2.5 ${
           !isMuted 
-            ? 'border-rose-soft/40 shadow-glow-pink/30 text-rose-soft' 
+            ? 'border-rose-400/50 shadow-[0_0_20px_rgba(212,98,122,0.3)] text-rose-300' 
             : 'border-white/10 text-white/50 hover:text-white/80'
         }`}
         aria-label={isMuted ? 'Bật âm nhạc' : 'Tắt âm nhạc'}
