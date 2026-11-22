@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'qrcode';
 import { Download, Printer, Copy, Check, X, Sparkles, Heart, AlertCircle } from 'lucide-react';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../config/birthday.config';
@@ -92,8 +93,22 @@ export const QRPage: React.FC<QRPageProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#12060C]/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="relative max-w-md w-full bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 rounded-2xl p-6 sm:p-7 shadow-2xl text-center my-auto">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-50 bg-[#12060C]/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative max-w-md w-full bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 rounded-2xl p-6 sm:p-7 shadow-2xl text-center my-auto"
+          >
         {/* Close button */}
         <button
           onClick={onClose}
@@ -206,8 +221,10 @@ export const QRPage: React.FC<QRPageProps> = ({
             <Printer size={14} />
             <span>In Thiệp Ngay</span>
           </button>
-        </div>
-      </div>
-    </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 };

@@ -49,8 +49,13 @@ export const SecretLetter: React.FC<SecretLetterProps> = ({ config, onProceed })
       {!isOpen ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
+          transition={{
+            y: { repeat: Infinity, duration: 4, ease: 'easeInOut' },
+            duration: 0.5,
+          }}
+          whileHover={{ scale: 1.04, y: -10 }}
+          whileTap={{ scale: 0.97 }}
           onClick={handleOpenLetter}
           className="w-full max-w-sm p-8 rounded-2xl bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 shadow-xl cursor-pointer flex flex-col items-center justify-center my-4 group hover:shadow-2xl transition-all"
         >

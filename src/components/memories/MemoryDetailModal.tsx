@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChevronLeft, ChevronRight, X, Heart, 
@@ -28,6 +28,17 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
   onToggleLike,
 }) => {
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  // Keyboard navigation support: ArrowLeft, ArrowRight, and Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') onNext();
+      else if (e.key === 'ArrowLeft') onPrev();
+      else if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onNext, onPrev, onClose]);
 
   if (!memory) return null;
 

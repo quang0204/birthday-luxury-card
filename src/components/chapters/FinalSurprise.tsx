@@ -84,9 +84,13 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center px-4"
         >
-          <div className="w-16 h-16 rounded-full bg-[#FAF4F0]/10 border border-[#FAF4F0]/25 backdrop-blur-md flex items-center justify-center text-2xl mb-4">
-            <Sparkles size={26} className="text-[#E6C29C]" />
-          </div>
+          <motion.div
+            animate={{ scale: [1, 1.08, 1], y: [0, -6, 0] }}
+            transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+            className="w-16 h-16 rounded-full bg-[#FAF4F0]/10 border border-[#FAF4F0]/25 backdrop-blur-md flex items-center justify-center text-2xl mb-4 shadow-[0_0_25px_rgba(230,194,156,0.3)]"
+          >
+            <Sparkles size={26} className="text-[#E6C29C] animate-spin-slow" />
+          </motion.div>
 
           <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#FAF4F0] tracking-tight">
             {surprise.preTitle}

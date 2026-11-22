@@ -97,8 +97,10 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               {gameData.challenge1.boxes.map((b) => (
                 <motion.button
                   key={b.id}
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={selectedBox === b.id ? { scale: [1, 1.12, 1.05], y: -8 } : {}}
+                  transition={{ duration: 0.45 }}
                   onClick={() => handleBoxSelect(b.id)}
                   className={`p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all border ${
                     selectedBox === b.id
@@ -209,14 +211,17 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               {gameData.challenge3.cards.map((c) => (
                 <motion.button
                   key={c.id}
-                  whileHover={{ scale: 1.04, y: -3 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={selectedCard === c.id ? { rotateY: [0, 180, 360], scale: 1.06, y: -6 } : {}}
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                   onClick={() => handleCardSelect(c.id)}
                   className={`relative p-5 rounded-2xl cursor-pointer transition-all border flex flex-col items-center justify-between min-h-[180px] ${
                     selectedCard === c.id
                       ? 'bg-[#FCFAF7] text-[#2D1117] border-[#E6C29C] shadow-2xl scale-105'
                       : 'bg-[#FCFAF7]/95 text-[#2D1117] border-[#2D1117]/15 hover:bg-white shadow-md'
                   }`}
+                  style={{ transformStyle: 'preserve-3d' }}
                 >
                   <span className="text-3xl mb-1">{c.icon}</span>
                   <div>

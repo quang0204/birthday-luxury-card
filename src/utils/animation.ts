@@ -1,13 +1,13 @@
 import confetti from 'canvas-confetti';
 
-// Superr Vibrant Schoolyard Sticker Palette
+// Luxury Champagne & Rose Gold Celebration Palette
 export const SUPERR_CONFETTI_COLORS = [
-  '#FF6F1E', // Marker Orange
-  '#FF66CF', // Bubblegum Pink
-  '#3B82F6', // Sky Blue
-  '#22C55E', // Sprout Green
-  '#FBBF24', // Sunshine Gold
-  '#FDFBF9', // Cream Paper
+  '#D4627A', // Velvet Rose
+  '#E6C29C', // Champagne Gold
+  '#F59E0B', // Amber Gold
+  '#FF758F', // Blush Petal
+  '#B794F6', // Twilight Lavender
+  '#FCFAF7', // Archival Pearl
 ];
 
 /**

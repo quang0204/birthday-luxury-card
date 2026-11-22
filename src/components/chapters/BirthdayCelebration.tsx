@@ -50,11 +50,15 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
           {cfg.celebration.headline}
         </h1>
 
-        <div className="pt-1 pb-2">
-          <span className="font-serif italic text-3xl sm:text-5xl md:text-6xl text-[#E77C92] font-normal block leading-tight">
+        <div className="pt-1 pb-2 relative inline-block">
+          <motion.span
+            animate={{ scale: [1, 1.025, 1] }}
+            transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+            className="font-serif italic text-3xl sm:text-5xl md:text-6xl text-[#E77C92] font-normal block leading-tight text-glow-editorial"
+          >
             {cfg.recipientName}
-          </span>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#D4627A] to-transparent mx-auto mt-2" />
+          </motion.span>
+          <div className="w-20 h-px bg-gradient-to-r from-transparent via-[#D4627A] to-transparent mx-auto mt-2" />
         </div>
       </motion.div>
 

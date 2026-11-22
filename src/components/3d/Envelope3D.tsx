@@ -43,10 +43,14 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
           isOpened
             ? { scale: 1.05, y: 10, rotateX: 5 }
             : isHovered
-            ? { scale: 1.03, y: -6, rotateX: 6, rotateY: -3 }
-            : { scale: 1, y: 0, rotateX: 0, rotateY: 0 }
+            ? { scale: 1.03, y: -8, rotateX: 6, rotateY: -3 }
+            : { scale: 1, y: [0, -6, 0], rotateX: [0, 2, 0], rotateY: [0, -1, 0] }
         }
-        transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+        transition={
+          isOpened || isHovered
+            ? { type: 'spring', stiffness: 260, damping: 20 }
+            : { repeat: Infinity, duration: 4.8, ease: 'easeInOut' }
+        }
         className="relative w-72 h-48 sm:w-80 sm:h-52 rounded-xl shadow-2xl transition-transform"
         style={{ transformStyle: 'preserve-3d' }}
       >

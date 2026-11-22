@@ -45,9 +45,17 @@ export const GiftBox3D: React.FC<GiftBox3DProps> = ({ isOpened, onOpen, recipien
             ? { scale: 1.05, y: 15 }
             : isHovered
             ? { scale: 1.04, y: -10, rotateY: 5 }
-            : { scale: 1, y: 0, rotateY: 0 }
+            : {
+                scale: [1, 1.015, 1],
+                y: [0, -6, 0],
+                rotateZ: [0, -1, 1, -0.5, 0],
+              }
         }
-        transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+        transition={
+          isOpened || isHovered
+            ? { type: 'spring', stiffness: 220, damping: 18 }
+            : { repeat: Infinity, duration: 4.2, ease: 'easeInOut' }
+        }
         className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center"
         style={{ transformStyle: 'preserve-3d' }}
       >

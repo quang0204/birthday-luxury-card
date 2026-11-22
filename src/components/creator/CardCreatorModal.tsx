@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Sparkles, User, Mail, Image, Music, Plus, Trash2, 
   Upload, Check, QrCode, Eye, RotateCcw, Heart, Save, Link2, AlertCircle
@@ -86,8 +87,6 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
       setFormData(currentConfig);
     }
   }, [isOpen, currentConfig]);
-
-  if (!isOpen) return null;
 
   const handleTextChange = (field: keyof BirthdayConfig, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -209,8 +208,22 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto film-grain">
-      <div className="relative max-w-2xl w-full bg-[#180812] text-[#FAF4F0] border border-white/15 rounded-3xl p-5 sm:p-7 shadow-[0_25px_65px_-15px_rgba(0,0,0,0.85)] my-auto flex flex-col max-h-[92vh]">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto film-grain"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative max-w-2xl w-full bg-[#180812] text-[#FAF4F0] border border-white/15 rounded-3xl p-5 sm:p-7 shadow-[0_25px_65px_-15px_rgba(0,0,0,0.85)] my-auto flex flex-col max-h-[92vh]"
+          >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
@@ -686,7 +699,9 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
   );
 };
