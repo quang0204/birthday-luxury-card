@@ -52,17 +52,17 @@ export const GiftBox3D: React.FC<GiftBox3DProps> = ({ isOpened, onOpen, recipien
               : { y: 50, opacity: 0, scale: 0.7 }
           }
           transition={{ duration: 0.8, delay: 0.2, type: 'spring', damping: 15 }}
-          className="absolute z-40 w-64 sm:w-72 glass-panel p-5 rounded-2xl border-2 border-rose-300/50 shadow-2xl text-center bg-gradient-to-b from-[#2B1B4A]/90 to-[#190F2D]/95 backdrop-blur-xl"
+          className="absolute z-40 w-64 sm:w-72 p-5 rounded-2xl border border-[#2D1117]/15 shadow-2xl text-center bg-[#FCFAF7] text-[#2D1117]"
         >
-          <div className="flex items-center justify-center gap-1.5 text-champagne text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="flex items-center justify-center gap-1.5 text-[#D4627A] text-xs font-semibold uppercase tracking-wider mb-1">
             <Sparkles size={14} className="animate-spin-slow" />
             <span>Món Quà Vô Giá</span>
             <Sparkles size={14} className="animate-spin-slow" />
           </div>
-          <h3 className="font-display text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-soft via-warm-white to-champagne">
+          <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#2D1117]">
             Happy Birthday, {recipientName}!
           </h3>
-          <p className="text-xs text-lavender-light/90 mt-1 font-sans">
+          <p className="text-xs text-[#2D1117]/70 mt-1 font-sans">
             Ngày sinh nhật đặc biệt nhất năm nay ✨
           </p>
         </motion.div>

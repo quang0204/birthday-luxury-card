@@ -344,7 +344,7 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
           subtitle: "Ngôi Sao Hy Vọng",
           icon: "⭐",
           blessing: "Mọi điều bạn thầm ước nguyện trong đêm nay đều sẽ dần biến thành hiện thực diệu kỳ!",
-          auraColor: "from-purple-400 to-pink-400"
+          auraColor: "from-rose-400 to-amber-300"
         },
         {
           id: 3,
@@ -352,7 +352,7 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
           subtitle: "Phù Thủy Quyền Năng",
           icon: "🪄",
           blessing: "Bạn nắm giữ sức mạnh biến những ngày bình thường thành những khoảnh khắc phi thường tuyệt đỉnh!",
-          auraColor: "from-indigo-400 to-teal-400"
+          auraColor: "from-amber-400 to-rose-400"
         }
       ]
     },

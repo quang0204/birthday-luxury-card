@@ -301,13 +301,12 @@ export const MemorySphere: React.FC<MemorySphereProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full aspect-square max-w-[540px] max-h-[540px] flex items-center justify-center select-none touch-none ${className}`}
-      style={{ touchAction: 'none' }}
+      className={`relative w-full aspect-square max-w-[500px] max-h-[500px] flex items-center justify-center select-none px-4 ${className}`}
     >
       {/* 3D WebGL Canvas */}
       <canvas
         ref={canvasRef}
-        className="w-full h-full block cursor-grab active:cursor-grabbing focus:outline-none"
+        className="w-full h-full block cursor-grab active:cursor-grabbing focus:outline-none touch-none"
       />
     </div>
   );

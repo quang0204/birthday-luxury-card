@@ -149,14 +149,14 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
         </div>
       )}
 
-      {/* 3. Bottom Next Chapter Button */}
-      <div className="relative z-10 w-full px-6 flex justify-center mt-3 mb-2">
+      {/* 3. Bottom Next Chapter Button: Sticky on mobile, standard on desktop */}
+      <div className="fixed sm:relative bottom-0 left-0 right-0 sm:bottom-auto sm:left-auto sm:right-auto z-40 sm:z-10 w-full px-4 py-3 sm:py-0 bg-[#12060C]/90 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none border-t border-white/10 sm:border-none flex justify-center mt-3 mb-2 shadow-2xl sm:shadow-none">
         <button
           onClick={() => {
             if (playClick) playClick();
             onProceed();
           }}
-          className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2"
+          className="btn-editorial-primary px-8 py-3.5 sm:px-9 sm:py-4 tracking-[0.14em] text-xs uppercase gap-2 w-full sm:w-auto shadow-lg"
         >
           <span>TIẾP TỤC: THỬ THÁCH SINH NHẬT</span>
           <ArrowRight size={15} />

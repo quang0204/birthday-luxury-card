@@ -43,7 +43,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Envelope Backplate & Pocket */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2D1B4E] to-[#160E29] border border-white/20 shadow-glass overflow-hidden">
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2B0F19] to-[#14060C] border border-white/20 shadow-glass overflow-hidden">
           {/* Subtle paper grain texture overlay */}
           <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:12px_12px]" />
           
@@ -55,7 +55,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
             className="absolute left-6 right-6 top-4 h-36 bg-gradient-to-b from-[#FFFDF9] to-[#FAF0DD] rounded-lg shadow-lg p-3 text-center border border-amber-200/60 z-10 flex flex-col items-center justify-center"
           >
             <Sparkles className="text-amber-500 mb-1 animate-pulse" size={18} />
-            <p className="text-xs font-semibold text-purple-900 tracking-wider uppercase font-sans">Special Invitation</p>
+            <p className="text-xs font-semibold text-[#2D1117] tracking-wider uppercase font-sans">Special Invitation</p>
             <p className="text-sm font-display text-rose-600 font-bold mt-1">Dành Cho Người Đặc Biệt</p>
           </motion.div>
 
@@ -64,7 +64,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
             className="absolute inset-0 pointer-events-none z-20"
             style={{
               clipPath: 'polygon(0% 0%, 50% 50%, 0% 100%)',
-              background: 'linear-gradient(135deg, #24163F 0%, #1A1030 100%)',
+              background: 'linear-gradient(135deg, #2D111C 0%, #17070F 100%)',
               borderRight: '1px solid rgba(255,255,255,0.06)'
             }}
           />
@@ -72,7 +72,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
             className="absolute inset-0 pointer-events-none z-20"
             style={{
               clipPath: 'polygon(100% 0%, 50% 50%, 100% 100%)',
-              background: 'linear-gradient(225deg, #281845 0%, #170E2C 100%)',
+              background: 'linear-gradient(225deg, #270D18 0%, #15060D 100%)',
               borderLeft: '1px solid rgba(255,255,255,0.06)'
             }}
           />
@@ -82,7 +82,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
             className="absolute inset-0 pointer-events-none z-20"
             style={{
               clipPath: 'polygon(0% 100%, 50% 45%, 100% 100%)',
-              background: 'linear-gradient(180deg, #1F1337 0%, #130B24 100%)',
+              background: 'linear-gradient(180deg, #240C16 0%, #12040B 100%)',
               borderTop: '1px solid rgba(255,255,255,0.1)'
             }}
           />
@@ -96,7 +96,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
           style={{
             transformStyle: 'preserve-3d',
             clipPath: 'polygon(0% 0%, 50% 100%, 100% 0%)',
-            background: 'linear-gradient(180deg, #38215F 0%, #291849 100%)',
+            background: 'linear-gradient(180deg, #3D1422 0%, #260A14 100%)',
             boxShadow: '0 4px 15px rgba(0,0,0,0.4)',
             borderBottom: '1px solid rgba(255,255,255,0.15)'
           }}

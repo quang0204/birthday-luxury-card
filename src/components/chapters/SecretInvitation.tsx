@@ -85,9 +85,10 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
           <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform ml-1" />
         </button>
 
-        <span className="text-[11px] text-[#FAF4F0]/40 font-serif italic tracking-wider">
-          Chạm vào bức thư hoặc nút bấm để bước vào hành trình
-        </span>
+        <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-[#FAF4F0]/80 font-serif italic tracking-wider">
+          <span>Chạm vào bức thư hoặc nút bấm để bước vào hành trình</span>
+          <span className="text-rose-300 font-sans font-medium text-[11px] not-italic px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10">♫ Bật âm thanh</span>
+        </div>
       </motion.div>
     </div>
   );

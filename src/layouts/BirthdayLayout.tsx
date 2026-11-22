@@ -64,14 +64,14 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-serif tracking-[0.2em] text-[11px] sm:text-xs font-semibold text-[#FAF4F0]/90 uppercase block">
+              <span className="font-serif tracking-[0.2em] text-xs font-semibold text-[#FAF4F0]/90 uppercase block">
                 The Birthday Experience
               </span>
-              <span className="text-[9px] font-sans font-bold tracking-widest text-[#E77C92] uppercase border-l border-[#FAF4F0]/20 pl-2">
+              <span className="text-[11px] font-sans font-bold tracking-widest text-[#E77C92] uppercase border-l border-[#FAF4F0]/20 pl-2">
                 Vol. 20
               </span>
             </div>
-            <p className="text-[11px] text-[#FAF4F0]/60 font-sans tracking-wide">
+            <p className="text-xs text-[#FAF4F0]/80 font-sans tracking-wide">
               Dành riêng cho <span className="text-[#FAF4F0] font-semibold">{config.recipientName}</span>
             </p>
           </div>
@@ -125,12 +125,12 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
               <button
                 key={num}
                 onClick={() => onSelectChapter(num as ChapterNumber)}
-                className={`transition-all duration-300 font-serif text-[11px] sm:text-xs tracking-wider cursor-pointer py-1 px-1.5 rounded ${
+                className={`transition-all duration-300 font-serif text-xs tracking-wider cursor-pointer py-1.5 px-2 min-w-[30px] rounded flex items-center justify-center ${
                   isCurrent
                     ? 'text-[#FEEBEF] font-bold border-b-2 border-[#D4627A] scale-110'
                     : isPassed
-                    ? 'text-[#FAF4F0]/65 hover:text-[#FAF4F0]'
-                    : 'text-[#FAF4F0]/30 hover:text-[#FAF4F0]/60'
+                    ? 'text-[#FAF4F0]/80 hover:text-[#FAF4F0]'
+                    : 'text-[#FAF4F0]/60 hover:text-[#FAF4F0]'
                 }`}
                 title={`Chương ${roman}: ${chapterTitles[idx]}`}
               >
@@ -141,7 +141,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         </div>
 
         {/* Current Chapter Subtitle */}
-        <span className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#E77C92]">
+        <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#E77C92] font-semibold">
           Chương {romanNumerals[currentChapter - 1]} — {chapterTitles[currentChapter - 1]}
         </span>
       </div>

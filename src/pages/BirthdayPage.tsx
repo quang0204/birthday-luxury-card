@@ -15,6 +15,7 @@ import { useBirthdayExperience } from '../hooks/useBirthdayExperience';
 import { BirthdayConfig } from '../config/birthday.config';
 import { getInitialBirthdayConfig } from '../utils/configStorage';
 import { getCard, encodeCardToUrl, saveCard } from '../utils/cardLibrary';
+import { soundEngine } from '../utils/audio';
 
 interface BirthdayPageProps {
   cardId?: string;
@@ -52,6 +53,21 @@ export const BirthdayPage: React.FC<BirthdayPageProps> = ({
       }
     }
   }, [cardId, initialConfig]);
+
+  // Resume sound on first user gesture
+  useEffect(() => {
+    const handleFirstGesture = () => {
+      soundEngine.playBackgroundMusic();
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
+    };
+    window.addEventListener('pointerdown', handleFirstGesture, { once: true });
+    window.addEventListener('keydown', handleFirstGesture, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
+    };
+  }, []);
 
   // Detect whether visitor is in pure Recipient Mode (scanned custom QR or clicked ?c= link)
   const isRecipientMode = useMemo(() => {
