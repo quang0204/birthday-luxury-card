@@ -175,9 +175,9 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
 
   makeAWish: {
     title: "Trước khi bước sang tuổi mới, hãy nhắm mắt và ước một điều thật đẹp nhé!",
-    instructionHold: "Nhấn và giữ nút bên dưới để thổi tắt nến",
-    instructionMic: "Hoặc cho phép micro và thổi nhẹ vào mic điện thoại",
-    micFallbackHint: "Mẹo: Bạn có thể nhấn giữ nút thổi nến bất cứ lúc nào",
+    instructionHold: "Bật micro và thổi vào mic để dập tắt nến sinh nhật",
+    instructionMic: "Hãy ghé sát và thổi một luồng hơi thật mạnh vào micro",
+    micFallbackHint: "Hệ thống chỉ nhận diện luồng hơi thổi trực tiếp vào mic (tiếng nói chuyện hay tiếng ồn sẽ không được tính)",
     blownTitle: "Ước nguyện đã được gửi tới vũ trụ! ✨",
     blownSubtitle: "Tuổi mới, mong mọi điều bình an, hạnh phúc và may mắn nhất sẽ tìm đến bạn.",
     continueButton: "LẬT MỞ NHỮNG KỶ NIỆM"

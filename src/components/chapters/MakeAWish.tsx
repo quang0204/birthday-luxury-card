@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Mic, MicOff, Wind, ArrowRight, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mic, MicOff, Wind, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
@@ -18,19 +18,38 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
   const [isBlowing, setIsBlowing] = useState(false);
   const [blowProgress, setBlowProgress] = useState(0); // 0 to 100
   const [micActive, setMicActive] = useState(false);
-  const [micSupported, setMicSupported] = useState(true);
+  const [micDenied, setMicDenied] = useState(false);
+  const [isRequestingMic, setIsRequestingMic] = useState(false);
+  const [soundState, setSoundState] = useState<'idle' | 'speech' | 'blowing'>('idle');
+
+  const candlesLitRef = useRef(true);
   const holdIntervalRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
+  const animFrameRef = useRef<number | null>(null);
 
   const { playBlowCandle, playFanfare, playFirework } = useAudio();
 
+  // Sync ref with state
+  useEffect(() => {
+    candlesLitRef.current = candlesLit;
+  }, [candlesLit]);
+
   // Handle extinguishing candles
   const handleExtinguish = () => {
-    if (!candlesLit) return;
+    if (!candlesLitRef.current) return;
+    candlesLitRef.current = false;
     setCandlesLit(false);
     setIsBlowing(false);
+    setBlowProgress(100);
+
+    // Cancel animation frame
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+
     playBlowCandle();
 
     setTimeout(() => {
@@ -40,23 +59,168 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       triggerContinuousConfetti(3500);
     }, 400);
 
-    // Stop mic stream
+    // Stop mic stream & close audio context cleanly
     if (micStreamRef.current) {
       micStreamRef.current.getTracks().forEach((track) => track.stop());
       micStreamRef.current = null;
     }
     if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
       audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    setMicActive(false);
+  };
+
+  // Start & activate microphone detection
+  const startMicrophone = async () => {
+    setIsRequestingMic(true);
+    try {
+      // Disable noiseSuppression & echoCancellation so physical breath turbulence isn't filtered out
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false,
+          },
+          video: false,
+        });
+      } catch {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      }
+
+      micStreamRef.current = stream;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AudioCtx();
+      audioContextRef.current = ctx;
+
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512; // 256 frequency bins (~86Hz/bin at 44.1kHz)
+      analyser.smoothingTimeConstant = 0.12; // Fast transient response for breath
+      analyserRef.current = analyser;
+
+      const source = ctx.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      setMicActive(true);
+      setMicDenied(false);
+      setIsRequestingMic(false);
+
+      const bufferLength = analyser.frequencyBinCount;
+      const freqBuffer = new Uint8Array(bufferLength);
+      const timeBuffer = new Uint8Array(bufferLength);
+      let blowAccumulator = 0;
+
+      const checkBlow = () => {
+        if (!candlesLitRef.current || !analyserRef.current) return;
+
+        analyser.getByteFrequencyData(freqBuffer);
+        analyser.getByteTimeDomainData(timeBuffer);
+
+        // 1. Calculate RMS volume in time domain
+        let sumSq = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const norm = (timeBuffer[i] - 128) / 128;
+          sumSq += norm * norm;
+        }
+        const rms = Math.sqrt(sumSq / bufferLength);
+
+        // 2. Frequency bands:
+        // Sub-bass air turbulence / wind capsule impact (bins 0 to 2: ~0 - 250Hz)
+        const lowEnergy = (freqBuffer[0] + freqBuffer[1] + freqBuffer[2]) / 3;
+
+        // Speech formant zone (bins 4 to 22: ~340Hz - 1900Hz)
+        let speechSum = 0;
+        for (let i = 4; i <= 22; i++) {
+          speechSum += freqBuffer[i];
+        }
+        const speechEnergy = speechSum / 19;
+
+        // Breath friction / hiss (bins 35 to 80: ~3000Hz - 7000Hz)
+        let hissSum = 0;
+        for (let i = 35; i <= 80; i++) {
+          hissSum += freqBuffer[i];
+        }
+        const hissEnergy = hissSum / 46;
+
+        // Total volume threshold
+        const hasAudibleSound = rms > 0.035 || lowEnergy > 40 || speechEnergy > 35;
+
+        if (!hasAudibleSound) {
+          // Silence or ambient background
+          setSoundState('idle');
+          blowAccumulator = Math.max(0, blowAccumulator - 2);
+          setBlowProgress(Math.round(blowAccumulator));
+          if (blowAccumulator === 0) {
+            setIsBlowing(false);
+          }
+        } else {
+          // Discriminate: Speech vs Blowing
+          // Speech characteristic:
+          // Strong speech formant energy, typically greater than or close to low air turbulence
+          const isSpeech = speechEnergy > 45 && speechEnergy >= lowEnergy * 0.85;
+
+          // Blowing characteristic:
+          // Exhaled air jet slamming mic capsule creates massive sub-bass turbulence (lowEnergy >= 68),
+          // high-frequency friction hiss (hissEnergy >= 16 or huge lowEnergy >= 90),
+          // and lowEnergy strongly outpaces speech formant energy (> 1.15x)
+          const isBlowingAir =
+            lowEnergy >= 68 &&
+            lowEnergy > speechEnergy * 1.15 &&
+            (hissEnergy >= 16 || lowEnergy >= 90) &&
+            !isSpeech;
+
+          if (isBlowingAir) {
+            setSoundState('blowing');
+            setIsBlowing(true);
+            // Accumulate progress: ~1.0 second of continuous blowing reaches 100%
+            blowAccumulator += 3.2;
+            const progress = Math.min(100, Math.round(blowAccumulator));
+            setBlowProgress(progress);
+
+            if (progress >= 100) {
+              handleExtinguish();
+              return;
+            }
+          } else if (isSpeech) {
+            setSoundState('speech');
+            setIsBlowing(false);
+            // Decay progress during speech so talking CANNOT blow out candles
+            blowAccumulator = Math.max(0, blowAccumulator - 2.5);
+            setBlowProgress(Math.round(blowAccumulator));
+          } else {
+            // General ambient noise
+            setSoundState('idle');
+            blowAccumulator = Math.max(0, blowAccumulator - 1.8);
+            setBlowProgress(Math.round(blowAccumulator));
+            if (blowAccumulator === 0) {
+              setIsBlowing(false);
+            }
+          }
+        }
+
+        animFrameRef.current = requestAnimationFrame(checkBlow);
+      };
+
+      animFrameRef.current = requestAnimationFrame(checkBlow);
+    } catch (err) {
+      console.warn('Microphone permission denied or not supported:', err);
+      setMicDenied(true);
+      setMicActive(false);
+      setIsRequestingMic(false);
     }
   };
 
-  // Method 1: Hold to blow button handlers
+  // Manual fallback (ONLY used if mic access is denied or device has no mic hardware)
   const startHolding = () => {
     if (!candlesLit) return;
     setIsBlowing(true);
     let current = blowProgress;
     holdIntervalRef.current = window.setInterval(() => {
-      current += 6;
+      current += 5;
       setBlowProgress(Math.min(current, 100));
       if (current >= 100) {
         clearInterval(holdIntervalRef.current!);
@@ -76,80 +240,11 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
     }
   };
 
-  // Method 2: Microphone detection
-  const toggleMicrophone = async () => {
-    if (!micSupported) return;
-
-    if (micActive) {
-      if (micStreamRef.current) {
-        micStreamRef.current.getTracks().forEach((t) => t.stop());
-        micStreamRef.current = null;
-      }
-      setMicActive(false);
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      micStreamRef.current = stream;
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      const ctx = new AudioCtx();
-      audioContextRef.current = ctx;
-
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 256;
-      analyserRef.current = analyser;
-
-      const source = ctx.createMediaStreamSource(stream);
-      source.connect(analyser);
-      setMicActive(true);
-
-      const buffer = new Uint8Array(analyser.frequencyBinCount);
-      let blowAccumulator = 0;
-
-      const checkBlow = () => {
-        if (!candlesLit || !analyserRef.current) return;
-        analyserRef.current.getByteFrequencyData(buffer);
-
-        let sum = 0;
-        for (let i = 2; i < 24; i++) {
-          sum += buffer[i];
-        }
-        const avg = sum / 22;
-
-        if (avg > 55) {
-          setIsBlowing(true);
-          blowAccumulator += 8;
-          setBlowProgress(Math.min(blowAccumulator, 100));
-          if (blowAccumulator >= 100) {
-            handleExtinguish();
-            return;
-          }
-        } else {
-          blowAccumulator = Math.max(0, blowAccumulator - 2);
-          setBlowProgress(blowAccumulator);
-          if (blowAccumulator === 0) {
-            setIsBlowing(false);
-          }
-        }
-
-        requestAnimationFrame(checkBlow);
-      };
-
-      checkBlow();
-    } catch (err) {
-      console.warn('Microphone permission denied or not supported:', err);
-      setMicSupported(false);
-      setMicActive(false);
-    }
-  };
-
+  // Cleanup on unmount
   useEffect(() => {
-    if (!navigator?.mediaDevices?.getUserMedia) {
-      setMicSupported(false);
-    }
     return () => {
       if (holdIntervalRef.current) clearInterval(holdIntervalRef.current);
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       if (micStreamRef.current) {
         micStreamRef.current.getTracks().forEach((t) => t.stop());
       }
@@ -169,7 +264,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="editorial-badge mb-4"
+        className="editorial-badge mb-3"
       >
         <span>Chapter IV • The Wish</span>
       </motion.div>
@@ -182,27 +277,22 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         className="px-4 mb-2 max-w-md"
       >
         <h2 className="font-serif text-2xl sm:text-3xl font-normal leading-snug text-[#FAF4F0] tracking-tight">
-          {candlesLit
-            ? cfg.makeAWish.title
-            : cfg.makeAWish.blownTitle}
+          {candlesLit ? cfg.makeAWish.title : cfg.makeAWish.blownTitle}
         </h2>
         <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-2 font-sans font-light leading-relaxed">
           {candlesLit
-            ? cfg.makeAWish.instructionHold
+            ? micActive
+              ? 'Hãy ghé sát miệng và thổi một luồng hơi thật mạnh vào micro để tắt nến!'
+              : 'Hãy bật micro và thổi một luồng hơi trực tiếp vào mic để dập tắt nến sinh nhật.'
             : cfg.makeAWish.blownSubtitle}
         </p>
       </motion.div>
 
-      {/* 3D Birthday Cake */}
+      {/* 3D Birthday Cake (Note: Direct click to extinguish is intentionally disabled) */}
       <div className="w-full relative my-2">
         <BirthdayCake3D
           candlesLit={candlesLit}
           isBlowing={isBlowing}
-          onCakeClick={() => {
-            if (candlesLit) {
-              handleExtinguish();
-            }
-          }}
         />
 
         {/* Ethereal glowing halo ring when candles are blown */}
@@ -218,47 +308,129 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
 
       {/* Interaction Controls */}
       {candlesLit ? (
-        <div className="w-full px-6 flex flex-col items-center gap-3 mt-3">
-          {/* Refined Hold-to-blow Button with smooth progress */}
-          <div className="relative w-full sm:w-80">
-            <button
-              onMouseDown={startHolding}
-              onMouseUp={stopHolding}
-              onTouchStart={startHolding}
-              onTouchEnd={stopHolding}
-              className="relative overflow-hidden w-full px-8 py-3.5 rounded-full font-sans font-bold text-xs tracking-[0.14em] uppercase bg-[#D4627A] text-white border border-[#FAF4F0]/25 shadow-lg select-none cursor-pointer flex items-center justify-center gap-2 group transition-all"
+        <div className="w-full px-4 flex flex-col items-center gap-3 mt-3">
+          {/* STATE 1: Mic not yet enabled (Mandatory Prompt) */}
+          {!micActive && !micDenied && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center gap-2.5 w-full sm:w-84"
             >
-              {/* Progress layer */}
-              <div
-                className="absolute inset-0 bg-[#E6C29C] transition-all duration-75 pointer-events-none opacity-90"
-                style={{ width: `${blowProgress}%` }}
-              />
+              <button
+                onClick={startMicrophone}
+                disabled={isRequestingMic}
+                className="btn-luxury w-full py-4 px-6 rounded-full font-sans font-bold text-xs sm:text-sm tracking-[0.12em] uppercase bg-[#D4627A] hover:bg-[#C2526A] text-white flex items-center justify-center gap-2.5 shadow-xl transition-all cursor-pointer group"
+              >
+                <Mic size={18} className="text-white group-hover:scale-110 transition-transform animate-pulse" />
+                <span>{isRequestingMic ? 'Đang mở micro...' : 'Bật Micro Để Thổi Nến'}</span>
+              </button>
 
-              <Wind size={16} className="relative z-10 text-white" />
-              <span className="relative z-10 text-white">
-                {blowProgress > 0 ? `Đang Thổi... ${blowProgress}%` : 'Nhấn Giữ Để Thổi Nến'}
-              </span>
-            </button>
-          </div>
-
-          {/* Optional Mic Toggle */}
-          {micSupported && (
-            <button
-              onClick={toggleMicrophone}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-sans font-medium transition-all border backdrop-blur-md cursor-pointer ${
-                micActive
-                  ? 'bg-[#D4627A]/30 text-[#FEEBEF] border-[#D4627A] animate-pulse'
-                  : 'bg-[#FAF4F0]/5 text-[#FAF4F0]/70 border-[#FAF4F0]/15 hover:bg-[#FAF4F0]/10 hover:text-[#FAF4F0]'
-              }`}
-            >
-              {micActive ? <Mic size={13} className="text-[#E77C92]" /> : <MicOff size={13} />}
-              <span>{micActive ? 'Micro đang lắng nghe tiếng thổi...' : 'Bật Micro để thổi nến'}</span>
-            </button>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-full text-[11px] text-[#FAF4F0]/70 font-sans text-center max-w-sm">
+                <span>🌬️</span>
+                <span>Chỉ nhận diện luồng hơi thổi trực tiếp vào mic (tiếng nói chuyện hay tiếng ồn sẽ không được tính)</span>
+              </div>
+            </motion.div>
           )}
 
-          <p className="text-[11px] text-[#FAF4F0]/40 font-serif italic tracking-wider">
-            {cfg.makeAWish.micFallbackHint}
-          </p>
+          {/* STATE 2: Mic is active (Interactive Wind & Breath Analyzer) */}
+          {micActive && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full sm:w-88 flex flex-col items-center gap-3 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-2xl p-4 backdrop-blur-md shadow-2xl"
+            >
+              {/* Dynamic status feedback pill */}
+              <div className="min-h-[28px] flex items-center justify-center w-full">
+                <AnimatePresence mode="wait">
+                  {soundState === 'blowing' ? (
+                    <motion.div
+                      key="blowing"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-400/40 rounded-full text-emerald-300 text-xs font-bold shadow-sm"
+                    >
+                      <Wind size={14} className="animate-pulse" />
+                      <span>Đang nhận diện hơi thổi! Giữ tiếp tục...</span>
+                    </motion.div>
+                  ) : soundState === 'speech' ? (
+                    <motion.div
+                      key="speech"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-amber-200 text-xs font-semibold"
+                    >
+                      <span>🗣️</span>
+                      <span>Đang nói chuyện (không tính) — Hãy thổi hơi vào mic!</span>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="idle"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-[#FAF4F0]/10 border border-[#FAF4F0]/15 rounded-full text-[#FAF4F0]/75 text-xs"
+                    >
+                      <Mic size={13} className="text-[#E77C92] animate-pulse" />
+                      <span>Micro đang lắng nghe... Thổi một luồng hơi vào mic</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Wind Gauge Progress Bar */}
+              <div className="w-full bg-black/40 h-3.5 rounded-full overflow-hidden border border-[#FAF4F0]/20 p-0.5 relative shadow-inner">
+                <div
+                  className="h-full rounded-full transition-all duration-75 bg-gradient-to-r from-[#D4627A] via-[#E6C29C] to-emerald-400 shadow-[0_0_12px_rgba(230,194,156,0.6)]"
+                  style={{ width: `${blowProgress}%` }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between w-full text-[11px] text-[#FAF4F0]/60 font-sans">
+                <span className="font-semibold text-[#FAF4F0]/80">Lực thổi: {blowProgress}%</span>
+                <span>Thổi giữ ~1s để nến tắt</span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STATE 3: Mic access denied / unsupported fallback */}
+          {micDenied && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center gap-3 w-full sm:w-80"
+            >
+              <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-400/30 rounded-xl text-amber-200 text-xs text-left">
+                <AlertCircle size={18} className="shrink-0 text-amber-300" />
+                <span>Không thể truy cập micro trên thiết bị này. Bạn có thể dùng nút nhấn giữ bên dưới để thổi nến:</span>
+              </div>
+
+              <button
+                onMouseDown={startHolding}
+                onMouseUp={stopHolding}
+                onTouchStart={startHolding}
+                onTouchEnd={stopHolding}
+                className="relative overflow-hidden w-full px-8 py-3.5 rounded-full font-sans font-bold text-xs tracking-[0.14em] uppercase bg-[#FAF4F0]/10 text-white border border-[#FAF4F0]/25 shadow-lg select-none cursor-pointer flex items-center justify-center gap-2 group transition-all"
+              >
+                <div
+                  className="absolute inset-0 bg-[#E6C29C] transition-all duration-75 pointer-events-none opacity-90"
+                  style={{ width: `${blowProgress}%` }}
+                />
+                <Wind size={16} className="relative z-10 text-white" />
+                <span className="relative z-10 text-white">
+                  {blowProgress > 0 ? `Đang Thổi Thủ Công... ${blowProgress}%` : 'Nhấn Giữ Để Thổi Nến'}
+                </span>
+              </button>
+
+              <button
+                onClick={startMicrophone}
+                className="text-[11px] text-[#E77C92] underline underline-offset-2 hover:text-[#FAF4F0] cursor-pointer"
+              >
+                Thử kết nối lại micro
+              </button>
+            </motion.div>
+          )}
         </div>
       ) : (
         /* Continue Button after blowing */
