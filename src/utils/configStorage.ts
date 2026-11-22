@@ -1,51 +1,69 @@
-import { BirthdayConfig, BIRTHDAY_CONFIG } from '../config/birthday.config';
+import LZString from 'lz-string';
+import { BirthdayConfig, BIRTHDAY_CONFIG, MemoryItem } from '../config/birthday.config';
 
 const STORAGE_KEY = 'custom_birthday_card_v1';
 
 /**
- * Encode config to Base64 UTF-8 string for URL sharing
+ * Compact representation to guarantee URL fits comfortably within QR Code capacity (< 1800 chars)
+ */
+interface CompactCardData {
+  n: string; // name
+  k?: string; // nick
+  d?: string; // date
+  s?: string; // sender
+  lt?: string; // letter title
+  lp?: string[]; // letter paragraphs
+  lc?: string; // letter closing
+  ls?: string; // letter signOff
+  m?: {
+    u: string; // image url
+    t: string; // title
+    c: string; // caption
+    d?: string; // date
+    s?: string; // sticker
+  }[];
+  mu?: string; // music
+}
+
+/**
+ * Encode config to an ultra-compact LZ-compressed URL
  */
 export function encodeConfigToUrl(config: BirthdayConfig): string {
   try {
-    // Only encode necessary customizable fields to keep URL compact
-    const compactData = {
-      name: config.recipientName,
-      nick: config.recipientNickname,
-      date: config.birthdayDate,
-      sender: config.senderName,
-      letter: {
-        title: config.secretLetter.title,
-        date: config.secretLetter.date,
-        paragraphs: config.secretLetter.paragraphs,
-        closing: config.secretLetter.closing,
-        signOff: config.secretLetter.signOff,
-      },
-      memories: config.memories.map((m) => ({
-        id: m.id,
-        image: m.image,
-        date: m.date,
-        title: m.title,
-        caption: m.caption,
-        description: m.description,
-        sticker: m.sticker,
-      })),
-      music: config.audio.backgroundMusicUrl,
+    const compact: CompactCardData = {
+      n: config.recipientName,
+      k: config.recipientNickname,
+      d: config.birthdayDate,
+      s: config.senderName,
+      lt: config.secretLetter?.title,
+      lp: config.secretLetter?.paragraphs,
+      lc: config.secretLetter?.closing,
+      ls: config.secretLetter?.signOff,
+      // Filter out raw local data: base64 URLs that would exceed QR capacity
+      m: config.memories
+        ?.filter((item) => item && !item.image.startsWith('data:'))
+        .map((item) => ({
+          u: item.image,
+          t: item.title,
+          c: item.caption,
+          d: item.date,
+          s: item.sticker,
+        })),
+      mu:
+        config.audio?.backgroundMusicUrl !== BIRTHDAY_CONFIG.audio.backgroundMusicUrl
+          ? config.audio?.backgroundMusicUrl
+          : undefined,
     };
 
-    const json = JSON.stringify(compactData);
-    const bytes = new TextEncoder().encode(json);
-    let binary = '';
-    for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    const base64 = btoa(binary);
+    const json = JSON.stringify(compact);
+    const compressed = LZString.compressToEncodedURIComponent(json);
 
-    const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('c', base64);
-    return url.toString();
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+    return `${origin}${pathname}?c=${compressed}`;
   } catch (err) {
     console.error('Failed to encode config to URL', err);
-    return window.location.href;
+    return typeof window !== 'undefined' ? window.location.href : '';
   }
 }
 
@@ -59,27 +77,71 @@ export function decodeConfigFromUrl(): Partial<BirthdayConfig> | null {
   if (!c) return null;
 
   try {
-    const binary = atob(c);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
+    // 1. Try LZString decompression
+    let json = LZString.decompressFromEncodedURIComponent(c);
+
+    // 2. Fallback to legacy base64 if not LZString
+    if (!json) {
+      try {
+        const binary = atob(c);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        json = new TextDecoder().decode(bytes);
+      } catch (e) {
+        // Not legacy base64
+      }
     }
-    const json = new TextDecoder().decode(bytes);
+
+    if (!json) return null;
     const data = JSON.parse(json);
 
+    // Handle compact keys or legacy keys
+    const name = data.n || data.name || BIRTHDAY_CONFIG.recipientName;
+    const nick = data.k || data.nick || BIRTHDAY_CONFIG.recipientNickname;
+    const date = data.d || data.date || BIRTHDAY_CONFIG.birthdayDate;
+    const sender = data.s || data.sender || BIRTHDAY_CONFIG.senderName;
+
+    const letterTitle = data.lt || data.letter?.title || BIRTHDAY_CONFIG.secretLetter.title;
+    const letterParagraphs =
+      data.lp || data.letter?.paragraphs || BIRTHDAY_CONFIG.secretLetter.paragraphs;
+    const letterClosing =
+      data.lc || data.letter?.closing || BIRTHDAY_CONFIG.secretLetter.closing;
+    const letterSignOff =
+      data.ls || data.letter?.signOff || BIRTHDAY_CONFIG.secretLetter.signOff;
+
+    let memories: MemoryItem[] = BIRTHDAY_CONFIG.memories;
+    if (Array.isArray(data.m) && data.m.length > 0) {
+      memories = data.m.map((item: any, idx: number) => ({
+        id: `mem-${idx}`,
+        image: item.u || item.image || BIRTHDAY_CONFIG.memories[0].image,
+        title: item.t || item.title || 'Khoảnh khắc đáng nhớ',
+        caption: item.c || item.caption || '',
+        description: item.description || item.c || '',
+        date: item.d || item.date || '',
+        sticker: item.s || item.sticker || '✨',
+      }));
+    } else if (Array.isArray(data.memories) && data.memories.length > 0) {
+      memories = data.memories;
+    }
+
     return {
-      recipientName: data.name || BIRTHDAY_CONFIG.recipientName,
-      recipientNickname: data.nick || BIRTHDAY_CONFIG.recipientNickname,
-      birthdayDate: data.date || BIRTHDAY_CONFIG.birthdayDate,
-      senderName: data.sender || BIRTHDAY_CONFIG.senderName,
+      recipientName: name,
+      recipientNickname: nick,
+      birthdayDate: date,
+      senderName: sender,
       secretLetter: {
         ...BIRTHDAY_CONFIG.secretLetter,
-        ...(data.letter || {}),
+        title: letterTitle,
+        paragraphs: letterParagraphs,
+        closing: letterClosing,
+        signOff: letterSignOff,
       },
-      memories: data.memories && data.memories.length > 0 ? data.memories : BIRTHDAY_CONFIG.memories,
+      memories,
       audio: {
         ...BIRTHDAY_CONFIG.audio,
-        backgroundMusicUrl: data.music || BIRTHDAY_CONFIG.audio.backgroundMusicUrl,
+        backgroundMusicUrl: data.mu || data.music || BIRTHDAY_CONFIG.audio.backgroundMusicUrl,
       },
     };
   } catch (err) {

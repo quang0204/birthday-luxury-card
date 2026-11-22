@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { Download, Printer, Copy, Check, X, Sparkles, Heart } from 'lucide-react';
+import { Download, Printer, Copy, Check, X, Sparkles, Heart, AlertCircle } from 'lucide-react';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../config/birthday.config';
 
 interface QRPageProps {
@@ -10,15 +10,16 @@ interface QRPageProps {
   initialUrl?: string;
 }
 
-export const QRPage: React.FC<QRPageProps> = ({ 
-  isOpen, 
-  onClose, 
+export const QRPage: React.FC<QRPageProps> = ({
+  isOpen,
+  onClose,
   config = BIRTHDAY_CONFIG,
-  initialUrl 
+  initialUrl,
 }) => {
   const [customUrl, setCustomUrl] = useState('');
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [copied, setCopied] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialUrl) {
@@ -31,19 +32,38 @@ export const QRPage: React.FC<QRPageProps> = ({
   useEffect(() => {
     if (!isOpen || !customUrl) return;
 
+    setErrorMsg(null);
+
+    // Generate QR with Level L (Lowest error correction = Maximum data capacity up to 2953 bytes)
     QRCode.toDataURL(
       customUrl,
       {
         width: 340,
         margin: 2,
+        errorCorrectionLevel: 'L',
         color: {
           dark: '#1C1032',
           light: '#FFFFFF',
         },
       },
       (err, url) => {
-        if (!err && url) {
+        if (err) {
+          console.warn('QR Code generation error:', err);
+          setErrorMsg(
+            'Nội dung thiệp khá dài so với giới hạn quét của 1 mã QR. Bạn hãy bấm "Sao Chép Link" ở dưới để gửi trực tiếp nhé!'
+          );
+
+          // Fallback: generate QR for base site URL so image is never blank
+          QRCode.toDataURL(
+            window.location.origin + window.location.pathname,
+            { width: 340, margin: 2 },
+            (_, fallbackUrl) => {
+              if (fallbackUrl) setQrDataUrl(fallbackUrl);
+            }
+          );
+        } else if (url) {
           setQrDataUrl(url);
+          setErrorMsg(null);
         }
       }
     );
@@ -94,8 +114,17 @@ export const QRPage: React.FC<QRPageProps> = ({
         </h3>
 
         <p className="text-xs text-lavender-muted mt-1 mb-3">
-          Gửi link này hoặc in thiệp giấy tặng cho <span className="text-rose-soft font-semibold">{config.recipientName}</span>!
+          Gửi link này hoặc in thiệp giấy tặng cho{' '}
+          <span className="text-rose-soft font-semibold">{config.recipientName}</span>!
         </p>
+
+        {/* Warning if payload was too big */}
+        {errorMsg && (
+          <div className="p-3 mb-2 rounded-xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-xs text-left flex items-start gap-2">
+            <AlertCircle size={16} className="shrink-0 mt-0.5 text-amber-400" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
 
         {/* Printable Card Area */}
         <div
@@ -121,8 +150,9 @@ export const QRPage: React.FC<QRPageProps> = ({
                 className="w-44 h-44 object-contain"
               />
             ) : (
-              <div className="w-44 h-44 flex items-center justify-center text-xs text-neutral-400">
-                Đang tạo mã QR...
+              <div className="w-44 h-44 flex flex-col items-center justify-center text-xs text-neutral-400 gap-1.5">
+                <div className="w-6 h-6 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+                <span>Đang tạo mã QR...</span>
               </div>
             )}
           </div>
@@ -146,14 +176,14 @@ export const QRPage: React.FC<QRPageProps> = ({
               value={customUrl}
               onChange={(e) => setCustomUrl(e.target.value)}
               placeholder="https://..."
-              className="flex-1 bg-black/40 border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-400"
+              className="flex-1 bg-black/40 border border-white/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-400 font-mono truncate"
             />
             <button
               onClick={handleCopyLink}
-              className="px-3 py-2 rounded-xl glass-panel text-xs font-medium text-white hover:text-champagne flex items-center gap-1 cursor-pointer shrink-0"
+              className="px-3.5 py-2 rounded-xl bg-rose-500/20 border border-rose-400/40 text-xs font-medium text-white hover:text-champagne flex items-center gap-1 cursor-pointer shrink-0"
             >
               {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-              <span>{copied ? 'Đã chép' : 'Sao chép'}</span>
+              <span>{copied ? 'Đã chép!' : 'Sao chép'}</span>
             </button>
           </div>
         </div>
@@ -162,7 +192,8 @@ export const QRPage: React.FC<QRPageProps> = ({
         <div className="grid grid-cols-2 gap-2 mt-4">
           <button
             onClick={handleDownload}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-lavender text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md hover:scale-102 transition-all cursor-pointer"
+            disabled={!qrDataUrl}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-lavender text-white font-semibold text-xs flex items-center justify-center gap-1.5 shadow-md hover:scale-102 transition-all cursor-pointer disabled:opacity-50"
           >
             <Download size={15} />
             <span>Tải QR PNG</span>
