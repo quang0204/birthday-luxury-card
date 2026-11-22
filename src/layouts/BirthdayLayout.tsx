@@ -41,10 +41,14 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-[#12060C] text-[#FAF4F0] flex flex-col justify-between selection:bg-[#D4627A]/30 selection:text-white film-grain">
-      {/* Editorial Ambient Rose & Warm Blush Atmosphere */}
-      <div className="fixed top-0 left-1/3 w-[550px] h-[550px] bg-[#D4627A]/9 rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-[#E6C29C]/7 rounded-full blur-[170px] pointer-events-none" />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#541525]/25 rounded-full blur-[200px] pointer-events-none" />
+      {/* Editorial Ambient Rose & Warm Blush Atmosphere (GPU accelerated single-pass gradient) */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background:
+            'radial-gradient(circle at 40% 15%, rgba(212, 98, 122, 0.14) 0%, transparent 60%), radial-gradient(circle at 80% 80%, rgba(230, 194, 156, 0.09) 0%, transparent 55%), radial-gradient(circle at 50% 50%, rgba(84, 21, 37, 0.28) 0%, transparent 70%)',
+        }}
+      />
 
       {/* Floating Starlight Particle Background */}
       <ParticleBackground />

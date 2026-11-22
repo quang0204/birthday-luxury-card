@@ -18,15 +18,14 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
       onMouseLeave={() => setIsHovered(false)}
       style={{ perspective: '1000px' }}
     >
-      {/* Ambient glow behind envelope */}
+      {/* Ambient glow behind envelope (gradient optimized) */}
       <div 
-        className={`absolute w-72 h-48 rounded-full blur-3xl transition-all duration-700 pointer-events-none ${
-          isOpened 
-            ? 'bg-rose-accent/40 scale-125' 
-            : isHovered 
-              ? 'bg-rose-soft/25 scale-110' 
-              : 'bg-lavender-dark/20 scale-95'
-        }`} 
+        className={`absolute w-72 h-48 rounded-full pointer-events-none transition-opacity duration-700 ${
+          isOpened ? 'opacity-80 scale-125' : isHovered ? 'opacity-50 scale-110' : 'opacity-25'
+        }`}
+        style={{
+          background: 'radial-gradient(ellipse, rgba(212, 98, 122, 0.35) 0%, transparent 70%)',
+        }}
       />
 
       {/* Main 3D Envelope container */}

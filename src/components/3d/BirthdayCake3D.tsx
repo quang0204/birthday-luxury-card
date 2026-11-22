@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { motion, useSpring } from 'framer-motion';
 
 interface BirthdayCake3DProps {
   candlesLit: boolean;
@@ -12,17 +12,20 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   isBlowing = false,
   onCakeClick
 }) => {
-  const [rotate, setRotate] = useState({ x: 8, y: 0 });
+  const rotateX = useSpring(8, { stiffness: 120, damping: 18 });
+  const rotateY = useSpring(0, { stiffness: 120, damping: 18 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientY - rect.top) / rect.height - 0.5) * -15 + 8;
     const y = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-    setRotate({ x, y });
+    rotateX.set(x);
+    rotateY.set(y);
   };
 
   const handleMouseLeave = () => {
-    setRotate({ x: 8, y: 0 });
+    rotateX.set(8);
+    rotateY.set(0);
   };
 
   return (
@@ -33,31 +36,34 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       onMouseLeave={handleMouseLeave}
       onClick={onCakeClick}
     >
-      {/* Ambient candle flame warm glow aura */}
+      {/* Ambient candle flame warm glow aura (gradient optimized) */}
       <div
-        className={`absolute w-80 h-80 rounded-full blur-3xl transition-all duration-1000 pointer-events-none ${
+        className={`absolute w-72 h-72 rounded-full pointer-events-none transition-opacity duration-700 ${
           candlesLit
             ? isBlowing
-              ? 'bg-amber-500/50 scale-125'
-              : 'bg-amber-400/30 scale-110'
-            : 'bg-purple-900/15 scale-75'
+              ? 'opacity-80 scale-110'
+              : 'opacity-50'
+            : 'opacity-10 scale-75'
         }`}
+        style={{
+          background: 'radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 68%)',
+        }}
       />
 
       {/* Main 3D Cake Container */}
       <motion.div
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
         animate={{
-          rotateX: rotate.x,
-          rotateY: rotate.y,
           y: [0, -6, 0]
         }}
         transition={{
-          rotateX: { type: 'spring', stiffness: 180, damping: 15 },
-          rotateY: { type: 'spring', stiffness: 180, damping: 15 },
           y: { repeat: Infinity, duration: 4.5, ease: 'easeInOut' }
         }}
-        className="relative w-64 sm:w-72 flex flex-col items-center"
-        style={{ transformStyle: 'preserve-3d' }}
+        className="relative w-64 sm:w-72 flex flex-col items-center will-change-transform"
       >
         {/* CANDLES SECTION (3 Candles) */}
         <div className="relative z-30 flex items-end justify-center gap-6 sm:gap-8 mb-[-6px]">

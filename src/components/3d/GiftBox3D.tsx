@@ -19,15 +19,14 @@ export const GiftBox3D: React.FC<GiftBox3DProps> = ({ isOpened, onOpen, recipien
       onMouseLeave={() => setIsHovered(false)}
       style={{ perspective: '1100px' }}
     >
-      {/* Dynamic ambient backglow */}
+      {/* Dynamic ambient backglow (gradient optimized) */}
       <div 
-        className={`absolute w-72 h-72 rounded-full blur-3xl transition-all duration-700 pointer-events-none ${
-          isOpened 
-            ? 'bg-champagne/35 scale-135' 
-            : isHovered 
-              ? 'bg-rose-accent/30 scale-110' 
-              : 'bg-lavender-dark/25 scale-90'
-        }`} 
+        className={`absolute w-72 h-72 rounded-full pointer-events-none transition-opacity duration-700 ${
+          isOpened ? 'opacity-70 scale-125' : isHovered ? 'opacity-50 scale-110' : 'opacity-25'
+        }`}
+        style={{
+          background: 'radial-gradient(circle, rgba(230, 194, 156, 0.35) 0%, transparent 70%)',
+        }}
       />
 
       {/* Main Container */}

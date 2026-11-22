@@ -41,7 +41,7 @@ export const ParticleBackground: React.FC = () => {
       'rgba(255, 255, 255, '  // Pure white star
     ];
 
-    const particleCount = Math.min(Math.floor((width * height) / 14000), 70);
+    const particleCount = Math.min(Math.floor((width * height) / 22000), 45);
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
@@ -80,10 +80,7 @@ export const ParticleBackground: React.FC = () => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${p.opacity})`;
-        ctx.shadowBlur = p.size * 3;
-        ctx.shadowColor = p.color + '0.6)';
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
       animationFrameId = requestAnimationFrame(render);
