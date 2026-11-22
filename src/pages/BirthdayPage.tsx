@@ -164,6 +164,10 @@ export const BirthdayPage: React.FC<BirthdayPageProps> = ({
         currentConfig={config}
         cardId={activeCardId}
         onSaveConfig={handleSaveConfig}
+        onSaveAndPreview={(updated, savedCardId) => {
+          handleSaveConfig(updated, savedCardId);
+          setIsCreatorOpen(false);
+        }}
         onGenerateQR={handleGenerateQR}
       />
 

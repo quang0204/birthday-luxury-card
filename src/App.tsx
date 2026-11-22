@@ -113,8 +113,8 @@ export const App: React.FC = () => {
   const handleSaveFromCreator = (updated: BirthdayConfig, savedId?: string) => {
     if (savedId) {
       setActiveCardId(savedId);
+      setEditingConfig(updated);
     }
-    setIsCreatorOpen(false);
   };
 
   return (
@@ -275,6 +275,15 @@ export const App: React.FC = () => {
         currentConfig={editingConfig}
         cardId={editingCardId}
         onSaveConfig={handleSaveFromCreator}
+        onSaveAndPreview={(updated, savedId) => {
+          if (savedId) {
+            setActiveCardId(savedId);
+            setEditingConfig(updated);
+          }
+          setIsCreatorOpen(false);
+          setCurrentView('card');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         onGenerateQR={(updated, savedId) => {
           setIsCreatorOpen(false);
           const card = savedId ? getCard(savedId) : null;

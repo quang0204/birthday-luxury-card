@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Sparkles, User, Mail, Image, Music, Plus, Trash2, 
-  Upload, Check, QrCode, Eye, RotateCcw, Heart 
+  Upload, Check, QrCode, Eye, RotateCcw, Heart, Save 
 } from 'lucide-react';
 import { BirthdayConfig, MemoryItem } from '../../config/birthday.config';
 import { saveDraftToStorage } from '../../utils/configStorage';
@@ -13,7 +13,44 @@ interface CardCreatorModalProps {
   currentConfig: BirthdayConfig;
   cardId?: string;
   onSaveConfig: (updatedConfig: BirthdayConfig, savedCardId?: string) => void;
+  onSaveAndPreview?: (updatedConfig: BirthdayConfig, savedCardId?: string) => void;
   onGenerateQR: (updatedConfig: BirthdayConfig, savedCardId?: string) => void;
+}
+
+/** Downscale and compress photos in memory to fit safely within localStorage quota */
+async function compressImage(file: File, maxWidth = 900, maxHeight = 900, quality = 0.8): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(e.target?.result as string);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('Read file failed'));
+    reader.readAsDataURL(file);
+  });
 }
 
 const PRESET_MUSIC = [
@@ -37,11 +74,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   currentConfig,
   cardId,
   onSaveConfig,
+  onSaveAndPreview,
   onGenerateQR,
 }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'letter' | 'memories' | 'music'>('info');
   const [formData, setFormData] = useState<BirthdayConfig>(currentConfig);
-  const [savedToast, setSavedToast] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -117,30 +155,52 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
     setFormData((prev) => ({ ...prev, memories: newMemories }));
   };
 
-  const handleFileUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        handleMemoryChange(index, 'image', reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      handleMemoryChange(index, 'image', compressed);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          handleMemoryChange(index, 'image', reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
+  // Save changes directly with immediate notification
+  const handleSaveOnly = () => {
+    try {
+      const saved = saveCard(formData, cardId);
+      saveDraftToStorage(formData);
+      onSaveConfig(formData, saved.id);
+      setSaveMessage('Đã lưu thay đổi vào kho thiệp!');
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (err) {
+      console.error('Save failed:', err);
+      setSaveMessage('Lỗi khi lưu, vui lòng thử lại');
+      setTimeout(() => setSaveMessage(null), 3000);
+    }
+  };
+
+  // Save changes and navigate to card view
   const handleSaveAndPreview = () => {
     const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
     onSaveConfig(formData, saved.id);
-    setSavedToast(true);
-    setTimeout(() => {
-      setSavedToast(false);
+    if (onSaveAndPreview) {
+      onSaveAndPreview(formData, saved.id);
+    } else {
       onClose();
-    }, 600);
+    }
   };
 
+  // Save changes and open QR share modal
   const handleGenerateAndShare = () => {
     const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
@@ -166,13 +226,21 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] shadow-sticker-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
-            aria-label="Đóng"
-          >
-            <X size={18} />
-          </button>
+          <div className="flex items-center gap-2.5">
+            {saveMessage && (
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-[#10B981]/15 text-[#065F46] border border-[#10B981]/30 rounded-full text-xs font-bold shadow-sm animate-fadeIn">
+                <Check size={14} className="text-[#059669]" />
+                <span>{saveMessage}</span>
+              </div>
+            )}
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] shadow-sticker-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
+              aria-label="Đóng"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation (Sticker Pill Style) */}
@@ -541,35 +609,66 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-4 border-t-2 border-[#2B1A07]/15 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div className="pt-4 border-t-2 border-[#2B1A07]/15 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setFormData(currentConfig)}
-              className="px-3 py-2 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] text-xs font-display font-bold flex items-center gap-1 hover:bg-white cursor-pointer"
+              onClick={() => {
+                if (window.confirm('Khôi phục lại nội dung ban đầu của thiệp này?')) {
+                  setFormData(currentConfig);
+                }
+              }}
+              className="px-3 py-2 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] text-xs font-display font-bold flex items-center gap-1 hover:bg-white cursor-pointer transition-all"
               title="Khôi phục lại dữ liệu gốc"
             >
               <RotateCcw size={13} />
               <span className="hidden sm:inline">Khôi phục</span>
             </button>
+            {saveMessage && (
+              <span className="text-xs font-bold text-[#059669] flex items-center gap-1 sm:hidden">
+                <Check size={13} /> Đã lưu!
+              </span>
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Live Preview Button */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Primary Save Button */}
+            <button
+              onClick={handleSaveOnly}
+              className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#22C55E] hover:bg-[#16A34A] active:scale-[0.98] border-2 border-[#1E293B] text-white font-display font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sticker-sm transition-all cursor-pointer"
+              title="Lưu tất cả thay đổi vào kho thiệp"
+            >
+              {saveMessage ? (
+                <>
+                  <Check size={16} className="text-white" />
+                  <span>Đã Lưu Xong!</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span>Lưu Thay Đổi</span>
+                </>
+              )}
+            </button>
+
+            {/* Save & Open Preview Button */}
             <button
               onClick={handleSaveAndPreview}
-              className="superr-btn-secondary px-4 py-2.5 text-xs sm:text-sm gap-1.5"
+              className="superr-btn-secondary px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm gap-1.5"
+              title="Lưu lại và mở xem trực tiếp thiệp"
             >
-              {savedToast ? <Check size={15} className="text-[#22C55E]" /> : <Eye size={15} />}
-              <span>{savedToast ? 'Đã lưu!' : 'Xem Trước Thiệp'}</span>
+              <Eye size={15} />
+              <span>Lưu & Mở Thiệp</span>
             </button>
 
             {/* Generate & Share QR Button */}
             <button
               onClick={handleGenerateAndShare}
-              className="superr-btn-primary px-5 py-2.5 text-xs sm:text-sm gap-1.5"
+              className="superr-btn-primary px-4 sm:px-5 py-2.5 text-xs sm:text-sm gap-1.5"
+              title="Lưu lại và mở mã QR để quét hoặc chia sẻ"
             >
               <QrCode size={16} />
-              <span>Tạo Link & Mã QR</span>
+              <span className="hidden sm:inline">Lưu & Tạo Mã QR</span>
+              <span className="sm:hidden">Mã QR</span>
             </button>
           </div>
         </div>

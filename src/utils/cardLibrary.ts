@@ -44,6 +44,9 @@ function loadLibrary(): SavedCard[] {
 function saveLibrary(cards: SavedCard[]) {
   try {
     localStorage.setItem(LIBRARY_KEY, JSON.stringify(cards));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('birthday_library_updated', { detail: cards }));
+    }
   } catch (err) {
     console.error('Failed to save cards to localStorage:', err);
   }

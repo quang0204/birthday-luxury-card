@@ -50,6 +50,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
   useEffect(() => {
     refresh();
+    const handleLibraryUpdate = () => {
+      refresh();
+    };
+    window.addEventListener('birthday_library_updated', handleLibraryUpdate);
+    return () => {
+      window.removeEventListener('birthday_library_updated', handleLibraryUpdate);
+    };
   }, [refresh]);
 
   const handleCopyLink = (card: SavedCard) => {
