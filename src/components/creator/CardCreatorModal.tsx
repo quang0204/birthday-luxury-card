@@ -4,7 +4,7 @@ import {
   Upload, Check, QrCode, Eye, RotateCcw, Heart 
 } from 'lucide-react';
 import { BirthdayConfig, MemoryItem } from '../../config/birthday.config';
-import { saveDraftToStorage, encodeConfigToUrl } from '../../utils/configStorage';
+import { saveDraftToStorage } from '../../utils/configStorage';
 
 interface CardCreatorModalProps {
   isOpen: boolean;
@@ -139,39 +139,39 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-      <div className="relative max-w-2xl w-full bg-[#110B22] border border-rose-400/30 rounded-3xl p-5 sm:p-7 shadow-2xl text-white my-auto flex flex-col max-h-[92vh]">
+      <div className="relative max-w-2xl w-full bg-[#FDFBF9] text-[#2B1A07] border-3 border-[#2B1A07] rounded-3xl p-5 sm:p-7 shadow-sticker-lg my-auto flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
+        <div className="flex items-center justify-between pb-4 border-b-2 border-[#2B1A07]/15 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center shadow-glow-pink">
-              <Sparkles size={18} className="text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-[#FF6F1E] border-2 border-[#2B1A07] shadow-sticker-sm flex items-center justify-center">
+              <Sparkles size={20} className="text-white" />
             </div>
             <div>
-              <h3 className="font-display text-lg sm:text-xl font-bold text-warm-white">
-                Studio Tự Tạo Thiệp Sinh Nhật
+              <h3 className="font-display text-lg sm:text-xl font-black text-[#2B1A07]">
+                Superr Studio Tự Tạo Thiệp
               </h3>
-              <p className="text-xs text-lavender-muted">
+              <p className="text-xs text-[#2B1A07]/70 font-sans">
                 Tùy chỉnh tên, ảnh kỷ niệm, thư tay và tạo link QR riêng
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all"
+            className="w-9 h-9 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] shadow-sticker-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
             aria-label="Đóng"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center gap-1.5 py-3 border-b border-white/10 overflow-x-auto shrink-0 scrollbar-none">
+        {/* Tab Navigation (Sticker Pill Style) */}
+        <div className="flex items-center gap-2 py-3 border-b-2 border-[#2B1A07]/10 overflow-x-auto shrink-0 scrollbar-none">
           <button
             onClick={() => setActiveTab('info')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-full text-xs font-display font-black flex items-center gap-1.5 whitespace-nowrap transition-all border-2 border-[#2B1A07] cursor-pointer ${
               activeTab === 'info'
-                ? 'bg-rose-500/25 border border-rose-400 text-rose-soft shadow-glow-pink/30'
-                : 'glass-panel text-white/70 hover:text-white'
+                ? 'bg-[#FF6F1E] text-white shadow-sticker-sm translate-y-[-1px]'
+                : 'bg-[#F7EFE9] text-[#2B1A07] hover:bg-white'
             }`}
           >
             <User size={14} />
@@ -180,10 +180,10 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
           <button
             onClick={() => setActiveTab('letter')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-full text-xs font-display font-black flex items-center gap-1.5 whitespace-nowrap transition-all border-2 border-[#2B1A07] cursor-pointer ${
               activeTab === 'letter'
-                ? 'bg-rose-500/25 border border-rose-400 text-rose-soft shadow-glow-pink/30'
-                : 'glass-panel text-white/70 hover:text-white'
+                ? 'bg-[#FF66CF] text-[#2B1A07] shadow-sticker-sm translate-y-[-1px]'
+                : 'bg-[#F7EFE9] text-[#2B1A07] hover:bg-white'
             }`}
           >
             <Mail size={14} />
@@ -192,10 +192,10 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
           <button
             onClick={() => setActiveTab('memories')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-full text-xs font-display font-black flex items-center gap-1.5 whitespace-nowrap transition-all border-2 border-[#2B1A07] cursor-pointer ${
               activeTab === 'memories'
-                ? 'bg-rose-500/25 border border-rose-400 text-rose-soft shadow-glow-pink/30'
-                : 'glass-panel text-white/70 hover:text-white'
+                ? 'bg-[#3B82F6] text-white shadow-sticker-sm translate-y-[-1px]'
+                : 'bg-[#F7EFE9] text-[#2B1A07] hover:bg-white'
             }`}
           >
             <Image size={14} />
@@ -204,10 +204,10 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
           <button
             onClick={() => setActiveTab('music')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-full text-xs font-display font-black flex items-center gap-1.5 whitespace-nowrap transition-all border-2 border-[#2B1A07] cursor-pointer ${
               activeTab === 'music'
-                ? 'bg-rose-500/25 border border-rose-400 text-rose-soft shadow-glow-pink/30'
-                : 'glass-panel text-white/70 hover:text-white'
+                ? 'bg-[#FBBF24] text-[#2B1A07] shadow-sticker-sm translate-y-[-1px]'
+                : 'bg-[#F7EFE9] text-[#2B1A07] hover:bg-white'
             }`}
           >
             <Music size={14} />
@@ -216,12 +216,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
         </div>
 
         {/* Tab Body */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
+        <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1 font-sans">
           {/* TAB 1: THÔNG TIN NGƯỜI NHẬN */}
           {activeTab === 'info' && (
             <div className="space-y-4 animate-fadeIn">
               <div>
-                <label className="text-xs text-rose-soft font-semibold block mb-1">
+                <label className="text-xs font-display font-black text-[#2B1A07] block mb-1">
                   Tên Người Nhận (Hiển thị nổi bật trên toàn bộ thiệp):
                 </label>
                 <input
@@ -229,13 +229,13 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                   value={formData.recipientName}
                   onChange={(e) => handleTextChange('recipientName', e.target.value)}
                   placeholder="Ví dụ: Minh Anh, Hà My, Hoàng..."
-                  className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-rose-400"
+                  className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2.5 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E] shadow-sm"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-lavender-light font-medium block mb-1">
+                  <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
                     Biệt Danh Thân Mật:
                   </label>
                   <input
@@ -243,12 +243,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     value={formData.recipientNickname}
                     onChange={(e) => handleTextChange('recipientNickname', e.target.value)}
                     placeholder="Bé Mèo, Heo Lười, Bạn Thân..."
-                    className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                    className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E] shadow-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-lavender-light font-medium block mb-1">
+                  <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
                     Ngày Sinh Nhật:
                   </label>
                   <input
@@ -256,13 +256,13 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     value={formData.birthdayDate}
                     onChange={(e) => handleTextChange('birthdayDate', e.target.value)}
                     placeholder="Ví dụ: 24.11 hoặc 18/05"
-                    className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                    className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E] shadow-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-lavender-light font-medium block mb-1">
+                <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
                   Tên Người Gửi (Chữ ký của bạn):
                 </label>
                 <input
@@ -270,7 +270,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                   value={formData.senderName}
                   onChange={(e) => handleTextChange('senderName', e.target.value)}
                   placeholder="Người bạn bí mật ✨"
-                  className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                  className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E] shadow-sm"
                 />
               </div>
             </div>
@@ -280,7 +280,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           {activeTab === 'letter' && (
             <div className="space-y-4 animate-fadeIn">
               <div>
-                <label className="text-xs text-rose-soft font-semibold block mb-1">
+                <label className="text-xs font-display font-black text-[#2B1A07] block mb-1">
                   Tiêu Đề Bức Thư:
                 </label>
                 <input
@@ -288,18 +288,18 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                   value={formData.secretLetter.title}
                   onChange={(e) => handleLetterChange('title', e.target.value)}
                   placeholder="Gửi Bạn, Người Vô Cùng Đặc Biệt"
-                  className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                  className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E]"
                 />
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs text-lavender-light font-medium">
-                    Các Đoạn Văn Trong Thư (Bấm thêm đoạn nếu muốn viết dài hơn):
+                  <label className="text-xs font-display font-bold text-[#2B1A07]">
+                    Các Đoạn Văn Trong Thư:
                   </label>
                   <button
                     onClick={addParagraph}
-                    className="text-xs text-champagne hover:text-amber-200 flex items-center gap-1 bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-300/30"
+                    className="text-xs font-display font-black text-[#2B1A07] flex items-center gap-1 bg-[#FBBF24] px-3 py-1 rounded-full border-2 border-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer"
                   >
                     <Plus size={13} />
                     <span>Thêm đoạn văn</span>
@@ -313,12 +313,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                       value={p}
                       onChange={(e) => handleParagraphChange(idx, e.target.value)}
                       placeholder={`Đoạn ${idx + 1}...`}
-                      className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-rose-400"
+                      className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-[#2B1A07] font-medium focus:outline-none focus:border-[#FF6F1E]"
                     />
                     {formData.secretLetter.paragraphs.length > 1 && (
                       <button
                         onClick={() => removeParagraph(idx)}
-                        className="absolute top-2 right-2 p-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white transition-all opacity-80 group-hover:opacity-100"
+                        className="absolute top-2 right-2 p-1.5 rounded-lg bg-[#FF66CF] border border-[#2B1A07] text-[#2B1A07] hover:scale-110 transition-all cursor-pointer"
                         title="Xóa đoạn này"
                       >
                         <Trash2 size={13} />
@@ -330,7 +330,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-lavender-light font-medium block mb-1">
+                  <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
                     Lời Kết:
                   </label>
                   <input
@@ -338,12 +338,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     value={formData.secretLetter.closing}
                     onChange={(e) => handleLetterChange('closing', e.target.value)}
                     placeholder="Mãi là người bạn tuyệt vời nhất!"
-                    className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                    className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-lavender-light font-medium block mb-1">
+                  <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
                     Ký Tên (Sign-off):
                   </label>
                   <input
@@ -351,26 +351,26 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     value={formData.secretLetter.signOff}
                     onChange={(e) => handleLetterChange('signOff', e.target.value)}
                     placeholder="With love & huge hugs ❤️"
-                    className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-rose-400"
+                    className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E]"
                   />
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 3: ẢNH KỶ NIỆM (SCRAPBOOK) */}
+          {/* TAB 3: ẢNH KỶ NIỆM */}
           {activeTab === 'memories' && (
             <div className="space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between">
-                <p className="text-xs text-lavender-light">
-                  Thêm những bức ảnh kỷ niệm đẹp của hai bạn vào cuốn album:
+                <p className="text-xs text-[#2B1A07]/80">
+                  Thêm những bức ảnh kỷ niệm đẹp vào cuốn album:
                 </p>
                 <button
                   onClick={addMemory}
-                  className="text-xs text-champagne hover:text-amber-200 flex items-center gap-1 bg-amber-400/10 px-3 py-1.5 rounded-full border border-amber-300/30"
+                  className="text-xs font-display font-black text-[#2B1A07] flex items-center gap-1 bg-[#FBBF24] px-3 py-1.5 rounded-full border-2 border-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px] cursor-pointer"
                 >
                   <Plus size={14} />
-                  <span>Thêm ảnh kỷ niệm</span>
+                  <span>Thêm ảnh mới</span>
                 </button>
               </div>
 
@@ -378,17 +378,17 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                 {formData.memories.map((mem, idx) => (
                   <div
                     key={mem.id || idx}
-                    className="p-4 rounded-2xl glass-panel border border-white/15 relative space-y-3"
+                    className="p-4 rounded-2xl bg-[#F7EFE9] border-2 border-[#2B1A07] shadow-sm relative space-y-3"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-rose-soft flex items-center gap-1.5">
-                        <Heart size={13} className="fill-rose-500 text-rose-500" />
+                      <span className="text-xs font-display font-black text-[#2B1A07] flex items-center gap-1.5 bg-[#FF66CF] px-2.5 py-0.5 rounded-full border border-[#2B1A07]">
+                        <Heart size={13} className="fill-[#2B1A07]" />
                         Ảnh Kỷ Niệm #{idx + 1}
                       </span>
                       {formData.memories.length > 1 && (
                         <button
                           onClick={() => removeMemory(idx)}
-                          className="text-xs text-rose-400 hover:text-rose-200 p-1 flex items-center gap-1"
+                          className="text-xs font-display font-bold text-[#CE500A] p-1 flex items-center gap-1 cursor-pointer"
                         >
                           <Trash2 size={13} />
                           <span>Xóa</span>
@@ -399,13 +399,13 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Image Preview & Upload */}
                       <div className="flex flex-col items-center">
-                        <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-black/50 border border-white/20 relative group">
+                        <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-black/10 border-2 border-[#2B1A07] relative group">
                           <img
                             src={mem.image}
                             alt={mem.title}
                             className="w-full h-full object-cover"
                           />
-                          <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity text-xs text-white">
+                          <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity text-xs text-white font-display font-bold">
                             <Upload size={18} className="mb-1" />
                             <span>Tải ảnh lên</span>
                             <input
@@ -416,8 +416,8 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                             />
                           </label>
                         </div>
-                        <span className="text-[10px] text-white/50 mt-1">
-                          Chạm vào ảnh để tải từ máy
+                        <span className="text-[10px] text-[#2B1A07]/60 mt-1">
+                          Chạm ảnh để chọn từ máy
                         </span>
                       </div>
 
@@ -429,14 +429,14 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                             value={mem.title}
                             onChange={(e) => handleMemoryChange(idx, 'title', e.target.value)}
                             placeholder="Tiêu đề ảnh..."
-                            className="w-full bg-black/40 border border-white/20 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                            className="w-full bg-[#FDFBF9] border border-[#2B1A07] rounded-lg px-2.5 py-1.5 text-xs text-[#2B1A07] font-semibold"
                           />
                           <input
                             type="text"
                             value={mem.date}
                             onChange={(e) => handleMemoryChange(idx, 'date', e.target.value)}
-                            placeholder="Thời gian (VD: Hè 2024)..."
-                            className="w-full bg-black/40 border border-white/20 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                            placeholder="Thời gian..."
+                            className="w-full bg-[#FDFBF9] border border-[#2B1A07] rounded-lg px-2.5 py-1.5 text-xs text-[#2B1A07] font-semibold"
                           />
                         </div>
 
@@ -444,8 +444,8 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                           type="text"
                           value={mem.caption}
                           onChange={(e) => handleMemoryChange(idx, 'caption', e.target.value)}
-                          placeholder="Câu nói / Caption ngắn..."
-                          className="w-full bg-black/40 border border-white/20 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                          placeholder="Câu caption ngắn..."
+                          className="w-full bg-[#FDFBF9] border border-[#2B1A07] rounded-lg px-2.5 py-1.5 text-xs text-[#2B1A07]"
                         />
 
                         <textarea
@@ -453,16 +453,15 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                           value={mem.description}
                           onChange={(e) => handleMemoryChange(idx, 'description', e.target.value)}
                           placeholder="Chi tiết câu chuyện kỷ niệm..."
-                          className="w-full bg-black/40 border border-white/20 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                          className="w-full bg-[#FDFBF9] border border-[#2B1A07] rounded-lg px-2.5 py-1.5 text-xs text-[#2B1A07]"
                         />
 
-                        {/* Direct Image URL input */}
                         <input
                           type="text"
                           value={mem.image.startsWith('data:') ? '(Ảnh đã tải từ máy)' : mem.image}
                           onChange={(e) => handleMemoryChange(idx, 'image', e.target.value)}
-                          placeholder="Hoặc dán đường link ảnh online (https://...)"
-                          className="w-full bg-black/40 border border-white/10 rounded-lg px-2.5 py-1 text-[11px] text-neutral-400"
+                          placeholder="Hoặc dán link ảnh online (https://...)"
+                          className="w-full bg-[#FDFBF9] border border-[#2B1A07]/40 rounded-lg px-2.5 py-1 text-[11px] text-[#2B1A07]/70"
                         />
                       </div>
                     </div>
@@ -476,17 +475,17 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           {activeTab === 'music' && (
             <div className="space-y-4 animate-fadeIn">
               <div>
-                <label className="text-xs text-rose-soft font-semibold block mb-2">
+                <label className="text-xs font-display font-black text-[#2B1A07] block mb-2">
                   Chọn Bản Nhạc Mừng Sinh Nhật:
                 </label>
                 <div className="space-y-2">
                   {PRESET_MUSIC.map((track, i) => (
                     <label
                       key={i}
-                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                      className={`flex items-center gap-3 p-3 rounded-2xl border-2 border-[#2B1A07] cursor-pointer transition-all ${
                         formData.audio.backgroundMusicUrl === track.url
-                          ? 'border-rose-400 bg-rose-500/20 text-white'
-                          : 'glass-panel border-white/10 text-white/70 hover:text-white'
+                          ? 'bg-[#FBBF24] shadow-sticker-sm'
+                          : 'bg-[#F7EFE9] hover:bg-white'
                       }`}
                     >
                       <input
@@ -499,17 +498,19 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                             audio: { ...prev.audio, backgroundMusicUrl: track.url },
                           }))
                         }
-                        className="accent-rose-accent"
+                        className="accent-[#FF6F1E] w-4 h-4"
                       />
-                      <span className="text-xs sm:text-sm font-medium">{track.name}</span>
+                      <span className="text-xs sm:text-sm font-display font-bold text-[#2B1A07]">
+                        {track.name}
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-lavender-light font-medium block mb-1">
-                  Hoặc Tự Nhập Link Nhạc MP3 Của Bạn:
+                <label className="text-xs font-display font-bold text-[#2B1A07] block mb-1">
+                  Hoặc Tự Nhập Link Nhạc MP3 Riêng:
                 </label>
                 <input
                   type="text"
@@ -521,22 +522,19 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                     }))
                   }
                   placeholder="https://.../music.mp3"
-                  className="w-full bg-black/40 border border-white/20 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-rose-400"
+                  className="w-full bg-[#F7EFE9] border-2 border-[#2B1A07] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-[#2B1A07] font-semibold focus:outline-none focus:border-[#FF6F1E]"
                 />
-                <p className="text-[11px] text-neutral-400 mt-1 italic">
-                  *Nếu không có mạng, hệ thống sẽ tự động bật bản nhạc sinh nhật Lo-Fi bằng bộ tổng hợp Web Audio Synthesizer!
-                </p>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div className="pt-4 border-t-2 border-[#2B1A07]/15 flex flex-wrap items-center justify-between gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setFormData(currentConfig)}
-              className="px-3 py-2 rounded-xl glass-panel text-white/60 hover:text-white text-xs flex items-center gap-1"
+              className="px-3 py-2 rounded-full bg-[#F7EFE9] border-2 border-[#2B1A07] text-[#2B1A07] text-xs font-display font-bold flex items-center gap-1 hover:bg-white cursor-pointer"
               title="Khôi phục lại dữ liệu gốc"
             >
               <RotateCcw size={13} />
@@ -548,18 +546,18 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             {/* Live Preview Button */}
             <button
               onClick={handleSaveAndPreview}
-              className="px-4 py-2.5 rounded-xl glass-card-interactive text-xs sm:text-sm font-semibold text-rose-soft flex items-center gap-1.5 cursor-pointer"
+              className="superr-btn-secondary px-4 py-2.5 text-xs sm:text-sm gap-1.5"
             >
-              {savedToast ? <Check size={15} className="text-emerald-400" /> : <Eye size={15} />}
+              {savedToast ? <Check size={15} className="text-[#22C55E]" /> : <Eye size={15} />}
               <span>{savedToast ? 'Đã lưu!' : 'Xem Trước Thiệp'}</span>
             </button>
 
             {/* Generate & Share QR Button */}
             <button
               onClick={handleGenerateAndShare}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-rose-500 to-purple-600 text-white font-semibold text-xs sm:text-sm flex items-center gap-1.5 shadow-glow-gold hover:scale-102 transition-all cursor-pointer"
+              className="superr-btn-primary px-5 py-2.5 text-xs sm:text-sm gap-1.5"
             >
-              <QrCode size={15} />
+              <QrCode size={16} />
               <span>Tạo Link & Mã QR</span>
             </button>
           </div>

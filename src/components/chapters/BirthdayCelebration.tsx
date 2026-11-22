@@ -28,50 +28,50 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
       {/* Floating balloons background decor */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
         <motion.div
-          animate={{ y: [-20, -120], x: [0, 20, -15, 0], opacity: [0.6, 0.9, 0.6] }}
+          animate={{ y: [-20, -120], x: [0, 20, -15, 0], opacity: [0.7, 0.95, 0.7] }}
           transition={{ repeat: Infinity, duration: 9, ease: 'easeInOut' }}
-          className="absolute -left-4 top-20 text-3xl opacity-60"
+          className="absolute -left-4 top-20 text-4xl filter drop-shadow"
         >
           🎈
         </motion.div>
         <motion.div
-          animate={{ y: [-10, -140], x: [0, -25, 15, 0], opacity: [0.5, 0.8, 0.5] }}
+          animate={{ y: [-10, -140], x: [0, -25, 15, 0], opacity: [0.6, 0.9, 0.6] }}
           transition={{ repeat: Infinity, duration: 11, delay: 1, ease: 'easeInOut' }}
-          className="absolute -right-4 top-10 text-4xl opacity-50"
+          className="absolute -right-4 top-10 text-5xl filter drop-shadow"
         >
           🎈
         </motion.div>
       </div>
 
-      {/* Chapter Tag */}
+      {/* Superr Chapter Badge */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+        animate={{ opacity: 1, scale: 1, rotate: -2 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/15 text-rose-soft text-xs font-semibold tracking-wider uppercase border border-rose-400/30 mb-3 shadow-glow-pink/20"
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FBBF24] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-3"
       >
-        <Sparkles size={14} className="text-champagne animate-spin-slow" />
+        <Sparkles size={14} className="animate-spin-slow" />
         <span>Chương III • Đại Tiệc Sinh Nhật</span>
-        <Sparkles size={14} className="text-champagne animate-spin-slow" />
+        <Sparkles size={14} className="animate-spin-slow" />
       </motion.div>
 
-      {/* Animated Staggered Main Title */}
+      {/* Main Festive Title (Nunito ExtraBold / Black) */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className="space-y-1"
       >
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-rose-glow via-warm-white to-champagne text-glow-pink">
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white text-glow-marker">
           {cfg.celebration.headline}
         </h1>
 
-        <div className="inline-flex items-center justify-center gap-2 mt-1">
-          <Heart size={20} className="text-rose-accent fill-rose-accent animate-pulse" />
-          <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-300 to-lavender-light text-glow-gold">
+        <div className="inline-flex items-center justify-center gap-2 mt-2 px-4 py-1 rounded-2xl bg-[#FF66CF] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm transform -rotate-1">
+          <Heart size={22} className="fill-[#2B1A07] text-[#2B1A07] animate-pulse" />
+          <h2 className="font-display text-2xl sm:text-4xl font-black tracking-wide">
             {cfg.recipientName}
           </h2>
-          <Heart size={20} className="text-rose-accent fill-rose-accent animate-pulse" />
+          <Heart size={22} className="fill-[#2B1A07] text-[#2B1A07] animate-pulse" />
         </div>
       </motion.div>
 
@@ -82,10 +82,10 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
         transition={{ duration: 0.6, delay: 0.25 }}
         className="mt-3 px-4"
       >
-        <p className="text-sm sm:text-base font-semibold text-rose-soft">
+        <p className="text-sm sm:text-base font-bold text-[#FDFBF9]">
           {cfg.celebration.subheadline}
         </p>
-        <p className="text-xs sm:text-sm text-lavender-muted max-w-sm mx-auto mt-1 italic">
+        <p className="text-xs sm:text-sm text-[#F7EFE9]/75 max-w-sm mx-auto mt-1 italic font-sans">
           "{cfg.celebration.quote}"
         </p>
       </motion.div>
@@ -109,14 +109,14 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
       >
         <button
           onClick={handleMakeWish}
-          className="w-full sm:w-auto px-9 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-400 via-rose-500 to-purple-600 text-white shadow-glow-gold hover:shadow-glow-pink hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer"
+          className="superr-btn-primary w-full sm:w-auto px-10 py-4 text-base gap-2.5 group"
         >
-          <Flame size={19} className="text-amber-200 animate-pulse" />
+          <Flame size={20} className="text-[#FBBF24] animate-pulse" />
           <span>{cfg.celebration.buttonText}</span>
-          <Sparkles size={16} />
+          <Sparkles size={18} />
         </button>
 
-        <span className="text-xs text-lavender-muted/70">
+        <span className="text-xs text-[#F7EFE9]/50 font-sans">
           Chạm vào bánh hoặc nhấn nút để bước vào phòng ước nguyện
         </span>
       </motion.div>

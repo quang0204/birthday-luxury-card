@@ -48,25 +48,27 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative">
-      {/* Chapter Badge */}
+      {/* Superr Chapter Badge */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-2 px-4 py-1 rounded-full bg-rose-500/15 text-rose-soft text-xs font-semibold tracking-wider uppercase border border-rose-400/30 mb-2 shadow-glow-pink/20"
+        initial={{ opacity: 0, y: -10, rotate: 1.5 }}
+        animate={{ opacity: 1, y: 0, rotate: 1.5 }}
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3B82F6] text-white border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-2"
       >
-        <Trophy size={14} className="text-champagne" />
+        <Trophy size={14} className="text-[#FBBF24]" />
         <span>Chương VI • Thử Thách Vui Nhộn</span>
       </motion.div>
 
       {/* Progress Indicator */}
-      <div className="w-full max-w-xs mb-4">
-        <div className="flex justify-between items-center text-xs text-lavender-muted mb-1 px-1">
+      <div className="w-full max-w-xs mb-5">
+        <div className="flex justify-between items-center text-xs text-[#F7EFE9] mb-1.5 px-1 font-display font-bold">
           <span>Tiến độ trò chơi</span>
-          <span className="text-champagne font-bold">{Math.min(step, 3)}/3</span>
+          <span className="text-[#FBBF24] bg-[#2B1A07] px-2 py-0.5 rounded-full border border-white/20">
+            {Math.min(step, 3)}/3
+          </span>
         </div>
-        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden border-2 border-[#2B1A07] p-0.5">
           <motion.div
-            className="h-full bg-gradient-to-r from-amber-400 via-rose-500 to-purple-500"
+            className="h-full bg-gradient-to-r from-[#FBBF24] via-[#FF6F1E] to-[#FF66CF] rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: `${(Math.min(step, 3) / 3) * 100}%` }}
             transition={{ duration: 0.4 }}
@@ -84,10 +86,10 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.95 }}
             className="w-full"
           >
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-warm-white">
+            <h2 className="font-display text-2xl font-black text-white">
               {gameData.challenge1.title}
             </h2>
-            <p className="text-xs sm:text-sm text-lavender-muted mt-1 mb-6">
+            <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 mb-6 font-sans">
               {gameData.challenge1.prompt}
             </p>
 
@@ -95,18 +97,18 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               {gameData.challenge1.boxes.map((b) => (
                 <motion.button
                   key={b.id}
-                  whileHover={{ scale: 1.04, y: -3 }}
+                  whileHover={{ scale: 1.04, y: -2 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => handleBoxSelect(b.id)}
-                  className={`glass-panel p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all border ${
+                  className={`p-4 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all border-2 border-[#2B1A07] shadow-sticker ${
                     selectedBox === b.id
-                      ? 'border-amber-300 bg-amber-500/20 shadow-glow-gold'
-                      : 'border-white/10 hover:border-rose-400/40'
+                      ? 'bg-[#FBBF24] text-[#2B1A07] shadow-sticker-lg translate-y-[-2px]'
+                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
                   }`}
                 >
-                  <span className="text-3xl mb-2 filter drop-shadow">{b.icon}</span>
-                  <span className="text-sm font-semibold text-warm-white">{b.label}</span>
-                  <span className="text-[11px] text-champagne mt-1 bg-amber-400/10 px-2 py-0.5 rounded-full">
+                  <span className="text-4xl mb-2 filter drop-shadow">{b.icon}</span>
+                  <span className="text-sm font-display font-black text-[#2B1A07]">{b.label}</span>
+                  <span className="text-[11px] text-[#2B1A07] font-display font-extrabold mt-1.5 bg-[#FF66CF] px-2.5 py-0.5 rounded-full border border-[#2B1A07]">
                     {b.giftTag}
                   </span>
 
@@ -114,7 +116,7 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
                     <motion.div
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-2 text-xs text-rose-soft font-medium italic"
+                      className="mt-2.5 text-xs text-[#2B1A07] font-bold italic font-sans"
                     >
                       {b.message}
                     </motion.div>
@@ -134,41 +136,47 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.95 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-rose-soft font-semibold mb-1">
-              <HelpCircle size={14} />
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#FBBF24] font-display font-black mb-1">
+              <HelpCircle size={15} />
               <span>Thử Thách 2: Điều Bạn Mong Ước</span>
             </div>
-            <h2 className="font-display text-lg sm:text-2xl font-bold text-warm-white">
+            <h2 className="font-display text-xl sm:text-2xl font-black text-white">
               {gameData.challenge2.question}
             </h2>
-            <p className="text-xs text-lavender-muted mt-1 mb-5">
+            <p className="text-xs text-[#F7EFE9]/80 mt-1 mb-5 font-sans">
               {gameData.challenge2.subtitle}
             </p>
 
-            <div className="space-y-2.5 px-2">
+            <div className="space-y-3 px-2">
               {gameData.challenge2.options.map((opt) => (
                 <motion.button
                   key={opt.id}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleOptionSelect(opt.id)}
-                  className={`w-full p-3.5 rounded-xl glass-panel text-left flex items-center justify-between cursor-pointer border transition-all ${
+                  className={`w-full p-4 rounded-2xl text-left flex items-center justify-between cursor-pointer border-2 border-[#2B1A07] transition-all shadow-sticker ${
                     selectedOption === opt.id
-                      ? 'border-rose-400 bg-rose-500/20 shadow-glow-pink'
-                      : 'border-white/10 hover:border-white/20'
+                      ? 'bg-[#FF6F1E] text-white shadow-sticker-lg'
+                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
                   }`}
                 >
                   <div>
-                    <span className="text-sm font-medium text-warm-white block">
+                    <span className="text-sm font-display font-bold block">
                       {opt.text}
                     </span>
                     {selectedOption === opt.id && (
-                      <span className="text-xs text-champagne mt-1 block italic animate-fadeIn">
+                      <span className="text-xs text-[#FDFBF9] mt-1 block italic animate-fadeIn font-sans font-medium">
                         ✨ {opt.reaction}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-lavender-light/70 bg-purple-500/20 px-2 py-1 rounded-md shrink-0 ml-2">
+                  <span
+                    className={`text-xs font-display font-black px-2.5 py-1 rounded-full border border-[#2B1A07] shrink-0 ml-2 ${
+                      selectedOption === opt.id
+                        ? 'bg-[#FDFBF9] text-[#2B1A07]'
+                        : 'bg-[#FF66CF] text-[#2B1A07]'
+                    }`}
+                  >
                     {opt.scoreLabel}
                   </span>
                 </motion.button>
@@ -186,14 +194,14 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.95 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-champagne font-semibold mb-1">
-              <Layers size={14} />
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#FBBF24] font-display font-black mb-1">
+              <Layers size={15} />
               <span>Thử Thách 3: Lá Bài May Mắn</span>
             </div>
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-warm-white">
+            <h2 className="font-display text-2xl font-black text-white">
               {gameData.challenge3.title}
             </h2>
-            <p className="text-xs sm:text-sm text-lavender-muted mt-1 mb-6">
+            <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 mb-6 font-sans">
               {gameData.challenge3.prompt}
             </p>
 
@@ -204,31 +212,31 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleCardSelect(c.id)}
-                  className={`relative p-5 rounded-2xl cursor-pointer transition-all border ${
+                  className={`relative p-5 rounded-3xl cursor-pointer transition-all border-2.5 border-[#2B1A07] flex flex-col items-center justify-between min-h-[180px] shadow-sticker ${
                     selectedCard === c.id
-                      ? 'border-amber-300 shadow-glow-gold scale-105'
-                      : 'border-white/15 hover:border-white/30'
-                  } bg-gradient-to-b from-[#251543] to-[#140C25] flex flex-col items-center justify-between min-h-[170px]`}
+                      ? 'bg-[#FBBF24] text-[#2B1A07] shadow-sticker-lg scale-105'
+                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
+                  }`}
                 >
-                  <span className="text-3xl mb-1 filter drop-shadow">{c.icon}</span>
+                  <span className="text-4xl mb-1 filter drop-shadow">{c.icon}</span>
                   <div>
-                    <h4 className="font-display text-base font-bold text-champagne tracking-wider">
+                    <h4 className="font-display text-base font-black tracking-wide text-[#2B1A07]">
                       {c.title}
                     </h4>
-                    <p className="text-[11px] text-lavender-light/80 mt-0.5">{c.subtitle}</p>
+                    <p className="text-[11px] text-[#2B1A07]/75 font-sans mt-0.5">{c.subtitle}</p>
                   </div>
 
                   {selectedCard === c.id ? (
                     <motion.p
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-xs text-rose-soft mt-2 italic font-sans"
+                      className="text-xs text-[#2B1A07] font-bold mt-2 italic font-sans"
                     >
                       {c.blessing}
                     </motion.p>
                   ) : (
-                    <span className="text-[11px] text-white/50 tracking-wide mt-2">
-                      Chạm để lật bài
+                    <span className="text-[11px] font-display font-extrabold text-[#FF6F1E] bg-[#FF6F1E]/10 px-2.5 py-0.5 rounded-full border border-[#FF6F1E]/40 mt-2">
+                      Lật mở lá bài
                     </span>
                   )}
                 </motion.button>
@@ -245,15 +253,15 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             animate={{ opacity: 1, scale: 1 }}
             className="w-full px-4 flex flex-col items-center"
           >
-            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-3xl shadow-glow-gold mb-3 animate-bounce">
+            <div className="w-18 h-18 rounded-full bg-[#FBBF24] border-2.5 border-[#2B1A07] shadow-sticker flex items-center justify-center text-4xl mb-4 animate-bounce">
               👑
             </div>
 
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-300 to-warm-white text-glow-gold">
+            <h2 className="font-display text-2xl sm:text-3xl font-black text-white text-glow-sunshine">
               {gameData.completedTitle}
             </h2>
 
-            <p className="text-sm text-lavender-light/90 mt-2 max-w-sm">
+            <p className="text-sm text-[#F7EFE9]/90 mt-2 max-w-sm font-sans">
               {gameData.completedMessage}
             </p>
 
@@ -262,10 +270,10 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
                 playClick();
                 onProceed();
               }}
-              className="mt-6 px-9 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-rose-glow via-rose-600 to-lavender text-white shadow-glow-pink hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              className="superr-btn-primary mt-6 px-9 py-4 text-base gap-2"
             >
               <span>MỞ PHONG ẤN BỨC THƯ</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={20} />
             </button>
           </motion.div>
         )}

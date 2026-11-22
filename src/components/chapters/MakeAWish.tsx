@@ -81,7 +81,6 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
     if (!micSupported) return;
 
     if (micActive) {
-      // Turn off
       if (micStreamRef.current) {
         micStreamRef.current.getTracks().forEach((t) => t.stop());
         micStreamRef.current = null;
@@ -165,13 +164,13 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       {/* Fireworks burst when candles extinguished */}
       {!candlesLit && <Fireworks active={true} burstCount={5} continuous={true} />}
 
-      {/* Chapter Tag */}
+      {/* Superr Chapter Badge */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex items-center gap-2 px-4 py-1 rounded-full bg-rose-500/15 text-rose-soft text-xs font-semibold tracking-wider uppercase border border-rose-400/30 mb-2 shadow-glow-pink/20"
+        initial={{ opacity: 0, scale: 0.9, rotate: 1.5 }}
+        animate={{ opacity: 1, scale: 1, rotate: 1.5 }}
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#22C55E] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-2"
       >
-        <Sparkles size={14} className="text-champagne" />
+        <Sparkles size={14} className="text-[#FBBF24]" />
         <span>Chương IV • Ước Nguyện Tuổi Mới</span>
       </motion.div>
 
@@ -181,19 +180,19 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         animate={{ opacity: 1, y: 0 }}
         className="px-4 mb-2 max-w-md"
       >
-        <h2 className="font-display text-lg sm:text-2xl font-bold text-warm-white">
+        <h2 className="font-display text-xl sm:text-2xl font-black text-white">
           {candlesLit
             ? cfg.makeAWish.title
             : cfg.makeAWish.blownTitle}
         </h2>
-        <p className="text-xs sm:text-sm text-lavender-muted mt-1">
+        <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 font-sans">
           {candlesLit
             ? cfg.makeAWish.instructionHold
             : cfg.makeAWish.blownSubtitle}
         </p>
       </motion.div>
 
-      {/* 3D Cake with dynamic candle and smoke state */}
+      {/* 3D Cake */}
       <div className="w-full relative my-1">
         <BirthdayCake3D
           candlesLit={candlesLit}
@@ -211,7 +210,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1.4, opacity: [0.8, 0.4, 0.7] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-0 m-auto w-64 h-64 rounded-full border border-amber-300/40 shadow-glow-gold pointer-events-none"
+            className="absolute inset-0 m-auto w-64 h-64 rounded-full border-2 border-[#FBBF24] shadow-glow-sunshine pointer-events-none"
           />
         )}
       </div>
@@ -219,23 +218,23 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       {/* Controls & Interaction */}
       {candlesLit ? (
         <div className="w-full px-6 flex flex-col items-center gap-3 mt-4">
-          {/* Hold Button with visual progress fill */}
+          {/* Hold Button with visual progress fill and tactile Superr shadow */}
           <div className="relative w-full sm:w-auto">
             <button
               onMouseDown={startHolding}
               onMouseUp={stopHolding}
               onTouchStart={startHolding}
               onTouchEnd={stopHolding}
-              className="relative overflow-hidden w-full sm:w-72 px-7 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-rose-glow via-rose-600 to-purple-600 text-white shadow-glow-pink hover:scale-105 active:scale-95 transition-all select-none cursor-pointer flex items-center justify-center gap-2"
+              className="relative overflow-hidden w-full sm:w-80 px-8 py-4 rounded-full font-display font-black text-base tracking-wide bg-[#FF6F1E] text-white border-2.5 border-[#2B1A07] shadow-sticker hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-sticker-lg active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#2B1A07] select-none cursor-pointer flex items-center justify-center gap-2"
             >
               {/* Progress fill layer */}
               <div
-                className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-300 opacity-90 transition-all duration-75 pointer-events-none"
+                className="absolute inset-0 bg-[#FBBF24] opacity-90 transition-all duration-75 pointer-events-none"
                 style={{ width: `${blowProgress}%` }}
               />
 
-              <Wind size={20} className="relative z-10 animate-pulse text-amber-200" />
-              <span className="relative z-10">
+              <Wind size={22} className="relative z-10 animate-pulse text-[#2B1A07]" />
+              <span className="relative z-10 text-[#2B1A07]">
                 {blowProgress > 0 ? `ĐANG THỔI... ${blowProgress}%` : 'NHẤN GIỮ ĐỂ THỔI NẾN'}
               </span>
             </button>
@@ -245,18 +244,18 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           {micSupported && (
             <button
               onClick={toggleMicrophone}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-display font-extrabold transition-all border-2 border-[#2B1A07] cursor-pointer ${
                 micActive
-                  ? 'bg-rose-500/25 border border-rose-400 text-rose-soft shadow-glow-pink'
-                  : 'glass-panel-subtle text-lavender-muted hover:text-white border border-white/10'
+                  ? 'bg-[#FF66CF] text-[#2B1A07] shadow-sticker-sm animate-pulse'
+                  : 'bg-[#FDFBF9] text-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px]'
               }`}
             >
-              {micActive ? <Mic size={15} className="animate-pulse" /> : <MicOff size={15} />}
+              {micActive ? <Mic size={15} /> : <MicOff size={15} />}
               <span>{micActive ? 'Micro đang lắng nghe tiếng thổi...' : 'Bật Micro để thổi nến'}</span>
             </button>
           )}
 
-          <p className="text-xs text-lavender-muted/70 italic">
+          <p className="text-xs text-[#F7EFE9]/50 italic font-sans">
             {cfg.makeAWish.micFallbackHint}
           </p>
         </div>
@@ -268,18 +267,18 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           transition={{ duration: 0.6 }}
           className="w-full px-6 flex flex-col items-center gap-3 mt-4"
         >
-          <div className="flex items-center gap-2 text-champagne text-xs font-semibold tracking-wider uppercase mb-1">
-            <Heart size={15} className="text-rose-soft fill-rose-soft" />
-            <span>Ước Nguyện Thành Công</span>
-            <Heart size={15} className="text-rose-soft fill-rose-soft" />
+          <div className="flex items-center gap-2 text-[#FBBF24] text-xs font-display font-black tracking-wider uppercase mb-1">
+            <Heart size={16} className="text-[#FF66CF] fill-[#FF66CF]" />
+            <span>Ước Nguyện Đã Bay Vào Vũ Trụ</span>
+            <Heart size={16} className="text-[#FF66CF] fill-[#FF66CF]" />
           </div>
 
           <button
             onClick={onProceed}
-            className="w-full sm:w-auto px-9 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-400 via-rose-500 to-lavender text-white shadow-glow-gold hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+            className="superr-btn-primary w-full sm:w-auto px-9 py-4 text-base gap-2.5"
           >
             <span>{cfg.makeAWish.continueButton}</span>
-            <ArrowRight size={18} />
+            <ArrowRight size={20} />
           </button>
         </motion.div>
       )}

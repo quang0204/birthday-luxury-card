@@ -29,14 +29,14 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto w-full">
-      {/* Question Prompt */}
+      {/* Superr Sticker Badge */}
       <motion.div
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-500/10 text-rose-soft text-xs font-medium border border-rose-400/20 mb-3"
+        initial={{ opacity: 0, y: -15, rotate: 1.5 }}
+        animate={{ opacity: 1, y: 0, rotate: 1.5 }}
+        transition={{ duration: 0.5 }}
+        className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#3B82F6] text-white border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-3"
       >
-        <Sparkles size={14} className="text-champagne" />
+        <Sparkles size={14} className="text-[#FBBF24]" />
         <span>Chương II • Mở Hộp Quà Ma Thuật</span>
       </motion.div>
 
@@ -44,7 +44,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-warm-white text-glow-pink max-w-sm"
+        className="font-display text-xl sm:text-2xl md:text-3xl font-black text-white text-glow-marker max-w-sm"
       >
         {cfg.giftOpening.promptText}
       </motion.h2>
@@ -63,7 +63,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
         />
       </motion.div>
 
-      {/* Interactive Ready Button */}
+      {/* Tactile Ready Button */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -73,22 +73,22 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
         <button
           onClick={handleOpenGift}
           disabled={isOpened}
-          className="w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-400 via-rose-500 to-lavender text-white shadow-glow-gold hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-85 disabled:pointer-events-none"
+          className="superr-btn-primary w-full sm:w-auto px-9 py-4 text-base gap-2 group disabled:opacity-85 disabled:pointer-events-none"
         >
           {isOpened ? (
             <>
-              <CheckCircle2 size={18} className="text-white animate-bounce" />
+              <CheckCircle2 size={20} className="text-white animate-bounce" />
               <span>ĐANG MỞ RA ĐIỀU DIỆU KỲ...</span>
             </>
           ) : (
             <>
               <span>{cfg.giftOpening.buttonText}</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform" />
             </>
           )}
         </button>
 
-        <p className="text-xs text-lavender-muted/70 mt-1">
+        <p className="text-xs text-[#F7EFE9]/60 mt-1 font-sans">
           Hộp quà đang tích tụ ánh sáng phép thuật ✨
         </p>
       </motion.div>

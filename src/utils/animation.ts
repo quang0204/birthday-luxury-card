@@ -1,46 +1,55 @@
 import confetti from 'canvas-confetti';
 
+// Superr Vibrant Schoolyard Sticker Palette
+export const SUPERR_CONFETTI_COLORS = [
+  '#FF6F1E', // Marker Orange
+  '#FF66CF', // Bubblegum Pink
+  '#3B82F6', // Sky Blue
+  '#22C55E', // Sprout Green
+  '#FBBF24', // Sunshine Gold
+  '#FDFBF9', // Cream Paper
+];
+
 /**
- * Triggers a joyful burst of confetti with custom celebration colors
+ * Triggers a joyful burst of Superr confetti
  */
 export const triggerBirthdayConfetti = () => {
-  // Center blast
+  // Center burst
   confetti({
-    particleCount: 80,
-    spread: 70,
+    particleCount: 85,
+    spread: 75,
     origin: { y: 0.6 },
-    colors: ['#FF5E8E', '#B794F6', '#FCD34D', '#FFFDF9', '#FFA4BD']
+    colors: SUPERR_CONFETTI_COLORS,
   });
 
-  // Left cannon
+  // Left pop
   setTimeout(() => {
     confetti({
-      particleCount: 50,
+      particleCount: 55,
       angle: 60,
-      spread: 55,
+      spread: 60,
       origin: { x: 0, y: 0.7 },
-      colors: ['#FF5E8E', '#FCD34D', '#E4D5FF']
+      colors: SUPERR_CONFETTI_COLORS,
     });
-  }, 200);
+  }, 180);
 
-  // Right cannon
+  // Right pop
   setTimeout(() => {
     confetti({
-      particleCount: 50,
+      particleCount: 55,
       angle: 120,
-      spread: 55,
+      spread: 60,
       origin: { x: 1, y: 0.7 },
-      colors: ['#B794F6', '#FFA4BD', '#FCD34D']
+      colors: SUPERR_CONFETTI_COLORS,
     });
-  }, 350);
+  }, 320);
 };
 
 /**
- * Grand celebration continuous confetti rain
+ * Continuous celebration confetti rain
  */
 export const triggerContinuousConfetti = (durationMs: number = 3000) => {
   const end = Date.now() + durationMs;
-  const colors = ['#FF5E8E', '#B794F6', '#FCD34D', '#FFFDF9', '#FFA4BD'];
 
   (function frame() {
     confetti({
@@ -48,14 +57,14 @@ export const triggerContinuousConfetti = (durationMs: number = 3000) => {
       angle: 60,
       spread: 55,
       origin: { x: 0 },
-      colors: colors
+      colors: SUPERR_CONFETTI_COLORS,
     });
     confetti({
       particleCount: 3,
       angle: 120,
       spread: 55,
       origin: { x: 1 },
-      colors: colors
+      colors: SUPERR_CONFETTI_COLORS,
     });
 
     if (Date.now() < end) {
@@ -64,36 +73,12 @@ export const triggerContinuousConfetti = (durationMs: number = 3000) => {
   })();
 };
 
-/**
- * Common Framer Motion animation variants
- */
 export const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
-  },
-  exit: { opacity: 0, y: -15, transition: { duration: 0.4 } }
-};
-
-export const scaleUp = {
-  hidden: { opacity: 0, scale: 0.85 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    transition: { type: 'spring', damping: 20, stiffness: 120 } 
-  },
-  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } }
-};
-
-export const staggerContainer = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1
-    }
-  }
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+  },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.3 } },
 };
