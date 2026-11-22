@@ -139,7 +139,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-      <div className="relative max-w-2xl w-full bg-[#FDFBF9] text-[#2B1A07] border-3 border-[#2B1A07] rounded-3xl p-5 sm:p-7 shadow-sticker-lg my-auto flex flex-col max-h-[92vh]">
+      <div className="relative max-w-2xl w-full bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 rounded-2xl p-5 sm:p-7 shadow-2xl my-auto flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b-2 border-[#2B1A07]/15 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -147,11 +147,11 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
               <Sparkles size={20} className="text-white" />
             </div>
             <div>
-              <h3 className="font-display text-lg sm:text-xl font-black text-[#2B1A07]">
-                Superr Studio Tự Tạo Thiệp
+              <h3 className="font-serif text-lg sm:text-xl font-medium text-[#2D1117]">
+                Xưởng Thiết Kế Thiệp Riêng
               </h3>
-              <p className="text-xs text-[#2B1A07]/70 font-sans">
-                Tùy chỉnh tên, ảnh kỷ niệm, thư tay và tạo link QR riêng
+              <p className="text-xs text-[#2D1117]/60 font-sans font-light">
+                Tùy chỉnh tên, ảnh kỷ niệm, thư tay và xuất bản mã QR riêng
               </p>
             </div>
           </div>

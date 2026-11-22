@@ -65,47 +65,45 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
         onClick={onClose}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto"
+        className="fixed inset-0 z-50 bg-[#12060C]/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
       >
         <motion.div
-          initial={{ scale: 0.9, y: 20 }}
+          initial={{ scale: 0.94, y: 15 }}
           animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.9, y: 20 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          exit={{ scale: 0.94, y: 15 }}
+          transition={{ type: 'spring', damping: 28, stiffness: 350 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative max-w-lg w-full bg-[#FDFBF9] text-[#2B1A07] border-3 border-[#2B1A07] rounded-3xl overflow-hidden shadow-sticker-lg text-left my-auto flex flex-col"
+          className="relative max-w-lg w-full bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 rounded-2xl overflow-hidden shadow-2xl text-left my-auto flex flex-col"
         >
           {/* Header Bar */}
-          <div className="p-3.5 sm:p-4 bg-[#F7EFE9] border-b-2 border-[#2B1A07] flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-[#F8F4EE] border-b border-[#2D1117]/10 flex items-center justify-between">
             <div className="flex items-center gap-2 flex-wrap">
               {memory.date && (
-                <span className="text-xs text-[#2B1A07] font-display font-black uppercase flex items-center gap-1.5 bg-[#FBBF24] px-3 py-1 rounded-full border border-[#2B1A07] shadow-sm">
-                  <Calendar size={13} className="text-[#FF6F1E]" />
+                <span className="text-[11px] text-[#2D1117] font-sans font-semibold uppercase tracking-wider flex items-center gap-1 bg-[#FAF4F0] px-2.5 py-0.5 rounded-full border border-[#2D1117]/12">
+                  <Calendar size={11} className="text-[#D4627A]" />
                   {memory.date}
                 </span>
               )}
               {memory.location && (
-                <span className="text-xs text-[#2B1A07] font-display font-black flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-[#2B1A07] shadow-sm">
-                  <MapPin size={12} className="text-[#FF66CF]" />
+                <span className="text-[11px] text-[#2D1117]/70 font-sans font-light flex items-center gap-1 bg-[#FAF4F0] px-2.5 py-0.5 rounded-full border border-[#2D1117]/12">
+                  <MapPin size={11} className="text-[#D4627A]" />
                   {memory.location}
                 </span>
               )}
-              <span className="text-xl">{memory.sticker || '✨'}</span>
             </div>
 
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="px-3.5 py-1.5 rounded-full bg-[#FF66CF] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black flex items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-              title="Đóng để tiếp tục xoay quả cầu"
+              className="w-7 h-7 rounded-full bg-[#2D1117]/5 hover:bg-[#2D1117]/10 text-[#2D1117] flex items-center justify-center transition-colors cursor-pointer"
+              title="Đóng để quay lại quả cầu"
             >
               <X size={15} />
-              <span>Đóng Lại</span>
             </button>
           </div>
 
           {/* Large Image Frame with Navigation Arrows */}
-          <div className="relative aspect-[4/3] w-full bg-black border-b-2.5 border-[#2B1A07] overflow-hidden group">
+          <div className="relative aspect-[4/3] w-full bg-[#180A12] border-b border-[#2D1117]/10 overflow-hidden group">
             <img
               src={memory.image}
               alt={memory.title}
@@ -118,11 +116,11 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
                 e.stopPropagation();
                 onPrev();
               }}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FDFBF9] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#FCFAF7]/90 text-[#2D1117] border border-[#2D1117]/15 backdrop-blur-md flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
               aria-label="Xem kỷ niệm trước"
               title="Kỷ niệm trước"
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={20} />
             </button>
 
             {/* Next Photo Arrow */}
@@ -131,11 +129,11 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
                 e.stopPropagation();
                 onNext();
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#FDFBF9] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm flex items-center justify-center hover:scale-110 active:scale-90 transition-all cursor-pointer z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-[#FCFAF7]/90 text-[#2D1117] border border-[#2D1117]/15 backdrop-blur-md flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer z-10"
               aria-label="Xem kỷ niệm tiếp theo"
               title="Kỷ niệm tiếp"
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={20} />
             </button>
 
             {/* Heart Button overlay */}
@@ -144,14 +142,14 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
                 e.stopPropagation();
                 onToggleLike(memory.id);
               }}
-              className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-[#FDFBF9] border-2 border-[#2B1A07] text-[#2B1A07] shadow-sticker-sm text-xs font-display font-black flex items-center gap-1.5 hover:scale-105 active:scale-95 cursor-pointer z-10"
+              className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-[#FCFAF7]/90 backdrop-blur-md border border-[#2D1117]/15 text-[#2D1117] text-xs font-sans font-semibold flex items-center gap-1.5 hover:bg-white transition-all cursor-pointer z-10"
             >
               <Heart
-                size={16}
+                size={14}
                 className={
                   isLiked
-                    ? 'text-[#FF66CF] fill-[#FF66CF]'
-                    : 'text-[#2B1A07]'
+                    ? 'text-[#D4627A] fill-[#D4627A]'
+                    : 'text-[#2D1117]'
                 }
               />
               <span>{isLiked ? 'Đã yêu thích' : 'Thả tim'}</span>
@@ -159,33 +157,33 @@ export const MemoryDetailModal: React.FC<MemoryDetailModalProps> = ({
           </div>
 
           {/* Story & Description Content */}
-          <div className="p-5 sm:p-6 space-y-3">
-            <h3 className="font-display text-2xl font-black text-[#2B1A07]">
+          <div className="p-5 sm:p-6 space-y-2.5">
+            <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#2D1117] tracking-tight">
               {memory.title}
             </h3>
 
-            <p className="text-lg text-[#FF6F1E] font-handwriting font-bold leading-snug">
+            <p className="font-serif italic text-base sm:text-lg text-[#D4627A] leading-snug">
               "{memory.caption}"
             </p>
 
             {memory.description && (
-              <p className="text-xs sm:text-sm text-[#2B1A07]/80 font-sans leading-relaxed border-t-2 border-[#2B1A07]/10 pt-3">
+              <p className="text-xs sm:text-sm text-[#2D1117]/75 font-sans font-light leading-relaxed border-t border-[#2D1117]/10 pt-3">
                 {memory.description}
               </p>
             )}
 
             {/* Bottom Footer Action */}
-            <div className="pt-2 flex items-center justify-between border-t border-[#2B1A07]/10">
-              <span className="text-[11px] text-[#2B1A07]/60 font-sans">
-                Kỷ niệm {currentIndex >= 0 ? currentIndex + 1 : 1} / {totalCount}
+            <div className="pt-2 flex items-center justify-between border-t border-[#2D1117]/10">
+              <span className="text-[11px] text-[#2D1117]/55 font-serif italic tracking-wider">
+                Khoảnh khắc {currentIndex >= 0 ? currentIndex + 1 : 1} / {totalCount}
               </span>
 
               <button
                 onClick={onClose}
-                className="superr-btn-secondary px-5 py-2 text-xs font-display font-black gap-1.5"
+                className="btn-editorial-secondary px-4 py-1.5 text-xs font-sans font-semibold gap-1.5"
               >
                 <span>Quay lại quả cầu ảnh</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </button>
             </div>
           </div>

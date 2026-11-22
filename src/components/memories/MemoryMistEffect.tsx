@@ -17,10 +17,10 @@ export function createMistOrbMesh(radius: number): {
 
   const uniforms = {
     uTime: { value: 0 },
-    uColorCore: { value: new THREE.Color('#160628') }, // deep obsidian violet
-    uColorMist: { value: new THREE.Color('#D946EF') }, // vibrant magenta
-    uColorAura: { value: new THREE.Color('#A855F7') }, // radiant purple
-    uColorPinch: { value: new THREE.Color('#F472B6') }, // bright pink polar pinch
+    uColorCore: { value: new THREE.Color('#14060C') }, // deep velvet wine core
+    uColorMist: { value: new THREE.Color('#D4627A') }, // refined romantic rose mist
+    uColorAura: { value: new THREE.Color('#E77C92') }, // soft blush aura
+    uColorPinch: { value: new THREE.Color('#E6C29C') }, // warm champagne starlight polar pinch
   };
 
   const vertexShader = `
@@ -130,7 +130,7 @@ export function createAtmosphereHalo(radius: number): {
 
   const uniforms = {
     uTime: { value: 0 },
-    uGlowColor: { value: new THREE.Color('#C026D3') },
+    uGlowColor: { value: new THREE.Color('#D4627A') },
   };
 
   const material = new THREE.ShaderMaterial({

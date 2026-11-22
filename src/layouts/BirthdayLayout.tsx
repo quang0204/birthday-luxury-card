@@ -35,112 +35,127 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
     'Bất Ngờ',
   ];
 
-  return (
-    <div className="min-h-screen relative overflow-x-hidden bg-gradient-to-b from-[#130B1C] via-[#1A0E26] to-[#201030] text-[#FDFBF9] flex flex-col justify-between selection:bg-[#FF6F1E]/30 selection:text-white">
-      {/* Warm Golden Hour & Marker Orange ambient light blooms */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#FF6F1E]/12 rounded-full blur-[130px] pointer-events-none" />
-      <div className="fixed bottom-10 right-1/4 w-96 h-96 bg-[#FF66CF]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] bg-[#FBBF24]/6 rounded-full blur-[160px] pointer-events-none" />
+  const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
-      {/* Floating 60fps Star Particle System */}
+  return (
+    <div className="min-h-screen relative overflow-x-hidden bg-[#12060C] text-[#FAF4F0] flex flex-col justify-between selection:bg-[#D4627A]/30 selection:text-white film-grain">
+      {/* Editorial Ambient Rose & Warm Blush Atmosphere */}
+      <div className="fixed top-0 left-1/3 w-[550px] h-[550px] bg-[#D4627A]/9 rounded-full blur-[160px] pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-[#E6C29C]/7 rounded-full blur-[170px] pointer-events-none" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#541525]/25 rounded-full blur-[200px] pointer-events-none" />
+
+      {/* Floating Starlight Particle Background */}
       <ParticleBackground />
 
-      {/* Music Controller floating pill */}
+      {/* Floating Music Controller */}
       <MusicController />
 
-      {/* Top Header */}
-      <header className="safe-top relative z-30 pt-4 px-4 flex items-center justify-between max-w-4xl mx-auto w-full gap-2">
-        {/* Superr Brand & Recipient Sticker */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full bg-[#FF6F1E] border-2 border-[#2B1A07] shadow-sticker-sm flex items-center justify-center shrink-0">
-            <Sparkles size={18} className="text-white animate-spin-slow" />
+      {/* Top Editorial Header */}
+      <header className="safe-top relative z-30 pt-5 px-4 sm:px-8 flex items-center justify-between max-w-5xl mx-auto w-full gap-4">
+        {/* Monogram & Title */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full border border-[#FAF4F0]/25 bg-[#FAF4F0]/5 backdrop-blur-md flex items-center justify-center shrink-0">
+            <span className="font-serif italic font-bold text-sm text-[#E77C92]">
+              {config.recipientName ? config.recipientName.charAt(0) : 'B'}
+            </span>
           </div>
+
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-display font-black text-xs sm:text-sm tracking-wide text-white uppercase block">
+            <div className="flex items-center gap-2">
+              <span className="font-serif tracking-[0.2em] text-[11px] sm:text-xs font-semibold text-[#FAF4F0]/90 uppercase block">
                 The Birthday Experience
               </span>
-              <span className="text-[10px] bg-[#FF66CF] text-[#2B1A07] font-display font-black px-1.5 py-0.2 rounded-md border border-[#2B1A07] shadow-[1px_1px_0px_#2B1A07]">
-                Superr
+              <span className="text-[9px] font-sans font-bold tracking-widest text-[#E77C92] uppercase border-l border-[#FAF4F0]/20 pl-2">
+                Vol. 20
               </span>
             </div>
-            <span className="text-[11px] text-[#F7EFE9]/80 block font-sans">
-              Chương {currentChapter}/8: {chapterTitles[currentChapter - 1]} • Dành cho <strong className="text-[#FBBF24]">{config.recipientName}</strong>
-            </span>
+            <p className="text-[11px] text-[#FAF4F0]/60 font-sans tracking-wide">
+              Dành riêng cho <span className="text-[#FAF4F0] font-semibold">{config.recipientName}</span>
+            </p>
           </div>
         </div>
 
-        {/* Action Buttons: Only show for the creator, NEVER for the recipient */}
+        {/* Creator Studio & QR Controls (Hidden in Recipient Mode) */}
         {!isRecipientMode && (
           <div className="flex items-center gap-2">
-            {/* Create Card Studio Button */}
             <button
               onClick={onOpenCreator}
-              className="px-3.5 py-1.5 rounded-full text-xs font-display font-extrabold flex items-center gap-1.5 bg-[#FF6F1E] text-white border-2 border-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-sticker active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#2B1A07] transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#FAF4F0]/10 hover:bg-[#FAF4F0]/18 text-[#FAF4F0] border border-[#FAF4F0]/20 backdrop-blur-md transition-all cursor-pointer"
               title="Tự tạo hoặc chỉnh sửa thiệp này"
             >
-              <PenTool size={13} />
-              <span>Tạo Thiệp</span>
+              <PenTool size={12} className="text-[#E77C92]" />
+              <span className="hidden sm:inline">Chỉnh Sửa</span>
             </button>
 
-            {/* QR Code trigger */}
             <button
               onClick={onOpenQR}
-              className="px-3 py-1.5 rounded-full text-xs font-display font-extrabold flex items-center gap-1.5 bg-[#FDFBF9] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-sticker active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#2B1A07] transition-all cursor-pointer"
+              className="px-3 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#D4627A]/20 hover:bg-[#D4627A]/30 text-[#FEEBEF] border border-[#D4627A]/40 backdrop-blur-md transition-all cursor-pointer"
               title="Mở mã QR & thiệp in"
             >
-              <QrCode size={13} />
-              <span className="hidden sm:inline">Mã QR</span>
+              <QrCode size={12} className="text-[#FAF4F0]" />
+              <span>Mã QR</span>
             </button>
           </div>
         )}
       </header>
 
-      {/* Chapter Stepper Dots */}
-      <div className="relative z-30 flex items-center justify-center gap-2 pt-3 pb-1">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => {
-          const isCurrent = num === currentChapter;
-          const isPassed = num < currentChapter;
+      {/* Editorial Chapter Navigation Bar */}
+      <div className="relative z-30 flex flex-col items-center justify-center pt-3 pb-1 gap-1">
+        {/* Folio Step Indicators */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {romanNumerals.map((roman, idx) => {
+            const num = idx + 1;
+            const isCurrent = num === currentChapter;
+            const isPassed = num < currentChapter;
 
-          return (
-            <button
-              key={num}
-              onClick={() => onSelectChapter(num as ChapterNumber)}
-              className={`h-2.5 rounded-full transition-all duration-300 border border-[#2B1A07] cursor-pointer ${
-                isCurrent
-                  ? 'w-8 bg-[#FF6F1E] shadow-sticker-sm'
-                  : isPassed
-                  ? 'w-3 bg-[#FF66CF]'
-                  : 'w-2 bg-[#FDFBF9]/30'
-              }`}
-              title={`Chương ${num}: ${chapterTitles[num - 1]}`}
-              aria-label={`Chương ${num}`}
-            />
-          );
-        })}
+            return (
+              <button
+                key={num}
+                onClick={() => onSelectChapter(num as ChapterNumber)}
+                className={`transition-all duration-300 font-serif text-[11px] sm:text-xs tracking-wider cursor-pointer py-1 px-1.5 rounded ${
+                  isCurrent
+                    ? 'text-[#FEEBEF] font-bold border-b-2 border-[#D4627A] scale-110'
+                    : isPassed
+                    ? 'text-[#FAF4F0]/65 hover:text-[#FAF4F0]'
+                    : 'text-[#FAF4F0]/30 hover:text-[#FAF4F0]/60'
+                }`}
+                title={`Chương ${roman}: ${chapterTitles[idx]}`}
+              >
+                {roman}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Current Chapter Subtitle */}
+        <span className="text-[10px] uppercase font-sans tracking-[0.2em] text-[#E77C92]">
+          Chương {romanNumerals[currentChapter - 1]} — {chapterTitles[currentChapter - 1]}
+        </span>
       </div>
 
-      {/* Main Chapter Content Container */}
-      <main className="flex-1 flex flex-col justify-center items-center relative z-20 w-full max-w-4xl mx-auto py-4">
+      {/* Main Stage Content */}
+      <main className="flex-1 flex flex-col justify-center items-center relative z-20 w-full max-w-4xl mx-auto py-3 px-3 sm:px-6">
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="safe-bottom relative z-20 py-4 px-4 text-center text-xs text-[#F7EFE9]/50 font-sans flex flex-col items-center gap-1">
+      {/* Editorial Colophon / Footer */}
+      <footer className="safe-bottom relative z-20 py-4 px-4 text-center text-[11px] text-[#FAF4F0]/50 font-sans tracking-wide flex flex-col items-center gap-1 border-t border-[#FAF4F0]/8">
         {!isRecipientMode ? (
           <div>
-            Bạn muốn tạo một thiệp sinh nhật tuyệt đẹp cho người thân?{' '}
+            Bạn muốn tạo một thiệp sinh nhật tinh tế cho người thân?{' '}
             <button
               onClick={onOpenCreator}
-              className="text-[#FF6F1E] hover:underline font-bold cursor-pointer ml-1"
+              className="text-[#E77C92] hover:text-[#FEEBEF] transition-colors font-medium underline underline-offset-4 ml-1 cursor-pointer"
             >
-              Bấm vào đây để tự tạo thiệp miễn phí ✨
+              Mở xưởng tạo thiệp riêng
             </button>
           </div>
         ) : (
-          <div>
-            Món quà kỷ niệm được chuẩn bị với trọn yêu thương dành cho{' '}
-            <span className="text-[#FBBF24] font-bold">{config.recipientName}</span> ❤️
+          <div className="italic font-serif text-xs text-[#FAF4F0]/70">
+            A bespoke birthday publication, crafted with love for{' '}
+            <span className="not-italic font-sans font-semibold text-[#FAF4F0]">
+              {config.recipientName}
+            </span>
           </div>
         )}
       </footer>

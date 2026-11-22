@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Move3d, Globe, LayoutGrid } from 'lucide-react';
-import { MemoryCounter } from './MemoryCounter';
-import { RandomMemoryButton } from './RandomMemoryButton';
+import { Move3d, Globe, LayoutGrid, Shuffle, Sparkles } from 'lucide-react';
 
 interface MemoryControlsProps {
   totalCount: number;
@@ -25,43 +23,55 @@ export const MemoryControls: React.FC<MemoryControlsProps> = ({
       <div className="flex items-center gap-2 flex-wrap justify-center">
         {/* Animated Drag to explore hint */}
         <motion.div
-          animate={{ x: [-3, 3, -3] }}
-          transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3B1259]/80 backdrop-blur-md border border-[#F472B6]/40 text-[11px] font-display font-bold text-[#FDFBF9] shadow-sm"
+          animate={{ x: [-2, 2, -2] }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF4F0]/8 backdrop-blur-md border border-[#FAF4F0]/20 text-[11px] font-sans font-medium text-[#FAF4F0]/85"
         >
-          <Move3d size={13} className="text-[#FF66CF]" />
-          <span>Kéo / Vuốt để xoay 360°</span>
+          <Move3d size={13} className="text-[#E77C92]" />
+          <span>Xoay 360° để khám phá</span>
         </motion.div>
 
-        <MemoryCounter count={totalCount} />
+        {/* Counter */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF4F0]/8 backdrop-blur-md border border-[#FAF4F0]/20 text-[11px] font-sans font-medium text-[#FAF4F0]/85">
+          <Sparkles size={12} className="text-[#E6C29C]" />
+          <span>{totalCount} khoảnh khắc</span>
+        </div>
 
-        <RandomMemoryButton onRandom={onRandomMemory} />
+        {/* Random button */}
+        <button
+          onClick={onRandomMemory}
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4627A]/25 hover:bg-[#D4627A]/40 text-[#FEEBEF] border border-[#D4627A]/40 text-[11px] font-sans font-semibold transition-all cursor-pointer"
+          title="Chọn ngẫu nhiên một khoảnh khắc"
+        >
+          <Shuffle size={12} />
+          <span>Ngẫu Nhiên</span>
+        </button>
       </div>
 
       {/* Mode switcher: Sphere vs Grid */}
-      <div className="inline-flex items-center p-1 rounded-full bg-[#FDFBF9] border-2 border-[#2B1A07] shadow-sticker-sm gap-1">
+      <div className="inline-flex items-center p-0.5 rounded-full bg-[#FAF4F0]/10 border border-[#FAF4F0]/20 backdrop-blur-md gap-0.5">
         <button
           onClick={() => onToggleViewMode('sphere')}
-          className={`px-3 py-1 rounded-full text-xs font-display font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+          className={`px-3.5 py-1 rounded-full text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
             viewMode === 'sphere'
-              ? 'bg-[#FF6F1E] text-white shadow-sm'
-              : 'text-[#2B1A07] hover:bg-neutral-100'
+              ? 'bg-[#D4627A] text-white shadow-sm'
+              : 'text-[#FAF4F0]/70 hover:text-[#FAF4F0]'
           }`}
         >
           <Globe size={13} />
-          <span>Quả Cầu 3D Mist Orb</span>
+          <span>Quả Cầu 3D</span>
         </button>
 
         <button
           onClick={() => onToggleViewMode('grid')}
-          className={`px-3 py-1 rounded-full text-xs font-display font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+          className={`px-3.5 py-1 rounded-full text-xs font-sans font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
             viewMode === 'grid'
-              ? 'bg-[#FF6F1E] text-white shadow-sm'
-              : 'text-[#2B1A07] hover:bg-neutral-100'
+              ? 'bg-[#D4627A] text-white shadow-sm'
+              : 'text-[#FAF4F0]/70 hover:text-[#FAF4F0]'
           }`}
         >
           <LayoutGrid size={13} />
-          <span>Album Lưới ({totalCount})</span>
+          <span>Bộ Sưu Tập ({totalCount})</span>
         </button>
       </div>
     </div>

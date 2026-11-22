@@ -8,42 +8,68 @@ export default {
     extend: {
       colors: {
         // Superr Styleguide Exact Tokens
-        superr: {
-          canvas: '#FDFBF9',      // Cream Paper
-          dew: '#F7EFE9',         // Dew Drop (Soft warm surface)
-          cocoa: '#2B1A07',       // Cocoa Ink (Warm high-contrast)
-          charcoal: '#171717',    // Deep Charcoal
-          marker: '#FF6F1E',      // Marker Orange (Primary CTA & Sparks)
-          sienna: '#CE500A',      // Burnt Sienna (Active depth)
-          bubblegum: '#FF66CF',   // Bubblegum Pink (Sticker accent)
-          sky: '#3B82F6',         // Sky Blue
-          sprout: '#22C55E',      // Sprout Green
-          sunshine: '#FBBF24',    // Sunshine Gold
-          mist: '#BEBCBB',        // Shadow Mist
-          // Midnight Plum Celebration Mode
-          night: '#130B1C',       // Warm Deep Cocoa Night
-          card: '#22152F',        // Elevated Plum Surface
-          border: 'rgba(255, 255, 255, 0.14)'
+        // Creative Editorial & Landing Love Luxury Tokens
+        blush: {
+          50: '#FDFBF9',
+          100: '#FAF3F0',
+          200: '#F5EBE6',
+          300: '#EBD7CF',
+          400: '#DEACA2',
+          500: '#CF877B',
         },
         rose: {
-          accent: '#FF6F1E', // Superr Marker Orange harmonized
-          soft: '#FF884D',
-          glow: '#FF5E1E'
+          50: '#FFF5F6',
+          100: '#FEEBEF',
+          200: '#FCD8E0',
+          300: '#F7A8B8',
+          400: '#E77C92',
+          500: '#D4627A',
+          600: '#BE4D66',
+          700: '#9E334D',
+          800: '#7B2239',
+          900: '#541525',
+          accent: '#D4627A',
+          soft: '#E77C92',
+          glow: '#D4627A'
         },
-        lavender: {
-          light: '#F5E8FF',
-          DEFAULT: '#D8B4FE',
-          dark: '#A855F7',
-          muted: '#C4B5FD'
+        wine: {
+          50: '#FDF2F4',
+          100: '#FCE7EB',
+          700: '#43192B',
+          800: '#2E111D',
+          900: '#1C0B13',
+          950: '#14060C',
+        },
+        cream: {
+          50: '#FCFAF7',
+          100: '#F8F4EE',
+          200: '#EFE7DC',
+          300: '#E3D7C5',
+          900: '#2B1A1E',
         },
         champagne: {
-          light: '#FEF3C7',
-          DEFAULT: '#FBBF24', // Sunshine Gold
-          gold: '#F59E0B'
+          light: '#FBF5EE',
+          DEFAULT: '#E6C29C',
+          gold: '#D4A373',
+          dark: '#B08354',
+        },
+        superr: {
+          canvas: '#FCFAF7',
+          dew: '#FAF3F0',
+          cocoa: '#2B1218',
+          charcoal: '#1A0E13',
+          marker: '#D4627A',
+          sienna: '#BE4D66',
+          bubblegum: '#E77C92',
+          night: '#14060C',
+          card: '#1F0B14',
+          border: 'rgba(255, 255, 255, 0.12)'
         }
       },
       fontFamily: {
-        display: ['"Nunito"', '"Plus Jakarta Sans"', 'sans-serif'],
+        serif: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+        editorial: ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
+        display: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
         script: ['"Caveat"', 'cursive'],
         handwriting: ['"Caveat"', 'cursive']

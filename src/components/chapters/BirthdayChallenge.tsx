@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Trophy, ArrowRight, HelpCircle, Layers } from 'lucide-react';
+import { Trophy, ArrowRight, HelpCircle, Sparkles } from 'lucide-react';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
 import { triggerBirthdayConfetti } from '../../utils/animation';
@@ -47,28 +47,28 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative">
-      {/* Superr Chapter Badge */}
+    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
+      {/* Editorial Chapter Tag */}
       <motion.div
-        initial={{ opacity: 0, y: -10, rotate: 1.5 }}
-        animate={{ opacity: 1, y: 0, rotate: 1.5 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3B82F6] text-white border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-2"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="editorial-badge mb-3"
       >
-        <Trophy size={14} className="text-[#FBBF24]" />
-        <span>Chương VI • Thử Thách Vui Nhộn</span>
+        <span>Chapter VI • Three Whimsical Challenges</span>
       </motion.div>
 
-      {/* Progress Indicator */}
-      <div className="w-full max-w-xs mb-5">
-        <div className="flex justify-between items-center text-xs text-[#F7EFE9] mb-1.5 px-1 font-display font-bold">
-          <span>Tiến độ trò chơi</span>
-          <span className="text-[#FBBF24] bg-[#2B1A07] px-2 py-0.5 rounded-full border border-white/20">
-            {Math.min(step, 3)}/3
+      {/* Slender Minimalist Progress Indicator */}
+      <div className="w-full max-w-xs mb-6">
+        <div className="flex justify-between items-center text-[11px] text-[#FAF4F0]/60 mb-2 px-1 font-sans tracking-widest uppercase">
+          <span>Tiến độ thử thách</span>
+          <span className="text-[#E77C92] font-semibold">
+            {Math.min(step, 3)} / 3
           </span>
         </div>
-        <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden border-2 border-[#2B1A07] p-0.5">
+        <div className="w-full h-1 bg-[#FAF4F0]/10 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-[#FBBF24] via-[#FF6F1E] to-[#FF66CF] rounded-full"
+            className="h-full bg-gradient-to-r from-[#D4627A] to-[#E6C29C] rounded-full"
             initial={{ width: '0%' }}
             animate={{ width: `${(Math.min(step, 3) / 3) * 100}%` }}
             transition={{ duration: 0.4 }}
@@ -81,15 +81,15 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
         {step === 1 && (
           <motion.div
             key="step-1"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <h2 className="font-display text-2xl font-black text-white">
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight">
               {gameData.challenge1.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 mb-6 font-sans">
+            <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 mb-6 font-sans font-light">
               {gameData.challenge1.prompt}
             </p>
 
@@ -97,18 +97,18 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               {gameData.challenge1.boxes.map((b) => (
                 <motion.button
                   key={b.id}
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => handleBoxSelect(b.id)}
-                  className={`p-4 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all border-2 border-[#2B1A07] shadow-sticker ${
+                  className={`p-4 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all border ${
                     selectedBox === b.id
-                      ? 'bg-[#FBBF24] text-[#2B1A07] shadow-sticker-lg translate-y-[-2px]'
-                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
+                      ? 'bg-[#FCFAF7] text-[#2D1117] border-[#D4627A] shadow-xl'
+                      : 'bg-[#FCFAF7]/95 text-[#2D1117] border-[#2D1117]/15 hover:bg-white shadow-md'
                   }`}
                 >
-                  <span className="text-4xl mb-2 filter drop-shadow">{b.icon}</span>
-                  <span className="text-sm font-display font-black text-[#2B1A07]">{b.label}</span>
-                  <span className="text-[11px] text-[#2B1A07] font-display font-extrabold mt-1.5 bg-[#FF66CF] px-2.5 py-0.5 rounded-full border border-[#2B1A07]">
+                  <span className="text-3xl mb-2">{b.icon}</span>
+                  <span className="text-sm font-serif font-semibold text-[#2D1117]">{b.label}</span>
+                  <span className="text-[10px] text-[#D4627A] font-sans font-bold uppercase tracking-wider mt-1.5 bg-[#FAF4F0] px-2.5 py-0.5 rounded-full border border-[#D4627A]/30">
                     {b.giftTag}
                   </span>
 
@@ -116,7 +116,7 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
                     <motion.div
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-2.5 text-xs text-[#2B1A07] font-bold italic font-sans"
+                      className="mt-2 text-xs text-[#2D1117]/85 font-serif italic"
                     >
                       {b.message}
                     </motion.div>
@@ -131,50 +131,50 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
         {step === 2 && (
           <motion.div
             key="step-2"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-[#FBBF24] font-display font-black mb-1">
-              <HelpCircle size={15} />
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E77C92] font-sans font-medium mb-1">
+              <HelpCircle size={14} />
               <span>Thử Thách 2: Điều Bạn Mong Ước</span>
             </div>
-            <h2 className="font-display text-xl sm:text-2xl font-black text-white">
+            <h2 className="font-serif text-xl sm:text-2xl font-normal text-[#FAF4F0] tracking-tight">
               {gameData.challenge2.question}
             </h2>
-            <p className="text-xs text-[#F7EFE9]/80 mt-1 mb-5 font-sans">
+            <p className="text-xs text-[#FAF4F0]/65 mt-1.5 mb-5 font-sans font-light">
               {gameData.challenge2.subtitle}
             </p>
 
-            <div className="space-y-3 px-2">
+            <div className="space-y-2.5 px-2">
               {gameData.challenge2.options.map((opt) => (
                 <motion.button
                   key={opt.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
                   onClick={() => handleOptionSelect(opt.id)}
-                  className={`w-full p-4 rounded-2xl text-left flex items-center justify-between cursor-pointer border-2 border-[#2B1A07] transition-all shadow-sticker ${
+                  className={`w-full p-4 rounded-xl text-left flex items-center justify-between cursor-pointer border transition-all ${
                     selectedOption === opt.id
-                      ? 'bg-[#FF6F1E] text-white shadow-sticker-lg'
-                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
+                      ? 'bg-[#D4627A] text-white border-white/30 shadow-lg'
+                      : 'bg-[#FCFAF7] text-[#2D1117] border-[#2D1117]/15 hover:bg-white shadow-sm'
                   }`}
                 >
                   <div>
-                    <span className="text-sm font-display font-bold block">
+                    <span className="text-sm font-serif font-medium block">
                       {opt.text}
                     </span>
                     {selectedOption === opt.id && (
-                      <span className="text-xs text-[#FDFBF9] mt-1 block italic animate-fadeIn font-sans font-medium">
-                        ✨ {opt.reaction}
+                      <span className="text-xs text-white/90 mt-1 block italic font-serif">
+                        ✦ {opt.reaction}
                       </span>
                     )}
                   </div>
                   <span
-                    className={`text-xs font-display font-black px-2.5 py-1 rounded-full border border-[#2B1A07] shrink-0 ml-2 ${
+                    className={`text-[10px] font-sans font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border shrink-0 ml-2 ${
                       selectedOption === opt.id
-                        ? 'bg-[#FDFBF9] text-[#2B1A07]'
-                        : 'bg-[#FF66CF] text-[#2B1A07]'
+                        ? 'bg-white text-[#D4627A] border-transparent'
+                        : 'bg-[#FAF4F0] text-[#D4627A] border-[#D4627A]/25'
                     }`}
                   >
                     {opt.scoreLabel}
@@ -189,19 +189,19 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
         {step === 3 && (
           <motion.div
             key="step-3"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-[#FBBF24] font-display font-black mb-1">
-              <Layers size={15} />
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E6C29C] font-sans font-medium mb-1">
+              <Sparkles size={14} />
               <span>Thử Thách 3: Lá Bài May Mắn</span>
             </div>
-            <h2 className="font-display text-2xl font-black text-white">
+            <h2 className="font-serif text-2xl font-normal text-[#FAF4F0] tracking-tight">
               {gameData.challenge3.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 mb-6 font-sans">
+            <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 mb-6 font-sans font-light">
               {gameData.challenge3.prompt}
             </p>
 
@@ -209,33 +209,33 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               {gameData.challenge3.cards.map((c) => (
                 <motion.button
                   key={c.id}
-                  whileHover={{ scale: 1.05, y: -4 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.04, y: -3 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => handleCardSelect(c.id)}
-                  className={`relative p-5 rounded-3xl cursor-pointer transition-all border-2.5 border-[#2B1A07] flex flex-col items-center justify-between min-h-[180px] shadow-sticker ${
+                  className={`relative p-5 rounded-2xl cursor-pointer transition-all border flex flex-col items-center justify-between min-h-[180px] ${
                     selectedCard === c.id
-                      ? 'bg-[#FBBF24] text-[#2B1A07] shadow-sticker-lg scale-105'
-                      : 'bg-[#FDFBF9] text-[#2B1A07] hover:bg-[#F7EFE9]'
+                      ? 'bg-[#FCFAF7] text-[#2D1117] border-[#E6C29C] shadow-2xl scale-105'
+                      : 'bg-[#FCFAF7]/95 text-[#2D1117] border-[#2D1117]/15 hover:bg-white shadow-md'
                   }`}
                 >
-                  <span className="text-4xl mb-1 filter drop-shadow">{c.icon}</span>
+                  <span className="text-3xl mb-1">{c.icon}</span>
                   <div>
-                    <h4 className="font-display text-base font-black tracking-wide text-[#2B1A07]">
+                    <h4 className="font-serif text-base font-semibold text-[#2D1117]">
                       {c.title}
                     </h4>
-                    <p className="text-[11px] text-[#2B1A07]/75 font-sans mt-0.5">{c.subtitle}</p>
+                    <p className="text-[11px] text-[#2D1117]/65 font-sans mt-0.5">{c.subtitle}</p>
                   </div>
 
                   {selectedCard === c.id ? (
                     <motion.p
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-xs text-[#2B1A07] font-bold mt-2 italic font-sans"
+                      className="text-xs text-[#D4627A] font-serif italic mt-2 leading-relaxed"
                     >
                       {c.blessing}
                     </motion.p>
                   ) : (
-                    <span className="text-[11px] font-display font-extrabold text-[#FF6F1E] bg-[#FF6F1E]/10 px-2.5 py-0.5 rounded-full border border-[#FF6F1E]/40 mt-2">
+                    <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-[#D4627A] bg-[#FAF4F0] px-2.5 py-0.5 rounded-full border border-[#D4627A]/25 mt-2">
                       Lật mở lá bài
                     </span>
                   )}
@@ -249,19 +249,19 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
         {step === 4 && (
           <motion.div
             key="step-4"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full px-4 flex flex-col items-center"
           >
-            <div className="w-18 h-18 rounded-full bg-[#FBBF24] border-2.5 border-[#2B1A07] shadow-sticker flex items-center justify-center text-4xl mb-4 animate-bounce">
-              👑
+            <div className="w-14 h-14 rounded-full bg-[#FAF4F0]/10 border border-[#FAF4F0]/25 backdrop-blur-md flex items-center justify-center text-2xl mb-4">
+              <Trophy size={24} className="text-[#E6C29C]" />
             </div>
 
-            <h2 className="font-display text-2xl sm:text-3xl font-black text-white text-glow-sunshine">
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight">
               {gameData.completedTitle}
             </h2>
 
-            <p className="text-sm text-[#F7EFE9]/90 mt-2 max-w-sm font-sans">
+            <p className="text-xs sm:text-sm text-[#FAF4F0]/70 mt-2 max-w-sm font-sans font-light leading-relaxed">
               {gameData.completedMessage}
             </p>
 
@@ -270,10 +270,10 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
                 playClick();
                 onProceed();
               }}
-              className="superr-btn-primary mt-6 px-9 py-4 text-base gap-2"
+              className="btn-editorial-primary mt-6 px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2"
             >
               <span>MỞ PHONG ẤN BỨC THƯ</span>
-              <ArrowRight size={20} />
+              <ArrowRight size={15} />
             </button>
           </motion.div>
         )}

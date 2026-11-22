@@ -49,59 +49,59 @@ export function getOrCreatePhotoTexture(
   }
 
   const drawPlaceholder = () => {
-    // Fill card background (Superr Cream Paper #FDFBF9)
-    ctx.fillStyle = '#FDFBF9';
+    // Fill card background (Warm Ivory Cream #FCFAF7)
+    ctx.fillStyle = '#FCFAF7';
     ctx.fillRect(0, 0, cardWidth, cardHeight);
 
-    // Dark border
-    ctx.lineWidth = 14;
-    ctx.strokeStyle = '#2B1A07';
-    ctx.strokeRect(7, 7, cardWidth - 14, cardHeight - 14);
+    // Fine delicate border
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#2D1117';
+    ctx.strokeRect(2, 2, cardWidth - 4, cardHeight - 4);
 
-    // Inner photo area placeholder with rich gradient
-    const grad = ctx.createLinearGradient(0, 20, 0, cardHeight - 90);
-    grad.addColorStop(0, '#381A5E');
-    grad.addColorStop(1, '#1A0B2E');
+    // Inner photo area placeholder with rich wine gradient
+    const grad = ctx.createLinearGradient(0, 16, 0, cardHeight - 85);
+    grad.addColorStop(0, '#3A1422');
+    grad.addColorStop(1, '#1E0A12');
     ctx.fillStyle = grad;
-    ctx.fillRect(20, 20, cardWidth - 40, cardHeight - 110);
+    ctx.fillRect(16, 16, cardWidth - 32, cardHeight - 100);
 
     // Center icon / sticker
-    ctx.font = '64px sans-serif';
+    ctx.font = '54px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(memory.sticker || '✨', cardWidth / 2, (cardHeight - 90) / 2);
+    ctx.fillText(memory.sticker || '✦', cardWidth / 2, (cardHeight - 85) / 2);
 
-    // Caption strip at bottom
-    ctx.fillStyle = '#2B1A07';
-    ctx.font = 'bold 22px Nunito, sans-serif';
+    // Caption strip at bottom in editorial serif
+    ctx.fillStyle = '#2D1117';
+    ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const cleanTitle = memory.title.length > 24 ? memory.title.substring(0, 24) + '...' : memory.title;
+    const cleanTitle = memory.title.length > 26 ? memory.title.substring(0, 26) + '...' : memory.title;
     ctx.fillText(cleanTitle, cardWidth / 2, cardHeight - 48);
 
     // Date watermark
     if (memory.date) {
-      ctx.fillStyle = '#8C7A6B';
-      ctx.font = '16px sans-serif';
+      ctx.fillStyle = '#D4627A';
+      ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
       ctx.fillText(memory.date, cardWidth / 2, cardHeight - 22);
     }
   };
 
   const drawLoadedImage = (img: HTMLImageElement) => {
     // Fill card frame
-    ctx.fillStyle = '#FDFBF9';
+    ctx.fillStyle = '#FCFAF7';
     ctx.fillRect(0, 0, cardWidth, cardHeight);
 
-    // Outer tactile border
-    ctx.lineWidth = 12;
-    ctx.strokeStyle = '#2B1A07';
-    ctx.strokeRect(6, 6, cardWidth - 12, cardHeight - 12);
+    // Fine hairline border
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#2D1117';
+    ctx.strokeRect(2, 2, cardWidth - 4, cardHeight - 4);
 
     // Draw clipped photo inside the top frame
-    const photoX = 18;
-    const photoY = 18;
-    const photoW = cardWidth - 36;
-    const photoH = cardHeight - 105;
+    const photoX = 14;
+    const photoY = 14;
+    const photoW = cardWidth - 28;
+    const photoH = cardHeight - 96;
 
     ctx.save();
     ctx.beginPath();
@@ -124,23 +124,23 @@ export function getOrCreatePhotoTexture(
     ctx.drawImage(img, sx, sy, sw, sh, photoX, photoY, photoW, photoH);
     ctx.restore();
 
-    // Inner photo border
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = 'rgba(43, 26, 7, 0.4)';
+    // Inner fine border
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(45, 17, 23, 0.2)';
     ctx.strokeRect(photoX, photoY, photoW, photoH);
 
-    // Title label at bottom
-    ctx.fillStyle = '#2B1A07';
-    ctx.font = 'bold 24px Nunito, sans-serif';
+    // Title label at bottom in editorial serif
+    ctx.fillStyle = '#2D1117';
+    ctx.font = 'bold 22px "Playfair Display", Georgia, serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const displayTitle = memory.title.length > 22 ? memory.title.substring(0, 22) + '...' : memory.title;
-    ctx.fillText(displayTitle, cardWidth / 2, cardHeight - 56);
+    const displayTitle = memory.title.length > 25 ? memory.title.substring(0, 25) + '...' : memory.title;
+    ctx.fillText(displayTitle, cardWidth / 2, cardHeight - 52);
 
-    // Sticker and Date at bottom
-    ctx.fillStyle = '#FF6F1E';
-    ctx.font = 'bold 16px sans-serif';
-    const dateStr = memory.date ? `${memory.sticker || '✨'} ${memory.date}` : (memory.sticker || '★ MEMORY');
+    // Date & Monogram at bottom
+    ctx.fillStyle = '#D4627A';
+    ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+    const dateStr = memory.date ? `${memory.date}` : 'MEMORIES';
     ctx.fillText(dateStr, cardWidth / 2, cardHeight - 24);
   };
 

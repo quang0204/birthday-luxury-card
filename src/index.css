@@ -8,25 +8,40 @@
   }
   
   body {
-    background-color: #130B1C;
-    color: #FDFBF9;
+    background-color: #12060C;
+    color: #FAF4F0;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
   }
 }
 
-/* Superr Tactile Component Classes */
+/* =========================================================================
+   CREATIVE EDITORIAL DESIGN SYSTEM – LANDING LOVE & DIGITAL ART BOOK
+   ========================================================================= */
 
-/* 1. Primary Marker Orange Button */
+/* 1. Subtle Archival Paper & Film Grain Texture Overlay */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.038'/%3E%3C/svg%3E");
+}
+
+/* 2. Primary Editorial Button: Velvet Rouge with Champagne Hairline */
+.btn-editorial-primary,
 .superr-btn-primary {
-  background: #FF6F1E;
+  background: linear-gradient(135deg, #D4627A 0%, #BE4D66 100%);
   color: #FFFFFF;
-  border: 2.5px solid #2B1A07;
-  box-shadow: 3.5px 3.5px 0px #2B1A07;
+  border: 1px solid rgba(254, 235, 239, 0.35);
+  box-shadow: 0 10px 25px -5px rgba(212, 98, 122, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15);
   border-radius: 9999px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.025em;
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -34,27 +49,32 @@
   user-select: none;
 }
 
+.btn-editorial-primary:hover,
 .superr-btn-primary:hover {
-  transform: translate(-1.5px, -1.5px);
-  box-shadow: 5px 5px 0px #2B1A07;
-  background: #FF7B2F;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -4px rgba(212, 98, 122, 0.55), 0 4px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #DE728A 0%, #C9566F 100%);
 }
 
+.btn-editorial-primary:active,
 .superr-btn-primary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #2B1A07;
+  transform: translateY(1px);
+  box-shadow: 0 6px 16px -4px rgba(212, 98, 122, 0.3);
 }
 
-/* 2. Secondary Cream / Dew Button */
+/* 3. Secondary Editorial Button: Warm Ivory with Wine Ink Hairline */
+.btn-editorial-secondary,
 .superr-btn-secondary {
-  background: #FDFBF9;
-  color: #2B1A07;
-  border: 2px solid #2B1A07;
-  box-shadow: 3px 3px 0px #2B1A07;
+  background: #FCFAF7;
+  color: #2D1117;
+  border: 1px solid rgba(45, 17, 23, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   border-radius: 9999px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  transition: all 0.15s ease-out;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 0.85rem;
+  transition: all 0.25s ease-out;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,73 +82,103 @@
   user-select: none;
 }
 
+.btn-editorial-secondary:hover,
 .superr-btn-secondary:hover {
-  background: #F7EFE9;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #2B1A07;
+  background: #FFFFFF;
+  border-color: rgba(212, 98, 122, 0.5);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px rgba(212, 98, 122, 0.15);
 }
 
+.btn-editorial-secondary:active,
 .superr-btn-secondary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #2B1A07;
+  transform: translateY(1px);
 }
 
-/* 3. Laminated Sticker Badges */
+/* 4. Editorial Chapter Folio Badge (Small-caps, delicate hairline) */
+.editorial-badge,
 .superr-sticker {
-  border: 2px solid #2B1A07;
-  box-shadow: 2.5px 2.5px 0px #2B1A07;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  background: rgba(252, 250, 247, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(254, 235, 239, 0.2);
+  color: #FEEBEF;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-/* 4. Superr Paper & Card Panels */
+/* 5. Editorial Card Panels (Cream & Midnight Velvet) */
+.editorial-card,
 .superr-card {
-  background: #FDFBF9;
-  color: #2B1A07;
-  border: 2.5px solid #2B1A07;
-  box-shadow: 5px 5px 0px #2B1A07;
+  background: #FCFAF7;
+  color: #2D1117;
+  border: 1px solid rgba(45, 17, 23, 0.12);
+  box-shadow: 0 20px 45px -15px rgba(20, 6, 12, 0.35), 0 4px 12px rgba(0, 0, 0, 0.06);
   border-radius: 1.5rem;
 }
 
+.editorial-card-night,
 .superr-card-night {
-  background: #22152F;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 5px 5px 0px rgba(43, 26, 7, 0.8), 0 10px 30px rgba(0, 0, 0, 0.4);
+  background: rgba(28, 11, 19, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(254, 235, 239, 0.15);
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.65);
   border-radius: 1.5rem;
 }
 
-/* Washi Tape Strip */
+/* Washi / Bookmark Ribbon Accent */
 .washi-tape {
-  background: rgba(254, 243, 199, 0.85);
-  backdrop-filter: blur(4px);
-  border-top: 1px dashed rgba(245, 158, 11, 0.5);
-  border-bottom: 1px dashed rgba(245, 158, 11, 0.5);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  background: rgba(230, 194, 156, 0.25);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(230, 194, 156, 0.4);
+  border-bottom: 1px solid rgba(230, 194, 156, 0.4);
 }
 
-/* Text Glows */
-.text-glow-marker {
-  text-shadow: 0 0 24px rgba(255, 111, 30, 0.6), 0 0 45px rgba(255, 111, 30, 0.3);
+/* Text Glows - Soft & Ambient, Never Harsh */
+.text-glow-marker,
+.text-glow-editorial {
+  text-shadow: 0 0 35px rgba(212, 98, 122, 0.45), 0 0 65px rgba(212, 98, 122, 0.2);
 }
 
-.text-glow-sunshine {
-  text-shadow: 0 0 24px rgba(251, 191, 36, 0.6), 0 0 45px rgba(251, 191, 36, 0.3);
+.text-glow-champagne {
+  text-shadow: 0 0 30px rgba(230, 194, 156, 0.45);
+}
+
+/* Editorial Drop Cap */
+.drop-cap::first-letter {
+  font-family: 'Playfair Display', serif;
+  float: left;
+  font-size: 3.5rem;
+  line-height: 0.85;
+  margin-right: 0.65rem;
+  color: #D4627A;
+  font-style: italic;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #130B1C;
+  background: #12060C;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF6F1E;
+  background: rgba(212, 98, 122, 0.45);
   border-radius: 9999px;
-  border: 1px solid #2B1A07;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4627A;
 }
 
 /* Safe area support for iOS */

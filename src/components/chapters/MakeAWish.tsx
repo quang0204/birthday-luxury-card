@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Wind, Sparkles, ArrowRight, Heart } from 'lucide-react';
+import { Mic, MicOff, Wind, ArrowRight, Sparkles } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
@@ -160,40 +160,41 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative">
-      {/* Fireworks burst when candles extinguished */}
-      {!candlesLit && <Fireworks active={true} burstCount={5} continuous={true} />}
+    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
+      {/* Soft celebration fireworks when extinguished */}
+      {!candlesLit && <Fireworks active={true} burstCount={4} continuous={true} />}
 
-      {/* Superr Chapter Badge */}
+      {/* Editorial Chapter Tag */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, rotate: 1.5 }}
-        animate={{ opacity: 1, scale: 1, rotate: 1.5 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#22C55E] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-2"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="editorial-badge mb-4"
       >
-        <Sparkles size={14} className="text-[#FBBF24]" />
-        <span>Chương IV • Ước Nguyện Tuổi Mới</span>
+        <span>Chapter IV • The Wish</span>
       </motion.div>
 
-      {/* Wish Instructions */}
+      {/* Instructions / Wish Headline */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.1 }}
         className="px-4 mb-2 max-w-md"
       >
-        <h2 className="font-display text-xl sm:text-2xl font-black text-white">
+        <h2 className="font-serif text-2xl sm:text-3xl font-normal leading-snug text-[#FAF4F0] tracking-tight">
           {candlesLit
             ? cfg.makeAWish.title
             : cfg.makeAWish.blownTitle}
         </h2>
-        <p className="text-xs sm:text-sm text-[#F7EFE9]/80 mt-1 font-sans">
+        <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-2 font-sans font-light leading-relaxed">
           {candlesLit
             ? cfg.makeAWish.instructionHold
             : cfg.makeAWish.blownSubtitle}
         </p>
       </motion.div>
 
-      {/* 3D Cake */}
-      <div className="w-full relative my-1">
+      {/* 3D Birthday Cake */}
+      <div className="w-full relative my-2">
         <BirthdayCake3D
           candlesLit={candlesLit}
           isBlowing={isBlowing}
@@ -204,58 +205,58 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           }}
         />
 
-        {/* Ethereal glowing ring when blown */}
+        {/* Ethereal glowing halo ring when candles are blown */}
         {!candlesLit && (
           <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1.4, opacity: [0.8, 0.4, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-0 m-auto w-64 h-64 rounded-full border-2 border-[#FBBF24] shadow-glow-sunshine pointer-events-none"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: [1, 1.3, 1.1], opacity: [0.6, 0.25, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute inset-0 m-auto w-72 h-72 rounded-full border border-[#E6C29C]/40 pointer-events-none"
           />
         )}
       </div>
 
-      {/* Controls & Interaction */}
+      {/* Interaction Controls */}
       {candlesLit ? (
-        <div className="w-full px-6 flex flex-col items-center gap-3 mt-4">
-          {/* Hold Button with visual progress fill and tactile Superr shadow */}
-          <div className="relative w-full sm:w-auto">
+        <div className="w-full px-6 flex flex-col items-center gap-3 mt-3">
+          {/* Refined Hold-to-blow Button with smooth progress */}
+          <div className="relative w-full sm:w-80">
             <button
               onMouseDown={startHolding}
               onMouseUp={stopHolding}
               onTouchStart={startHolding}
               onTouchEnd={stopHolding}
-              className="relative overflow-hidden w-full sm:w-80 px-8 py-4 rounded-full font-display font-black text-base tracking-wide bg-[#FF6F1E] text-white border-2.5 border-[#2B1A07] shadow-sticker hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-sticker-lg active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#2B1A07] select-none cursor-pointer flex items-center justify-center gap-2"
+              className="relative overflow-hidden w-full px-8 py-3.5 rounded-full font-sans font-bold text-xs tracking-[0.14em] uppercase bg-[#D4627A] text-white border border-[#FAF4F0]/25 shadow-lg select-none cursor-pointer flex items-center justify-center gap-2 group transition-all"
             >
-              {/* Progress fill layer */}
+              {/* Progress layer */}
               <div
-                className="absolute inset-0 bg-[#FBBF24] opacity-90 transition-all duration-75 pointer-events-none"
+                className="absolute inset-0 bg-[#E6C29C] transition-all duration-75 pointer-events-none opacity-90"
                 style={{ width: `${blowProgress}%` }}
               />
 
-              <Wind size={22} className="relative z-10 animate-pulse text-[#2B1A07]" />
-              <span className="relative z-10 text-[#2B1A07]">
-                {blowProgress > 0 ? `ĐANG THỔI... ${blowProgress}%` : 'NHẤN GIỮ ĐỂ THỔI NẾN'}
+              <Wind size={16} className="relative z-10 text-white" />
+              <span className="relative z-10 text-white">
+                {blowProgress > 0 ? `Đang Thổi... ${blowProgress}%` : 'Nhấn Giữ Để Thổi Nến'}
               </span>
             </button>
           </div>
 
-          {/* Optional Microphone Toggle */}
+          {/* Optional Mic Toggle */}
           {micSupported && (
             <button
               onClick={toggleMicrophone}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-display font-extrabold transition-all border-2 border-[#2B1A07] cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-sans font-medium transition-all border backdrop-blur-md cursor-pointer ${
                 micActive
-                  ? 'bg-[#FF66CF] text-[#2B1A07] shadow-sticker-sm animate-pulse'
-                  : 'bg-[#FDFBF9] text-[#2B1A07] shadow-sticker-sm hover:translate-x-[-1px] hover:translate-y-[-1px]'
+                  ? 'bg-[#D4627A]/30 text-[#FEEBEF] border-[#D4627A] animate-pulse'
+                  : 'bg-[#FAF4F0]/5 text-[#FAF4F0]/70 border-[#FAF4F0]/15 hover:bg-[#FAF4F0]/10 hover:text-[#FAF4F0]'
               }`}
             >
-              {micActive ? <Mic size={15} /> : <MicOff size={15} />}
+              {micActive ? <Mic size={13} className="text-[#E77C92]" /> : <MicOff size={13} />}
               <span>{micActive ? 'Micro đang lắng nghe tiếng thổi...' : 'Bật Micro để thổi nến'}</span>
             </button>
           )}
 
-          <p className="text-xs text-[#F7EFE9]/50 italic font-sans">
+          <p className="text-[11px] text-[#FAF4F0]/40 font-serif italic tracking-wider">
             {cfg.makeAWish.micFallbackHint}
           </p>
         </div>
@@ -265,20 +266,20 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full px-6 flex flex-col items-center gap-3 mt-4"
+          className="w-full px-6 flex flex-col items-center gap-3 mt-3"
         >
-          <div className="flex items-center gap-2 text-[#FBBF24] text-xs font-display font-black tracking-wider uppercase mb-1">
-            <Heart size={16} className="text-[#FF66CF] fill-[#FF66CF]" />
-            <span>Ước Nguyện Đã Bay Vào Vũ Trụ</span>
-            <Heart size={16} className="text-[#FF66CF] fill-[#FF66CF]" />
+          <div className="flex items-center gap-2 text-[#E77C92] text-xs font-serif italic tracking-wider mb-1">
+            <Sparkles size={14} className="text-[#E6C29C]" />
+            <span>Ước nguyện đã được thắp sáng trên những vì sao</span>
+            <Sparkles size={14} className="text-[#E6C29C]" />
           </div>
 
           <button
             onClick={onProceed}
-            className="superr-btn-primary w-full sm:w-auto px-9 py-4 text-base gap-2.5"
+            className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2"
           >
             <span>{cfg.makeAWish.continueButton}</span>
-            <ArrowRight size={20} />
+            <ArrowRight size={15} />
           </button>
         </motion.div>
       )}

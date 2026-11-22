@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Envelope3D } from '../3d/Envelope3D';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
@@ -29,24 +29,23 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto w-full">
-      {/* Superr Laminated Sticker Badge */}
+    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full px-4">
+      {/* Editorial Chapter Tag */}
       <motion.div
-        initial={{ opacity: 0, y: -20, rotate: -2 }}
-        animate={{ opacity: 1, y: 0, rotate: -2 }}
-        transition={{ duration: 0.5 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF66CF] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-4 select-none"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="editorial-badge mb-5"
       >
-        <Sparkles size={14} className="animate-spin-slow" />
-        <span>{cfg.invitation.badgeText}</span>
+        <span>Chapter I • The Prologue</span>
       </motion.div>
 
-      {/* Main Teaser Titles */}
+      {/* Main Editorial Headline */}
       <motion.h1
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.15 }}
-        className="font-display text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white text-glow-marker"
+        transition={{ duration: 0.7, delay: 0.1 }}
+        className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal leading-[1.2] text-[#FAF4F0] max-w-md tracking-tight"
       >
         {cfg.invitation.teaser}
       </motion.h1>
@@ -54,40 +53,40 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="text-sm sm:text-base text-[#F7EFE9]/85 mt-2 font-sans max-w-xs sm:max-w-sm"
+        transition={{ duration: 0.7, delay: 0.25 }}
+        className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-3 max-w-xs sm:max-w-sm font-sans font-light leading-relaxed tracking-wide"
       >
         {cfg.invitation.subTeaser}
       </motion.p>
 
-      {/* 3D Envelope */}
+      {/* 3D Wax Seal Envelope */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        className="w-full my-2"
+        transition={{ duration: 0.8, delay: 0.35 }}
+        className="w-full my-4"
       >
         <Envelope3D isOpened={isOpened} onOpen={handleOpen} />
       </motion.div>
 
       {/* Action Button */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.55 }}
-        className="mt-4 w-full px-6 flex flex-col items-center gap-3"
+        transition={{ duration: 0.6, delay: 0.45 }}
+        className="mt-2 w-full px-6 flex flex-col items-center gap-3"
       >
         <button
           onClick={handleOpen}
           disabled={isOpened}
-          className="superr-btn-primary w-full sm:w-auto px-9 py-4 text-base gap-2 group disabled:opacity-75 disabled:pointer-events-none"
+          className="btn-editorial-primary px-8 py-3.5 tracking-[0.12em] text-xs uppercase group disabled:opacity-75 disabled:pointer-events-none"
         >
-          <span>{isOpened ? 'ĐANG MỞ MÓN QUÀ...' : cfg.invitation.buttonText}</span>
-          <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform" />
+          <span>{isOpened ? 'Đang Mở Món Quà...' : cfg.invitation.buttonText}</span>
+          <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform ml-1" />
         </button>
 
-        <span className="text-xs text-[#F7EFE9]/50 tracking-wide font-sans">
-          Chạm vào phong bì hoặc nút để bắt đầu ✨
+        <span className="text-[11px] text-[#FAF4F0]/40 font-serif italic tracking-wider">
+          Chạm vào bức thư hoặc nút bấm để bước vào hành trình
         </span>
       </motion.div>
     </div>

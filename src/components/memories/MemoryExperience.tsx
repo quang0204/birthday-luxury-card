@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar } from 'lucide-react';
 import { Memory } from '../../data/memories';
 import { MemoryItem } from '../../config/birthday.config';
 import { useMemorySphere } from '../../hooks/useMemorySphere';
@@ -40,22 +40,22 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
     <div className="relative w-full max-w-4xl mx-auto py-2 px-2 sm:px-4 flex flex-col items-center min-h-[82vh] justify-between">
       {/* 1. Header Section */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-xl mb-1">
-        {/* Superr Chapter Badge */}
+        {/* Editorial Chapter Tag */}
         <motion.div
-          initial={{ opacity: 0, y: -10, rotate: -2 }}
-          animate={{ opacity: 1, y: 0, rotate: -2 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF66CF] text-[#2B1A07] border-2 border-[#2B1A07] shadow-sticker-sm text-xs font-display font-black mb-2 select-none"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="editorial-badge mb-3"
         >
-          <Sparkles size={14} className="text-[#FBBF24]" />
-          <span>CHƯƠNG V • VŨ TRỤ KÝ ỨC</span>
-          <Sparkles size={14} className="text-[#FBBF24]" />
+          <span>Chapter V • Universe of Moments</span>
         </motion.div>
 
         {/* Title */}
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-display text-2xl sm:text-4xl font-black text-white text-glow-marker tracking-wide"
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#FAF4F0]"
         >
           OUR MEMORIES
         </motion.h2>
@@ -63,8 +63,8 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="font-handwriting text-lg sm:text-xl text-[#FF66CF] font-bold mt-0.5"
+          transition={{ delay: 0.15 }}
+          className="font-serif italic text-base sm:text-lg text-[#E77C92] font-normal mt-1"
         >
           "Some moments deserve to live forever."
         </motion.p>
@@ -72,14 +72,14 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="text-xs sm:text-sm text-[#F7EFE9]/85 mt-1 max-w-md font-sans"
+          transition={{ delay: 0.2 }}
+          className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 max-w-md font-sans font-light leading-relaxed"
         >
           Mỗi bức ảnh là một câu chuyện. Hãy xoay quả cầu và tìm lại những khoảnh khắc đáng nhớ nhé.
         </motion.p>
 
         {/* Controls: Drag hint, Counter, Random Memory, View Switcher */}
-        <div className="mt-3 w-full flex justify-center">
+        <div className="mt-3.5 w-full flex justify-center">
           <MemoryControls
             totalCount={memories.length}
             viewMode={viewMode}
@@ -101,57 +101,45 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           />
         </div>
       ) : (
-        /* Alternative 2D Scrapbook Grid */
+        /* Alternative 2D Editorial Photo Grid */
         <div className="relative z-10 w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 my-4">
           {memories.map((item, index) => {
-            const rotation = item.rotation !== undefined ? item.rotation : ((index % 5) - 2) * 1.5;
+            const rotation = item.rotation !== undefined ? item.rotation : ((index % 5) - 2) * 1.2;
 
             return (
               <motion.div
                 key={item.id || index}
-                initial={{ opacity: 0, scale: 0.85, y: 20 }}
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: index * 0.04 }}
-                whileHover={{ scale: 1.05, rotate: 0, y: -4 }}
+                transition={{ duration: 0.4, delay: index * 0.04 }}
+                whileHover={{ scale: 1.03, y: -4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => openDetail(item)}
                 style={{ rotate: `${rotation}deg` }}
-                className="bg-[#FDFBF9] text-[#2B1A07] rounded-2xl p-2.5 sm:p-3.5 border-2.5 border-[#2B1A07] shadow-sticker hover:shadow-sticker-lg transition-all cursor-pointer group flex flex-col justify-between relative select-none"
+                className="bg-[#FCFAF7] text-[#2D1117] rounded-xl p-3 border border-[#2D1117]/15 shadow-md hover:shadow-xl transition-all cursor-pointer group flex flex-col justify-between relative select-none"
               >
-                {/* Washi Tape Strip on Top */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 washi-tape -rotate-1 rounded-sm shadow-sm z-10 flex items-center justify-center">
-                  <span className="text-[9px] font-display font-extrabold text-[#2B1A07]/70">★ PHOTO</span>
-                </div>
-
-                {/* Sticker Emoji */}
-                {item.sticker && (
-                  <div className="absolute -top-2 -right-2 text-2xl z-20 filter drop-shadow transform group-hover:scale-125 transition-transform rotate-6">
-                    {item.sticker}
-                  </div>
-                )}
-
                 {/* Photo Frame */}
-                <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-neutral-900 border-2 border-[#2B1A07] mt-1">
+                <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-neutral-900 border border-[#2D1117]/10">
                   <img
                     src={item.image}
                     alt={item.title}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {item.date && (
-                    <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-md bg-[#FDFBF9]/95 border border-[#2B1A07] text-[#2B1A07] text-[10px] font-display font-extrabold flex items-center gap-1 shadow-sm">
-                      <Calendar size={10} className="text-[#FF6F1E]" />
+                    <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded bg-[#FCFAF7]/95 border border-[#2D1117]/15 text-[#2D1117] text-[10px] font-sans font-semibold flex items-center gap-1 shadow-sm">
+                      <Calendar size={10} className="text-[#D4627A]" />
                       <span className="truncate max-w-[85px]">{item.date}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Handwritten bottom caption */}
-                <div className="pt-2 pb-0.5 text-center">
-                  <h4 className="font-display font-black text-xs sm:text-sm text-[#2B1A07] line-clamp-1">
+                {/* Editorial bottom caption */}
+                <div className="pt-2.5 pb-0.5 text-center">
+                  <h4 className="font-serif font-semibold text-xs sm:text-sm text-[#2D1117] line-clamp-1">
                     {item.title}
                   </h4>
-                  <p className="text-xs text-[#2B1A07]/75 font-handwriting line-clamp-1 mt-0.5">
+                  <p className="text-xs text-[#D4627A] font-serif italic line-clamp-1 mt-0.5">
                     "{item.caption}"
                   </p>
                 </div>
@@ -168,10 +156,10 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
             if (playClick) playClick();
             onProceed();
           }}
-          className="superr-btn-primary w-full sm:w-auto px-9 py-4 text-base gap-2"
+          className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2"
         >
           <span>TIẾP TỤC: THỬ THÁCH SINH NHẬT</span>
-          <ArrowRight size={20} />
+          <ArrowRight size={15} />
         </button>
       </div>
 
