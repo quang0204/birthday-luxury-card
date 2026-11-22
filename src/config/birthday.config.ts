@@ -391,7 +391,7 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
   },
 
   audio: {
-    backgroundMusicUrl: "https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-guitar-chords-and-bells-474.mp3",
+    backgroundMusicUrl: "/audio/birthday-music.mp3",
     defaultVolume: 0.6,
     autoPlayPrompt: true
   }

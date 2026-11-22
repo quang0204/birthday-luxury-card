@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, Sparkles, User, Mail, Image, Music, Plus, Trash2, 
   Upload, Check, QrCode, Eye, RotateCcw, Heart 
 } from 'lucide-react';
 import { BirthdayConfig, MemoryItem } from '../../config/birthday.config';
 import { saveDraftToStorage } from '../../utils/configStorage';
+import { saveCard } from '../../utils/cardLibrary';
 
 interface CardCreatorModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentConfig: BirthdayConfig;
-  onSaveConfig: (updatedConfig: BirthdayConfig) => void;
-  onGenerateQR: (updatedConfig: BirthdayConfig) => void;
+  cardId?: string;
+  onSaveConfig: (updatedConfig: BirthdayConfig, savedCardId?: string) => void;
+  onGenerateQR: (updatedConfig: BirthdayConfig, savedCardId?: string) => void;
 }
 
 const PRESET_MUSIC = [
@@ -33,12 +35,19 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   isOpen,
   onClose,
   currentConfig,
+  cardId,
   onSaveConfig,
   onGenerateQR,
 }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'letter' | 'memories' | 'music'>('info');
   const [formData, setFormData] = useState<BirthdayConfig>(currentConfig);
   const [savedToast, setSavedToast] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(currentConfig);
+    }
+  }, [isOpen, currentConfig]);
 
   if (!isOpen) return null;
 
@@ -122,8 +131,9 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   };
 
   const handleSaveAndPreview = () => {
+    const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
-    onSaveConfig(formData);
+    onSaveConfig(formData, saved.id);
     setSavedToast(true);
     setTimeout(() => {
       setSavedToast(false);
@@ -132,9 +142,10 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   };
 
   const handleGenerateAndShare = () => {
+    const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
-    onSaveConfig(formData);
-    onGenerateQR(formData);
+    onSaveConfig(formData, saved.id);
+    onGenerateQR(formData, saved.id);
   };
 
   return (

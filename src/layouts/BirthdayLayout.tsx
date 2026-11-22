@@ -2,7 +2,7 @@ import React from 'react';
 import { ParticleBackground } from '../components/common/ParticleBackground';
 import { MusicController } from '../components/common/MusicController';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
-import { Sparkles, QrCode, PenTool } from 'lucide-react';
+import { Sparkles, QrCode, PenTool, Layers } from 'lucide-react';
 import { BirthdayConfig } from '../config/birthday.config';
 
 interface BirthdayLayoutProps {
@@ -12,6 +12,7 @@ interface BirthdayLayoutProps {
   onSelectChapter: (chapter: ChapterNumber) => void;
   onOpenQR: () => void;
   onOpenCreator: () => void;
+  onOpenDashboard?: () => void;
   children: React.ReactNode;
 }
 
@@ -22,6 +23,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
   onSelectChapter,
   onOpenQR,
   onOpenCreator,
+  onOpenDashboard,
   children,
 }) => {
   const chapterTitles = [
@@ -78,6 +80,17 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         {/* Creator Studio & QR Controls (Hidden in Recipient Mode) */}
         {!isRecipientMode && (
           <div className="flex items-center gap-2">
+            {onOpenDashboard && (
+              <button
+                onClick={onOpenDashboard}
+                className="px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#FAF4F0]/10 hover:bg-[#FAF4F0]/18 text-[#FAF4F0] border border-[#FAF4F0]/20 backdrop-blur-md transition-all cursor-pointer"
+                title="Quản lý tất cả các thiệp sinh nhật"
+              >
+                <Layers size={12} className="text-[#E77C92]" />
+                <span className="hidden sm:inline">Kho Thiệp</span>
+              </button>
+            )}
+
             <button
               onClick={onOpenCreator}
               className="px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold tracking-wide flex items-center gap-1.5 bg-[#FAF4F0]/10 hover:bg-[#FAF4F0]/18 text-[#FAF4F0] border border-[#FAF4F0]/20 backdrop-blur-md transition-all cursor-pointer"

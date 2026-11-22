@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { BirthdayLayout } from '../layouts/BirthdayLayout';
 import { SceneTransition } from '../components/common/SceneTransition';
 import { SecretInvitation } from '../components/chapters/SecretInvitation';
@@ -13,12 +13,45 @@ import { QRPage } from './QRPage';
 import { CardCreatorModal } from '../components/creator/CardCreatorModal';
 import { useBirthdayExperience } from '../hooks/useBirthdayExperience';
 import { BirthdayConfig } from '../config/birthday.config';
-import { getInitialBirthdayConfig, encodeConfigToUrl } from '../utils/configStorage';
+import { getInitialBirthdayConfig } from '../utils/configStorage';
+import { getCard, encodeCardToUrl, saveCard } from '../utils/cardLibrary';
 
-export const BirthdayPage: React.FC = () => {
-  const [config, setConfig] = useState<BirthdayConfig>(getInitialBirthdayConfig);
+interface BirthdayPageProps {
+  cardId?: string;
+  initialConfig?: BirthdayConfig;
+  onOpenDashboard?: () => void;
+}
+
+export const BirthdayPage: React.FC<BirthdayPageProps> = ({
+  cardId,
+  initialConfig,
+  onOpenDashboard,
+}) => {
+  const [activeCardId, setActiveCardId] = useState<string | undefined>(cardId);
+  const [config, setConfig] = useState<BirthdayConfig>(() => {
+    if (initialConfig) return initialConfig;
+    if (cardId) {
+      const saved = getCard(cardId);
+      if (saved) return saved.config;
+    }
+    return getInitialBirthdayConfig();
+  });
+
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [generatedUrl, setGeneratedUrl] = useState<string>('');
+
+  // Sync if cardId or initialConfig changes
+  useEffect(() => {
+    if (initialConfig) {
+      setConfig(initialConfig);
+    } else if (cardId) {
+      const saved = getCard(cardId);
+      if (saved) {
+        setConfig(saved.config);
+        setActiveCardId(cardId);
+      }
+    }
+  }, [cardId, initialConfig]);
 
   // Detect whether visitor is in pure Recipient Mode (scanned custom QR or clicked ?c= link)
   const isRecipientMode = useMemo(() => {
@@ -39,12 +72,18 @@ export const BirthdayPage: React.FC = () => {
     setIsCreatorOpen(true);
   };
 
-  const handleSaveConfig = (updated: BirthdayConfig) => {
+  const handleSaveConfig = (updated: BirthdayConfig, savedCardId?: string) => {
     setConfig(updated);
+    if (savedCardId) {
+      setActiveCardId(savedCardId);
+    }
   };
 
-  const handleGenerateQR = (updated: BirthdayConfig) => {
-    const url = encodeConfigToUrl(updated);
+  const handleGenerateQR = (updated: BirthdayConfig, savedCardId?: string) => {
+    if (savedCardId) {
+      setActiveCardId(savedCardId);
+    }
+    const url = encodeCardToUrl(updated);
     setGeneratedUrl(url);
     setIsCreatorOpen(false);
     setIsQRModalOpen(true);
@@ -74,7 +113,7 @@ export const BirthdayPage: React.FC = () => {
             onReplay={resetExperience}
             onGoToMemories={() => goToChapter(5)}
             onOpenQRModal={() => {
-              setGeneratedUrl(encodeConfigToUrl(config));
+              setGeneratedUrl(encodeCardToUrl(config));
               setIsQRModalOpen(true);
             }}
             onOpenCreator={handleOpenCreator}
@@ -92,20 +131,22 @@ export const BirthdayPage: React.FC = () => {
       isRecipientMode={isRecipientMode}
       onSelectChapter={goToChapter}
       onOpenQR={() => {
-        setGeneratedUrl(encodeConfigToUrl(config));
+        setGeneratedUrl(encodeCardToUrl(config));
         setIsQRModalOpen(true);
       }}
       onOpenCreator={handleOpenCreator}
+      onOpenDashboard={onOpenDashboard}
     >
       <SceneTransition currentKey={currentChapter}>
         {renderCurrentChapter()}
       </SceneTransition>
 
-      {/* Card Creator Studio Modal (Only opened when requested) */}
+      {/* Card Creator Studio Modal */}
       <CardCreatorModal
         isOpen={isCreatorOpen}
         onClose={() => setIsCreatorOpen(false)}
         currentConfig={config}
+        cardId={activeCardId}
         onSaveConfig={handleSaveConfig}
         onGenerateQR={handleGenerateQR}
       />
@@ -115,7 +156,7 @@ export const BirthdayPage: React.FC = () => {
         isOpen={isQRModalOpen}
         onClose={() => setIsQRModalOpen(false)}
         config={config}
-        initialUrl={generatedUrl || encodeConfigToUrl(config)}
+        initialUrl={generatedUrl || encodeCardToUrl(config)}
       />
     </BirthdayLayout>
   );
