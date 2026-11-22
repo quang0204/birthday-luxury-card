@@ -328,7 +328,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       {/* Interaction Controls */}
       {candlesLit ? (
         <div className="w-full px-4 flex flex-col items-center gap-3 mt-3">
-          {/* STATE 1: Mic not yet enabled (Mandatory Prompt) */}
+          {/* STATE 1: Mic not yet enabled (Mandatory Prompt + Tactile Manual Fallback) */}
           {!micActive && !micDenied && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -344,9 +344,22 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
                 <span>{isRequestingMic ? 'Đang mở micro...' : 'Bật Micro Để Thổi Nến'}</span>
               </button>
 
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-full text-[11px] text-[#FAF4F0]/70 font-sans text-center max-w-sm">
+              {/* Accessible Manual Hold Option for noisy environments or in-app webviews */}
+              <button
+                onMouseDown={startHolding}
+                onMouseUp={stopHolding}
+                onTouchStart={startHolding}
+                onTouchEnd={stopHolding}
+                className="w-full py-2.5 px-4 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.18] border border-white/15 text-white/80 hover:text-white text-xs font-sans font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer select-none"
+                title="Nhấn giữ nút này trong khoảng 1 giây để thổi nến bằng tay"
+              >
+                <Sparkles size={14} className="text-amber-300" />
+                <span>Hoặc nhấn giữ đây để thổi bằng tay</span>
+              </button>
+
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-full text-xs text-[#FAF4F0]/70 font-sans text-center max-w-sm">
                 <span>🌬️</span>
-                <span>Chỉ nhận diện luồng hơi thổi trực tiếp vào mic (tiếng nói chuyện hay tiếng ồn sẽ không được tính)</span>
+                <span>Thổi trực tiếp vào micro hoặc nhấn giữ nút để dập tắt nến</span>
               </div>
             </motion.div>
           )}

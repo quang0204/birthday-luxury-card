@@ -97,10 +97,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] tracking-[0.25em] text-[#E77C92] uppercase font-bold">
+              <span className="text-xs tracking-[0.2em] text-[#E77C92] uppercase font-bold">
                 Bespoke Keepsake Studio
               </span>
-              <span className="text-[10px] text-white/30 font-serif">· Quản lý đa thiệp</span>
+              <span className="text-xs text-white/70 font-sans">· Quản lý đa thiệp</span>
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl text-[#FCFAF7] tracking-tight">
               Bộ Sưu Tập Thiệp Sinh Nhật
@@ -235,7 +235,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       )}
 
                       {/* Meta tags */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4 text-[11px] text-[#FCFAF7]/60">
+                      <div className="flex flex-wrap items-center gap-2 mb-4 text-xs text-[#FCFAF7]/80">
                         {card.config.birthdayDate && (
                           <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
                             <Calendar size={11} className="text-[#E77C92]" />
@@ -301,13 +301,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               initial="hidden"
               animate="show"
               onClick={onCreateNew}
-              className="card-luxury border-2 border-dashed border-white/15 hover:border-[#D4627A]/50 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 text-white/40 hover:text-[#E77C92] hover:bg-white/[0.02] min-h-[260px] group cursor-pointer"
+              className="card-luxury border-2 border-dashed border-white/20 hover:border-[#D4627A]/50 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 text-white/70 hover:text-[#E77C92] hover:bg-white/[0.02] min-h-[260px] group cursor-pointer"
             >
               <div className="w-12 h-12 rounded-2xl border-2 border-dashed border-current flex items-center justify-center group-hover:scale-110 group-hover:rotate-90 transition-all duration-300">
                 <Plus size={22} />
               </div>
-              <span className="font-serif text-base font-medium">Tạo thêm thiệp mới</span>
-              <span className="text-[11px] text-white/40 max-w-[180px] text-center">
+              <span className="font-serif text-base font-medium text-white/90">Tạo thêm thiệp mới</span>
+              <span className="text-xs text-white/60 max-w-[180px] text-center">
                 Thiết kế một thiệp hoàn toàn khác cho người nhận mới
               </span>
             </motion.button>

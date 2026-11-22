@@ -12,8 +12,17 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
 
   return (
     <div 
-      className="relative flex items-center justify-center cursor-pointer select-none py-10"
+      className="relative flex items-center justify-center cursor-pointer select-none py-10 outline-none focus-visible:ring-2 focus-visible:ring-[#D4627A] rounded-2xl"
+      role="button"
+      tabIndex={0}
+      aria-label="Mở phong thư chúc mừng sinh nhật"
       onClick={!isOpened ? onOpen : undefined}
+      onKeyDown={(e) => {
+        if (!isOpened && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ perspective: '1000px' }}

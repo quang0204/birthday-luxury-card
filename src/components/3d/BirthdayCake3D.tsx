@@ -30,11 +30,13 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
 
   return (
     <div
-      className="relative flex items-center justify-center select-none py-10 cursor-pointer"
+      className="relative flex items-center justify-center select-none py-10 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B] rounded-2xl"
       style={{ perspective: '1200px' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onCakeClick}
+      role="region"
+      aria-label="Bánh sinh nhật 3D với nến lung linh"
     >
       {/* Ambient candle flame warm glow aura (gradient optimized) */}
       <div

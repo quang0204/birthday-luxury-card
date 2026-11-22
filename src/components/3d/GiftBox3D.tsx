@@ -13,8 +13,17 @@ export const GiftBox3D: React.FC<GiftBox3DProps> = ({ isOpened, onOpen, recipien
 
   return (
     <div 
-      className="relative flex items-center justify-center cursor-pointer select-none py-12"
+      className="relative flex items-center justify-center cursor-pointer select-none py-12 outline-none focus-visible:ring-2 focus-visible:ring-[#E6C29C] rounded-2xl"
+      role="button"
+      tabIndex={0}
+      aria-label={`Mở hộp quà sinh nhật dành cho ${recipientName}`}
       onClick={!isOpened ? onOpen : undefined}
+      onKeyDown={(e) => {
+        if (!isOpened && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ perspective: '1100px' }}

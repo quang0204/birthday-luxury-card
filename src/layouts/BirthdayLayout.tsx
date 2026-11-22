@@ -39,6 +39,12 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
   const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
+  // Prevent spoilers in recipient mode: keep track of the furthest unlocked chapter
+  const [maxUnlockedChapter, setMaxUnlockedChapter] = React.useState<number>(currentChapter);
+  React.useEffect(() => {
+    setMaxUnlockedChapter((prev) => Math.max(prev, currentChapter));
+  }, [currentChapter]);
+
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-[#12060C] text-[#FAF4F0] flex flex-col justify-between selection:bg-[#D4627A]/30 selection:text-white film-grain">
       {/* Editorial Ambient Rose & Warm Blush Atmosphere (GPU accelerated single-pass gradient) */}
@@ -124,6 +130,20 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
             const num = idx + 1;
             const isCurrent = num === currentChapter;
             const isPassed = num < currentChapter;
+            const isLocked = isRecipientMode && num > maxUnlockedChapter;
+
+            if (isLocked) {
+              return (
+                <button
+                  key={num}
+                  disabled
+                  className="opacity-25 cursor-not-allowed font-serif text-xs tracking-wider py-1.5 px-2 min-w-[30px] rounded flex items-center justify-center text-[#FAF4F0]/30 select-none"
+                  title={`Chương ${roman}: Hãy trải nghiệm tuần tự để mở khóa`}
+                >
+                  {roman}
+                </button>
+              );
+            }
 
             return (
               <button

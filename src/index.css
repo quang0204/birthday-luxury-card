@@ -16,6 +16,7 @@
 
   h1, h2, h3, h4 {
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 }
 
@@ -34,7 +35,7 @@
   background: linear-gradient(135deg, #D4627A 0%, #BE4D66 100%);
   color: #FFFFFF;
   border: 1px solid rgba(254, 235, 239, 0.35);
-  box-shadow: 0 10px 25px -5px rgba(212, 98, 122, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 9999px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
@@ -215,7 +216,7 @@
   background: linear-gradient(135deg, #D4627A 0%, #992244 100%);
   color: #FFFFFF;
   border: 1px solid rgba(254, 235, 239, 0.35);
-  box-shadow: 0 8px 24px -4px rgba(212, 98, 122, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: 9999px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
