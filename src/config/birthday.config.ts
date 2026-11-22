@@ -223,6 +223,46 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
       description: "Dù vui hay buồn, lúc nào bạn cũng mang lại năng lượng tích cực ấm áp cho những người xung quanh.",
       sticker: "✨",
       rotation: 3.5
+    },
+    {
+      id: "mem-5",
+      image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800&auto=format&fit=crop&q=80",
+      date: "Tiệc sinh nhật ấm áp",
+      title: "Nguyện ước tuổi mới",
+      caption: "Bánh kem ngọt ngào và những nụ cười",
+      description: "Những lời chúc tốt đẹp nhất luôn dành cho bạn, mong tuổi mới rực rỡ và luôn hạnh phúc ngập tràn.",
+      sticker: "🎂",
+      rotation: -1.5
+    },
+    {
+      id: "mem-6",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&auto=format&fit=crop&q=80",
+      date: "Chuyến bay mùa thu",
+      title: "Chạm vào những vùng đất mới",
+      caption: "Tuổi trẻ là những chuyến đi bất tận",
+      description: "Cùng nhau xách ba lô lên và đi, ngắm nhìn thế giới bao la và lưu giữ những kỷ niệm đẹp nhất.",
+      sticker: "✈️",
+      rotation: 2.5
+    },
+    {
+      id: "mem-7",
+      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop&q=80",
+      date: "Dạo phố đêm lung linh",
+      title: "Đêm phố thị rực rỡ",
+      caption: "Gió đêm mát rượi và những câu chuyện không hồi kết",
+      description: "Lượn lờ phố phường lúc nửa đêm, ăn những món ăn vỉa hè quen thuộc và cười đùa thoải mái không chút muộn phiền.",
+      sticker: "🌙",
+      rotation: -2.5
+    },
+    {
+      id: "mem-8",
+      image: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=800&auto=format&fit=crop&q=80",
+      date: "Mùa hoa rực rỡ",
+      title: "Phiên bản tuyệt vời nhất",
+      caption: "Luôn xinh đẹp, tự tin và yêu đời nhé",
+      description: "Mong bạn luôn giữ được nét hồn nhiên, sự vui tươi và tỏa sáng rực rỡ như những đóa hoa mùa xuân.",
+      sticker: "🌸",
+      rotation: 3
     }
   ],
 
