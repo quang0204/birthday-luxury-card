@@ -127,6 +127,60 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
     }));
   };
 
+  // Quick preset inspirations for secret letter
+  const applyLetterTemplate = (type: 'friend' | 'lover' | 'family') => {
+    const name = formData.recipientName.trim() || 'Bạn';
+    if (type === 'lover') {
+      setFormData((prev) => ({
+        ...prev,
+        secretLetter: {
+          ...prev.secretLetter,
+          title: `Gửi ${name}, Tình Yêu Của Mình ❤️`,
+          paragraphs: [
+            `Chúc mừng sinh nhật ${name} yêu dấu! Hôm nay là một ngày vô cùng đặc biệt, ngày mà người tuyệt vời nhất trên đời này bước sang tuổi mới.`,
+            `Cảm ơn vì đã luôn ở bên cạnh mình, mang lại cho cuộc sống thật nhiều ấm áp, tiếng cười và những khoảnh khắc dịu dàng khó quên.`,
+            `Bước sang tuổi mới, chúc tình yêu của mình luôn rực rỡ, luôn mỉm cười hạnh phúc và đạt được mọi điều ước mong. Mình sẽ luôn đồng hành cùng ${name} trên mọi nẻo đường!`,
+          ],
+          closing: 'Yêu và thương rất nhiều!',
+          signOff: 'Mãi bên nhau nhé ❤️',
+        },
+      }));
+    } else if (type === 'family') {
+      setFormData((prev) => ({
+        ...prev,
+        secretLetter: {
+          ...prev.secretLetter,
+          title: `Gửi ${name} Kính Yêu 🌸`,
+          paragraphs: [
+            `Nhân ngày sinh nhật của ${name}, con/em xin gửi tới ${name} những lời chúc tốt đẹp và chân thành nhất từ tận đáy lòng.`,
+            `Kính chúc ${name} tuổi mới luôn dồi dào sức khỏe, an yên, hạnh phúc và mỗi ngày trôi qua đều ngập tràn niềm vui cùng tiếng cười.`,
+            `Cảm ơn ${name} vì tất cả sự hy sinh, yêu thương và chở che vô điều kiện dành cho gia đình.`,
+          ],
+          closing: 'Cả nhà luôn yêu thương và kính trọng!',
+          signOff: 'Yêu thương vô vàn ❤️',
+        },
+      }));
+    } else {
+      // friend
+      setFormData((prev) => ({
+        ...prev,
+        secretLetter: {
+          ...prev.secretLetter,
+          title: `Happy Birthday ${name} Bạn Thân! ✨`,
+          paragraphs: [
+            `Chúc mừng sinh nhật ${name}! Chúc bạn bước sang tuổi mới luôn xinh đẹp, rạng rỡ, gặp thật nhiều may mắn và gặt hái được vô vàn thành công rực rỡ.`,
+            `Cảm ơn bạn vì đã luôn là một người bạn tuyệt vời, luôn lắng nghe, chia sẻ và đồng hành cùng mình qua bao nhiêu kỷ niệm đẹp.`,
+            `Hy vọng tuổi mới sẽ mang đến cho bạn thật nhiều cơ hội mới, niềm vui mới và những chuyến đi đáng nhớ!`,
+          ],
+          closing: 'Mãi là bạn tốt của nhau nhé!',
+          signOff: 'Người bạn tri kỷ ✨',
+        },
+      }));
+    }
+    setSaveMessage('Đã áp dụng mẫu lời chúc!');
+    setTimeout(() => setSaveMessage(null), 2500);
+  };
+
   // Memories handlers
   const handleMemoryChange = (index: number, field: keyof MemoryItem, value: string | number) => {
     const newMemories = [...formData.memories];
@@ -172,13 +226,21 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
     }
   };
 
+  const isNewCard = !cardId;
+
   // Save changes directly with immediate notification
   const handleSaveOnly = () => {
+    if (!formData.recipientName.trim()) {
+      setActiveTab('info');
+      setSaveMessage('Vui lòng nhập tên người nhận!');
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
     try {
       const saved = saveCard(formData, cardId);
       saveDraftToStorage(formData);
       onSaveConfig(formData, saved.id);
-      setSaveMessage('Đã lưu thay đổi vào kho thiệp!');
+      setSaveMessage(isNewCard ? 'Đã tạo thiệp mới thành công!' : 'Đã lưu thay đổi vào kho thiệp!');
       setTimeout(() => setSaveMessage(null), 3000);
     } catch (err) {
       console.error('Save failed:', err);
@@ -189,6 +251,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
   // Save changes and navigate to card view
   const handleSaveAndPreview = () => {
+    if (!formData.recipientName.trim()) {
+      setActiveTab('info');
+      setSaveMessage('Vui lòng nhập tên người nhận!');
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
     const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
     onSaveConfig(formData, saved.id);
@@ -201,6 +269,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
   // Save changes and open QR share modal
   const handleGenerateAndShare = () => {
+    if (!formData.recipientName.trim()) {
+      setActiveTab('info');
+      setSaveMessage('Vui lòng nhập tên người nhận!');
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
     const saved = saveCard(formData, cardId);
     saveDraftToStorage(formData);
     onSaveConfig(formData, saved.id);
@@ -232,10 +306,12 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif text-lg sm:text-xl font-normal text-[#FAF4F0] tracking-tight">
-                Xưởng Thiết Kế Thiệp Riêng
+                {isNewCard ? 'Tạo Thiệp Sinh Nhật Mới' : 'Xưởng Thiết Kế Thiệp'}
               </h3>
               <p className="text-xs text-white/60 font-sans font-light">
-                Tùy chỉnh tên, ảnh kỷ niệm, thư tay và xuất bản mã QR riêng
+                {isNewCard
+                  ? 'Tự tay điền người nhận, viết thư bí mật, chọn ảnh kỷ niệm và bài nhạc'
+                  : 'Tùy chỉnh tên, ảnh kỷ niệm, thư tay và xuất bản mã QR riêng'}
               </p>
             </div>
           </div>
@@ -371,6 +447,39 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           {/* TAB 2: BỨC THƯ BÍ MẬT */}
           {activeTab === 'letter' && (
             <div className="space-y-4 animate-fadeIn">
+              {/* Quick Template Inspirations */}
+              <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2">
+                <span className="text-[11px] font-sans text-white/70 block font-medium">
+                  💡 Gợi ý lời chúc theo mẫu (bấm để điền mẫu nhanh & tùy chỉnh theo ý bạn):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => applyLetterTemplate('friend')}
+                    className="px-3 py-1.5 rounded-full text-xs bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 text-white/90 transition-all cursor-pointer font-medium flex items-center gap-1.5"
+                  >
+                    <span>Bạn Thân</span>
+                    <span>✨</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyLetterTemplate('lover')}
+                    className="px-3 py-1.5 rounded-full text-xs bg-rose-500/20 hover:bg-rose-500/35 border border-rose-400/40 text-rose-200 transition-all cursor-pointer font-medium flex items-center gap-1.5"
+                  >
+                    <span>Người Yêu</span>
+                    <span>❤️</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyLetterTemplate('family')}
+                    className="px-3 py-1.5 rounded-full text-xs bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 transition-all cursor-pointer font-medium flex items-center gap-1.5"
+                  >
+                    <span>Gia Đình</span>
+                    <span>🌸</span>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="text-xs font-serif font-medium text-white/80 block mb-1.5 tracking-wide">
                   Tiêu Đề Bức Thư:
@@ -658,21 +767,21 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Primary Save Button */}
+            {/* Primary Save / Create Button */}
             <button
               onClick={handleSaveOnly}
               className="px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] border border-emerald-400/40 text-white font-sans font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-emerald-950/40 transition-all cursor-pointer"
-              title="Lưu tất cả thay đổi vào kho thiệp"
+              title={isNewCard ? 'Tạo thiệp mới và lưu vào kho thiệp' : 'Lưu tất cả thay đổi vào kho thiệp'}
             >
-              {saveMessage ? (
+              {saveMessage && saveMessage.includes('thành công') ? (
                 <>
                   <Check size={16} className="text-white" />
-                  <span>Đã Lưu Xong!</span>
+                  <span>{isNewCard ? 'Đã Tạo Xong!' : 'Đã Lưu Xong!'}</span>
                 </>
               ) : (
                 <>
                   <Save size={16} />
-                  <span>Lưu Thay Đổi</span>
+                  <span>{isNewCard ? 'Tạo Thiệp Mới' : 'Lưu Thay Đổi'}</span>
                 </>
               )}
             </button>
@@ -681,20 +790,20 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             <button
               onClick={handleSaveAndPreview}
               className="btn-glass-interactive px-3.5 sm:px-4 py-2 text-xs sm:text-sm gap-1.5"
-              title="Lưu lại và mở xem trực tiếp thiệp"
+              title={isNewCard ? 'Tạo thiệp và mở trải nghiệm trực tiếp' : 'Lưu lại và mở xem trực tiếp thiệp'}
             >
               <Eye size={15} />
-              <span>Lưu & Mở Thiệp</span>
+              <span>{isNewCard ? 'Tạo & Mở Thiệp' : 'Lưu & Mở Thiệp'}</span>
             </button>
 
             {/* Generate & Share QR Button */}
             <button
               onClick={handleGenerateAndShare}
               className="btn-luxury px-4 sm:px-5 py-2.5 text-xs sm:text-sm gap-1.5"
-              title="Lưu lại và mở mã QR để quét hoặc chia sẻ"
+              title={isNewCard ? 'Tạo thiệp và mở mã QR để quét ngay' : 'Lưu lại và mở mã QR để quét hoặc chia sẻ'}
             >
               <QrCode size={16} />
-              <span className="hidden sm:inline">Lưu & Tạo Mã QR</span>
+              <span className="hidden sm:inline">{isNewCard ? 'Tạo & Lấy Mã QR' : 'Lưu & Tạo Mã QR'}</span>
               <span className="sm:hidden">Mã QR</span>
             </button>
           </div>
