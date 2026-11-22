@@ -173,6 +173,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   <motion.div
                     key={card.id}
                     variants={cardItemVariants}
+                    initial="hidden"
+                    animate="show"
+                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                     layout
                     className="card-luxury group relative bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 hover:border-[#D4627A]/40 rounded-3xl p-6 flex flex-col justify-between cursor-pointer"
                     onClick={() => onOpenCard(card.id)}
@@ -288,6 +291,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             {/* Quick Add Card Card */}
             <motion.button
               variants={cardItemVariants}
+              initial="hidden"
+              animate="show"
               onClick={onCreateNew}
               className="card-luxury border-2 border-dashed border-white/15 hover:border-[#D4627A]/50 rounded-3xl p-6 flex flex-col items-center justify-center gap-3 text-white/40 hover:text-[#E77C92] hover:bg-white/[0.02] min-h-[260px] group cursor-pointer"
             >
