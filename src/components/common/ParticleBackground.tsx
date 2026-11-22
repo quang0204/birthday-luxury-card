@@ -51,7 +51,7 @@ export const ParticleBackground: React.FC = () => {
       'rgba(255, 255, 255, '  // Pure white star
     ];
 
-    const particleCount = Math.min(Math.floor((width * height) / 22000), 45);
+    const particleCount = Math.min(Math.floor((width * height) / 14000), 70);
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {
@@ -64,7 +64,7 @@ export const ParticleBackground: React.FC = () => {
         opacity: Math.random() * 0.7 + 0.2,
         opacitySpeed: (Math.random() * 0.01 + 0.005) * (Math.random() > 0.5 ? 1 : -1),
         color: particleColors[Math.floor(Math.random() * particleColors.length)],
-        isSparkle: i % 7 === 0 // 1 in 7 particles is a 4-point diamond star
+        isSparkle: i % 6 === 0 // 1 in 6 particles is a 4-point diamond star
       });
     }
 
@@ -111,6 +111,8 @@ export const ParticleBackground: React.FC = () => {
         if (p.x > width + 10) p.x = -10;
 
         ctx.fillStyle = `${p.color}${p.opacity})`;
+        ctx.shadowBlur = p.size * 3.5;
+        ctx.shadowColor = `${p.color}0.7)`;
 
         if (p.isSparkle && p.opacity > 0.35) {
           // Delicate 4-point diamond sparkle star
@@ -131,6 +133,7 @@ export const ParticleBackground: React.FC = () => {
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fill();
         }
+        ctx.shadowBlur = 0;
       }
 
       // Render shooting star trail with linear gradient
@@ -147,10 +150,13 @@ export const ParticleBackground: React.FC = () => {
 
         ctx.strokeStyle = grad;
         ctx.lineWidth = 1.6;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
         ctx.beginPath();
         ctx.moveTo(tailX, tailY);
         ctx.lineTo(shootingStar.x, shootingStar.y);
         ctx.stroke();
+        ctx.shadowBlur = 0;
 
         shootingStar.x += cos * shootingStar.speed;
         shootingStar.y += sin * shootingStar.speed;

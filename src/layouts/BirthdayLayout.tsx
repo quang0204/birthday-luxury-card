@@ -47,7 +47,10 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-[#12060C] text-[#FAF4F0] flex flex-col justify-between selection:bg-[#D4627A]/30 selection:text-white film-grain">
-      {/* Editorial Ambient Rose & Warm Blush Atmosphere (GPU accelerated single-pass gradient) */}
+      {/* Ambient Rose & Warm Blush Atmosphere with deep glowing blurs */}
+      <div className="fixed top-0 left-1/3 w-[550px] h-[550px] bg-[#D4627A]/15 rounded-full blur-[160px] pointer-events-none z-0" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-[#E6C29C]/10 rounded-full blur-[170px] pointer-events-none z-0" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-[#541525]/30 rounded-full blur-[200px] pointer-events-none z-0" />
       <div
         className="fixed inset-0 pointer-events-none z-0"
         style={{
