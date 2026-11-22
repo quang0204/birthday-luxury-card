@@ -13,7 +13,7 @@ export function useMemorySphere(
 
   // Normalize memories or fallback to rich default memories
   const memories: Memory[] = useMemo(() => {
-    if (inputMemories && inputMemories.length > 0) {
+    if (Array.isArray(inputMemories)) {
       return inputMemories.map((m, i) => normalizeMemory(m, i));
     }
     return defaultMemories;

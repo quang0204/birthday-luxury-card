@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Calendar } from 'lucide-react';
+import { ArrowRight, Calendar, Sparkles } from 'lucide-react';
 import { Memory } from '../../data/memories';
 import { MemoryItem } from '../../config/birthday.config';
 import { useMemorySphere } from '../../hooks/useMemorySphere';
@@ -90,7 +90,19 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
       </div>
 
       {/* 2. Main Gallery: 3D Mist Orb Photo Sphere OR Flat Scrapbook Grid */}
-      {viewMode === 'sphere' ? (
+      {memories.length === 0 ? (
+        <div className="relative z-10 w-full max-w-md mx-auto my-12 p-8 rounded-3xl bg-white/[0.04] border border-white/10 text-center flex flex-col items-center justify-center gap-4 animate-fadeIn">
+          <div className="w-16 h-16 rounded-2xl bg-[#D4627A]/15 border border-[#D4627A]/30 flex items-center justify-center text-[#E77C92]">
+            <Sparkles size={28} />
+          </div>
+          <div>
+            <h3 className="font-serif text-lg text-[#FCFAF7] mb-1">Chưa Có Ảnh Kỷ Niệm</h3>
+            <p className="text-xs text-[#FCFAF7]/60 leading-relaxed font-sans font-light">
+              Album ảnh kỷ niệm hiện đang trống. Bạn có thể bấm nút <strong>Chỉnh Sửa</strong> ở góc trên để thêm những bức ảnh kỷ niệm tuyệt đẹp của hai bạn nhé!
+            </p>
+          </div>
+        </div>
+      ) : viewMode === 'sphere' ? (
         <div className="relative z-10 w-full flex items-center justify-center my-1">
           <MemorySphere
             memories={memories}

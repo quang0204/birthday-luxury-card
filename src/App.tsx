@@ -60,6 +60,7 @@ export const App: React.FC = () => {
     ];
     newDraft.secretLetter.closing = 'Chúc bạn một ngày sinh nhật thật hạnh phúc!';
     newDraft.secretLetter.signOff = 'Người bạn của bạn ❤️';
+    newDraft.memories = []; // Xóa toàn bộ ảnh mẫu để người dùng tự thêm ảnh riêng
     setEditingConfig(newDraft);
     setEditingCardId(undefined); // undefined indicates creating a brand new card!
     setIsCreatorOpen(true);

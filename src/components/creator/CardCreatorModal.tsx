@@ -191,11 +191,11 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   const addMemory = () => {
     const newItem: MemoryItem = {
       id: `mem-${Date.now()}`,
-      image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800&auto=format&fit=crop&q=80',
-      date: 'Kỷ niệm mới',
-      title: 'Khoảnh khắc đáng nhớ',
-      caption: 'Một ngày thật tuyệt vời cùng nhau',
-      description: 'Chia sẻ kỷ niệm của bạn ở đây...',
+      image: '',
+      date: '',
+      title: '',
+      caption: '',
+      description: '',
       sticker: '✨',
       rotation: Math.floor(Math.random() * 6) - 3,
     };
@@ -203,9 +203,16 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   };
 
   const removeMemory = (index: number) => {
-    if (formData.memories.length <= 1) return;
     const newMemories = formData.memories.filter((_, i) => i !== index);
     setFormData((prev) => ({ ...prev, memories: newMemories }));
+  };
+
+  const clearAllMemories = () => {
+    if (window.confirm('Bạn có chắc muốn xóa toàn bộ ảnh mẫu để tự điền ảnh của mình?')) {
+      setFormData((prev) => ({ ...prev, memories: [] }));
+      setSaveMessage('Đã xóa toàn bộ ảnh!');
+      setTimeout(() => setSaveMessage(null), 2500);
+    }
   };
 
   const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -573,65 +580,115 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <p className="text-xs text-white/70">
-                  Thêm những bức ảnh kỷ niệm vào quả cầu 3D:
+                  {formData.memories.length > 0
+                    ? `Danh sách ảnh kỷ niệm (${formData.memories.length} ảnh):`
+                    : 'Tự thêm các bức ảnh kỷ niệm vào quả cầu 3D:'}
                 </p>
-                <button
-                  onClick={addMemory}
-                  className="text-xs font-sans font-semibold text-white/90 flex items-center gap-1.5 bg-white/[0.06] hover:bg-white/[0.12] px-3.5 py-1.5 rounded-full border border-white/15 cursor-pointer transition-all shadow-sm"
-                >
-                  <Plus size={14} />
-                  <span>Thêm ảnh mới</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  {formData.memories.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={clearAllMemories}
+                      className="text-xs font-sans font-medium text-rose-300 hover:text-rose-200 bg-rose-500/15 hover:bg-rose-500/25 px-3 py-1.5 rounded-full border border-rose-400/30 cursor-pointer transition-all flex items-center gap-1"
+                      title="Xóa toàn bộ ảnh đang có để bắt đầu thêm ảnh mới từ đầu"
+                    >
+                      <Trash2 size={13} />
+                      <span>Xóa hết ảnh</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={addMemory}
+                    className="text-xs font-sans font-semibold text-white/90 flex items-center gap-1.5 bg-white/[0.06] hover:bg-white/[0.12] px-3.5 py-1.5 rounded-full border border-white/15 cursor-pointer transition-all shadow-sm"
+                  >
+                    <Plus size={14} />
+                    <span>Thêm ảnh mới</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                {formData.memories.map((mem, idx) => (
-                  <div
-                    key={mem.id || idx}
-                    className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm relative space-y-3"
+              {formData.memories.length === 0 ? (
+                <div className="p-8 rounded-2xl bg-white/[0.03] border border-dashed border-white/15 text-center flex flex-col items-center justify-center gap-3.5 animate-fadeIn">
+                  <div className="w-14 h-14 rounded-2xl bg-[#D4627A]/15 border border-[#D4627A]/30 flex items-center justify-center text-[#E77C92]">
+                    <Image size={24} />
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-sm sm:text-base text-[#FAF4F0] mb-1">
+                      Chưa có bức ảnh kỷ niệm nào
+                    </h4>
+                    <p className="text-xs text-white/50 max-w-sm font-sans font-light">
+                      Tất cả ảnh mẫu đã được xóa. Bạn hãy thêm các bức ảnh kỷ niệm của riêng mình để đưa vào quả cầu 3D nhé!
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addMemory}
+                    className="btn-luxury px-5 py-2.5 text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-lg shadow-rose-950/40"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-sans font-semibold text-[#FEEBEF] flex items-center gap-1.5 bg-[#D4627A]/20 px-2.5 py-0.5 rounded-full border border-[#D4627A]/40">
-                        <Heart size={12} className="fill-[#D4627A]" />
-                        Ảnh Kỷ Niệm #{idx + 1}
-                      </span>
-                      {formData.memories.length > 1 && (
+                    <Plus size={15} />
+                    <span>+ Thêm Bức Ảnh Kỷ Niệm Đầu Tiên</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {formData.memories.map((mem, idx) => (
+                    <div
+                      key={mem.id || idx}
+                      className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 shadow-sm relative space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-sans font-semibold text-[#FEEBEF] flex items-center gap-1.5 bg-[#D4627A]/20 px-2.5 py-0.5 rounded-full border border-[#D4627A]/40">
+                          <Heart size={12} className="fill-[#D4627A]" />
+                          Ảnh Kỷ Niệm #{idx + 1}
+                        </span>
                         <button
+                          type="button"
                           onClick={() => removeMemory(idx)}
                           className="text-xs font-sans font-medium text-rose-300 hover:text-rose-200 p-1 flex items-center gap-1 cursor-pointer transition-colors"
+                          title="Xóa bức ảnh này"
                         >
                           <Trash2 size={13} />
                           <span>Xóa</span>
                         </button>
-                      )}
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {/* Image Preview & Upload */}
-                      <div className="flex flex-col items-center">
-                        <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-black/40 border border-white/15 relative group">
-                          <img
-                            src={mem.image}
-                            alt={mem.title}
-                            className="w-full h-full object-cover"
-                          />
-                          <label className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity text-xs text-white font-sans font-semibold">
-                            <Upload size={18} className="mb-1" />
-                            <span>Tải ảnh từ máy</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => handleFileUpload(idx, e)}
-                            />
-                          </label>
-                        </div>
-                        <span className="text-[11px] text-white/50 mt-1">
-                          {mem.image.startsWith('data:') ? '📁 Đã lưu từ máy' : '🌐 Ảnh qua link URL'}
-                        </span>
                       </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* Image Preview & Upload */}
+                        <div className="flex flex-col items-center">
+                          <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-black/40 border border-white/15 relative group flex items-center justify-center">
+                            {mem.image ? (
+                              <img
+                                src={mem.image}
+                                alt={mem.title || 'Ảnh kỷ niệm'}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center text-white/40 bg-white/[0.02]">
+                                <Upload size={22} className="mb-1 text-white/50" />
+                                <span className="text-[11px] font-sans font-medium text-white/70">Bấm để tải ảnh</span>
+                              </div>
+                            )}
+                            <label className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity text-xs text-white font-sans font-semibold">
+                              <Upload size={18} className="mb-1" />
+                              <span>{mem.image ? 'Đổi ảnh từ máy' : 'Tải ảnh từ máy'}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => handleFileUpload(idx, e)}
+                              />
+                            </label>
+                          </div>
+                          <span className="text-[11px] text-white/50 mt-1">
+                            {mem.image
+                              ? mem.image.startsWith('data:')
+                                ? '📁 Đã lưu từ máy'
+                                : '🌐 Ảnh qua link URL'
+                              : 'Chưa có ảnh'}
+                          </span>
+                        </div>
 
                       {/* Fields */}
                       <div className="sm:col-span-2 space-y-2">
@@ -683,8 +740,9 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        )}
 
           {/* TAB 4: NHẠC NỀN */}
           {activeTab === 'music' && (
