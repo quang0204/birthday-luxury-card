@@ -8,6 +8,7 @@ import { triggerBirthdayConfetti, triggerContinuousConfetti } from '../../utils/
 
 interface FinalSurpriseProps {
   config?: BirthdayConfig;
+  isRecipientMode?: boolean;
   onReplay: () => void;
   onGoToMemories: () => void;
   onOpenQRModal: () => void;
@@ -16,6 +17,7 @@ interface FinalSurpriseProps {
 
 export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
   config,
+  isRecipientMode = false,
   onReplay,
   onGoToMemories,
   onOpenQRModal,
@@ -51,13 +53,12 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
         // User cancelled or share failed, fallback
       }
     } else {
-      // Fallback copy to clipboard
       try {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
       } catch (e) {
-        window.prompt('Sao chép đường link này để gửi tặng:', window.location.href);
+        window.prompt('Sao chép đường link này để lưu lại:', window.location.href);
       }
     }
   };
@@ -169,23 +170,25 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
               className="w-full sm:w-auto flex-1 min-w-[140px] px-4 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-lavender text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-glow-pink hover:scale-102 transition-all cursor-pointer"
             >
               {copied ? <Check size={16} className="text-emerald-300" /> : <Share2 size={16} />}
-              <span>{copied ? 'Đã sao chép link!' : 'Chia Sẻ Món Quà'}</span>
+              <span>{copied ? 'Đã sao chép link!' : 'Lưu & Chia Sẻ'}</span>
             </button>
 
-            {/* Print Card & QR Page */}
-            <button
-              onClick={() => {
-                playClick();
-                onOpenQRModal();
-              }}
-              className="w-full px-4 py-3 rounded-xl glass-panel text-champagne border border-amber-300/40 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-amber-400/10 transition-all cursor-pointer"
-            >
-              <QrCode size={16} />
-              <span>Thiệp Giấy & Tải Mã QR In</span>
-            </button>
+            {/* Print Card & QR Page (Only for Creator mode) */}
+            {!isRecipientMode && (
+              <button
+                onClick={() => {
+                  playClick();
+                  onOpenQRModal();
+                }}
+                className="w-full px-4 py-3 rounded-xl glass-panel text-champagne border border-amber-300/40 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 hover:bg-amber-400/10 transition-all cursor-pointer"
+              >
+                <QrCode size={16} />
+                <span>Thiệp Giấy & Tải Mã QR In</span>
+              </button>
+            )}
 
-            {/* Create Another Card CTA */}
-            {onOpenCreator && (
+            {/* Create Another Card CTA (Only for Creator mode) */}
+            {!isRecipientMode && onOpenCreator && (
               <button
                 onClick={() => {
                   playClick();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BirthdayLayout } from '../layouts/BirthdayLayout';
 import { SceneTransition } from '../components/common/SceneTransition';
 import { SecretInvitation } from '../components/chapters/SecretInvitation';
@@ -19,6 +19,12 @@ export const BirthdayPage: React.FC = () => {
   const [config, setConfig] = useState<BirthdayConfig>(getInitialBirthdayConfig);
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [generatedUrl, setGeneratedUrl] = useState<string>('');
+
+  // Detect whether visitor is in pure Recipient Mode (scanned custom QR or clicked ?c= link)
+  const isRecipientMode = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).has('c');
+  }, []);
 
   const {
     currentChapter,
@@ -64,6 +70,7 @@ export const BirthdayPage: React.FC = () => {
         return (
           <FinalSurprise
             config={config}
+            isRecipientMode={isRecipientMode}
             onReplay={resetExperience}
             onGoToMemories={() => goToChapter(5)}
             onOpenQRModal={() => {
@@ -82,6 +89,7 @@ export const BirthdayPage: React.FC = () => {
     <BirthdayLayout
       currentChapter={currentChapter}
       config={config}
+      isRecipientMode={isRecipientMode}
       onSelectChapter={goToChapter}
       onOpenQR={() => {
         setGeneratedUrl(encodeConfigToUrl(config));
@@ -93,7 +101,7 @@ export const BirthdayPage: React.FC = () => {
         {renderCurrentChapter()}
       </SceneTransition>
 
-      {/* Card Creator Studio Modal */}
+      {/* Card Creator Studio Modal (Only opened when requested) */}
       <CardCreatorModal
         isOpen={isCreatorOpen}
         onClose={() => setIsCreatorOpen(false)}

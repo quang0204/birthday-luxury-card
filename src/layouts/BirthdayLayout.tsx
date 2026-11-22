@@ -8,6 +8,7 @@ import { BirthdayConfig } from '../config/birthday.config';
 interface BirthdayLayoutProps {
   currentChapter: ChapterNumber;
   config: BirthdayConfig;
+  isRecipientMode?: boolean;
   onSelectChapter: (chapter: ChapterNumber) => void;
   onOpenQR: () => void;
   onOpenCreator: () => void;
@@ -17,6 +18,7 @@ interface BirthdayLayoutProps {
 export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
   currentChapter,
   config,
+  isRecipientMode = false,
   onSelectChapter,
   onOpenQR,
   onOpenCreator,
@@ -63,28 +65,30 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons: Create Card & QR */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Create / Edit Card Studio Button */}
-          <button
-            onClick={onOpenCreator}
-            className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs text-rose-soft hover:text-white transition-all border border-rose-400/30 shadow-sm cursor-pointer"
-            title="Tự tạo hoặc chỉnh sửa thiệp này"
-          >
-            <PenTool size={13} className="text-rose-soft" />
-            <span className="font-medium">Tạo Thiệp</span>
-          </button>
+        {/* Action Buttons: Only show for the creator, NEVER for the recipient scanning the QR */}
+        {!isRecipientMode && (
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Create / Edit Card Studio Button */}
+            <button
+              onClick={onOpenCreator}
+              className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs text-rose-soft hover:text-white transition-all border border-rose-400/30 shadow-sm cursor-pointer"
+              title="Tự tạo hoặc chỉnh sửa thiệp này"
+            >
+              <PenTool size={13} className="text-rose-soft" />
+              <span className="font-medium">Tạo Thiệp</span>
+            </button>
 
-          {/* QR Code quick trigger */}
-          <button
-            onClick={onOpenQR}
-            className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs text-champagne hover:text-white transition-all border border-amber-300/30 shadow-sm cursor-pointer"
-            title="Mở mã QR & thiệp in"
-          >
-            <QrCode size={13} />
-            <span className="hidden sm:inline">Mã QR</span>
-          </button>
-        </div>
+            {/* QR Code quick trigger */}
+            <button
+              onClick={onOpenQR}
+              className="glass-panel px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs text-champagne hover:text-white transition-all border border-amber-300/30 shadow-sm cursor-pointer"
+              title="Mở mã QR & thiệp in"
+            >
+              <QrCode size={13} />
+              <span className="hidden sm:inline">Mã QR</span>
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Chapter Stepper Dots */}
@@ -104,7 +108,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
                   ? 'w-2 bg-purple-400/60'
                   : 'w-1.5 bg-white/20'
               }`}
-              title={`Chuyển đến chương ${num}: ${chapterTitles[num - 1]}`}
+              title={`Chương ${num}: ${chapterTitles[num - 1]}`}
               aria-label={`Chương ${num}`}
             />
           );
@@ -116,17 +120,23 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         {children}
       </main>
 
-      {/* Minimal Footer with Creator CTA */}
+      {/* Minimal Footer: Clean and private for recipient */}
       <footer className="safe-bottom relative z-20 py-4 px-4 text-center text-[11px] text-white/40 font-sans flex flex-col items-center gap-1">
-        <div>
-          Bạn muốn tạo một thiệp sinh nhật tuyệt vời thế này cho người thân?{' '}
-          <button
-            onClick={onOpenCreator}
-            className="text-rose-soft hover:underline font-semibold cursor-pointer ml-1"
-          >
-            Bấm vào đây để tự tạo thiệp miễn phí ✨
-          </button>
-        </div>
+        {!isRecipientMode ? (
+          <div>
+            Bạn muốn tạo một thiệp sinh nhật tuyệt vời thế này cho người thân?{' '}
+            <button
+              onClick={onOpenCreator}
+              className="text-rose-soft hover:underline font-semibold cursor-pointer ml-1"
+            >
+              Bấm vào đây để tự tạo thiệp miễn phí ✨
+            </button>
+          </div>
+        ) : (
+          <div>
+            Món quà kỹ thuật số đặc biệt dành tặng riêng cho <span className="text-rose-soft font-semibold">{config.recipientName}</span> ✨
+          </div>
+        )}
       </footer>
     </div>
   );
