@@ -102,8 +102,14 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       analyser.smoothingTimeConstant = 0.12; // Fast transient response for breath
       analyserRef.current = analyser;
 
+      // Highpass filter at 45Hz to eliminate 0Hz DC bias and microphone turn-on transient pops
+      const highpass = ctx.createBiquadFilter();
+      highpass.type = 'highpass';
+      highpass.frequency.setValueAtTime(45, ctx.currentTime);
+
       const source = ctx.createMediaStreamSource(stream);
-      source.connect(analyser);
+      source.connect(highpass);
+      highpass.connect(analyser);
 
       setMicActive(true);
       setMicDenied(false);
@@ -114,8 +120,19 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       const timeBuffer = new Uint8Array(bufferLength);
       let blowAccumulator = 0;
 
+      // Warmup: wait 1000ms after mic activation so audio hardware settles
+      const readyTimestamp = Date.now() + 1000;
+
       const checkBlow = () => {
         if (!candlesLitRef.current || !analyserRef.current) return;
+
+        // Skip during initial 1000ms calibration period
+        if (Date.now() < readyTimestamp) {
+          setSoundState('idle');
+          setBlowProgress(0);
+          animFrameRef.current = requestAnimationFrame(checkBlow);
+          return;
+        }
 
         analyser.getByteFrequencyData(freqBuffer);
         analyser.getByteTimeDomainData(timeBuffer);
@@ -128,26 +145,26 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         }
         const rms = Math.sqrt(sumSq / bufferLength);
 
-        // 2. Frequency bands:
-        // Sub-bass air turbulence / wind capsule impact (bins 0 to 2: ~0 - 250Hz)
-        const lowEnergy = (freqBuffer[0] + freqBuffer[1] + freqBuffer[2]) / 3;
+        // 2. Wind turbulence: Bins 1 to 3 (~86Hz - 340Hz).
+        // NOTE: Bin 0 is strictly excluded because it represents DC offset (0 Hz)!
+        const windEnergy = (freqBuffer[1] + freqBuffer[2] + freqBuffer[3]) / 3;
 
-        // Speech formant zone (bins 4 to 22: ~340Hz - 1900Hz)
+        // 3. Speech formant zone: Bins 5 to 22 (~430Hz - 1900Hz)
         let speechSum = 0;
-        for (let i = 4; i <= 22; i++) {
+        for (let i = 5; i <= 22; i++) {
           speechSum += freqBuffer[i];
         }
-        const speechEnergy = speechSum / 19;
+        const speechEnergy = speechSum / 18;
 
-        // Breath friction / hiss (bins 35 to 80: ~3000Hz - 7000Hz)
+        // 4. Breath friction hiss: Bins 35 to 80 (~3000Hz - 7000Hz)
         let hissSum = 0;
         for (let i = 35; i <= 80; i++) {
           hissSum += freqBuffer[i];
         }
         const hissEnergy = hissSum / 46;
 
-        // Total volume threshold
-        const hasAudibleSound = rms > 0.035 || lowEnergy > 40 || speechEnergy > 35;
+        // Total audible threshold
+        const hasAudibleSound = rms > 0.04 || windEnergy > 45 || speechEnergy > 38;
 
         if (!hasAudibleSound) {
           // Silence or ambient background
@@ -160,24 +177,26 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         } else {
           // Discriminate: Speech vs Blowing
           // Speech characteristic:
-          // Strong speech formant energy, typically greater than or close to low air turbulence
-          const isSpeech = speechEnergy > 45 && speechEnergy >= lowEnergy * 0.85;
+          // Speech formant energy is high, and formants are close to or exceed wind turbulence
+          const isSpeech = speechEnergy > 48 && speechEnergy >= windEnergy * 0.85;
 
           // Blowing characteristic:
-          // Exhaled air jet slamming mic capsule creates massive sub-bass turbulence (lowEnergy >= 68),
-          // high-frequency friction hiss (hissEnergy >= 16 or huge lowEnergy >= 90),
-          // and lowEnergy strongly outpaces speech formant energy (> 1.15x)
+          // Exhaled air jet hitting the mic capsule MUST create:
+          // 1. High wind turbulence (windEnergy >= 72)
+          // 2. High-frequency breath friction hiss (hissEnergy >= 24)
+          // 3. Wind energy outpaces speech formant energy (> 1.25x)
+          // 4. Not speech
           const isBlowingAir =
-            lowEnergy >= 68 &&
-            lowEnergy > speechEnergy * 1.15 &&
-            (hissEnergy >= 16 || lowEnergy >= 90) &&
+            windEnergy >= 72 &&
+            hissEnergy >= 24 &&
+            windEnergy > speechEnergy * 1.25 &&
             !isSpeech;
 
           if (isBlowingAir) {
             setSoundState('blowing');
             setIsBlowing(true);
-            // Accumulate progress: ~1.0 second of continuous blowing reaches 100%
-            blowAccumulator += 3.2;
+            // Steady accumulation: ~1.0 - 1.2s of continuous sustained blowing (at 60fps, +1.8 per frame)
+            blowAccumulator += 1.8;
             const progress = Math.min(100, Math.round(blowAccumulator));
             setBlowProgress(progress);
 
