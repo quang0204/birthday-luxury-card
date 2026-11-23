@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Wind, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import { Mic, MicOff, Wind, ArrowRight, Sparkles, AlertCircle, Flame, PartyPopper } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
@@ -29,7 +29,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
   const micStreamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  const { playBlowCandle, playFanfare, playFirework } = useAudio();
+  const { playBlowCandle, playFanfare, playFirework, playGiftPop } = useAudio();
 
   // Sync ref with state
   useEffect(() => {
@@ -69,6 +69,23 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       audioContextRef.current = null;
     }
     setMicActive(false);
+  };
+
+  // Re-light candles (Like birthday-cake.online)
+  const handleRelight = () => {
+    candlesLitRef.current = true;
+    setCandlesLit(true);
+    setBlowProgress(0);
+    setIsBlowing(false);
+    playGiftPop();
+  };
+
+  // Celebration cheer (spawns extra waves of fireworks & confetti)
+  const handleCheer = () => {
+    playFanfare();
+    playFirework();
+    triggerBirthdayConfetti();
+    triggerContinuousConfetti(2200);
   };
 
   // Start & activate microphone detection
@@ -312,6 +329,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         <BirthdayCake3D
           candlesLit={candlesLit}
           isBlowing={isBlowing}
+          recipientName={cfg.recipientName}
         />
 
         {/* Ethereal glowing halo ring when candles are blown */}
@@ -465,22 +483,43 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           )}
         </div>
       ) : (
-        /* Continue Button after blowing */
+        /* Post-blowing celebration controls (Inspired by birthday-cake.online) */
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full px-6 flex flex-col items-center gap-3 mt-3"
+          className="w-full px-4 flex flex-col items-center gap-3 mt-3"
         >
-          <div className="flex items-center gap-2 text-[#E77C92] text-xs font-serif italic tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-[#E77C92] text-xs font-serif italic tracking-wider mb-0.5">
             <Sparkles size={14} className="text-[#E6C29C]" />
             <span>Ước nguyện đã được thắp sáng trên những vì sao</span>
             <Sparkles size={14} className="text-[#E6C29C]" />
           </div>
 
+          {/* Interactive Action Buttons */}
+          <div className="flex items-center justify-center gap-2.5 w-full flex-wrap">
+            <button
+              onClick={handleRelight}
+              className="py-2.5 px-4 rounded-full bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-400/30 text-amber-200 text-xs font-sans font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:border-amber-400/50"
+              title="Thắp lại nến trên bánh để trải nghiệm lại"
+            >
+              <Flame size={14} className="text-amber-400" />
+              <span>Thắp Lại Nến</span>
+            </button>
+
+            <button
+              onClick={handleCheer}
+              className="py-2.5 px-4 rounded-full bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-400/30 text-rose-200 text-xs font-sans font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:border-rose-400/50"
+              title="Bắn pháo hoa ăn mừng"
+            >
+              <PartyPopper size={14} className="text-rose-400" />
+              <span>Tung Hoa Ăn Mừng!</span>
+            </button>
+          </div>
+
           <button
             onClick={onProceed}
-            className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2"
+            className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2 mt-1.5"
           >
             <span>{cfg.makeAWish.continueButton}</span>
             <ArrowRight size={15} />

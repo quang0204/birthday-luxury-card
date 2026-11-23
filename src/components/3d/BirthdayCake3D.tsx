@@ -1,186 +1,290 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
+import * as THREE from 'three';
+import { RotateCw, Sparkles } from 'lucide-react';
+import { createCakeMaterials } from './cake/cakeMaterials';
+import { build3DCake, Cake3DHierarchy } from './cake/cakeBuilder';
 
 interface BirthdayCake3DProps {
   candlesLit: boolean;
   isBlowing?: boolean;
   onCakeClick?: () => void;
+  recipientName?: string;
+  className?: string;
 }
 
 export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   candlesLit,
   isBlowing = false,
-  onCakeClick
+  onCakeClick,
+  recipientName = 'You',
+  className = '',
 }) => {
-  const [rotate, setRotate] = useState({ x: 8, y: 0 });
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientY - rect.top) / rect.height - 0.5) * -15 + 8;
-    const y = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-    setRotate({ x, y });
-  };
+  // References for render loop & 3D hierarchy
+  const hierarchyRef = useRef<Cake3DHierarchy | null>(null);
+  const prevLitRef = useRef(candlesLit);
+  const isDraggingRef = useRef(false);
+  const pointerPosRef = useRef({ x: 0, y: 0 });
+  const velocityRef = useRef({ x: 0, y: 0 });
+  const cakeRotationRef = useRef({ x: 0.1, y: 0 });
+  const idleTimerRef = useRef<any>(null);
+  const isUserInteractingRef = useRef(false);
+  const animFrameRef = useRef<number | null>(null);
 
-  const handleMouseLeave = () => {
-    setRotate({ x: 8, y: 0 });
-  };
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  // Sync props to refs
+  const candlesLitRef = useRef(candlesLit);
+  candlesLitRef.current = candlesLit;
+  const isBlowingRef = useRef(isBlowing);
+  isBlowingRef.current = isBlowing;
+
+  // Detect candle extinguish event to spawn smoke burst
+  useEffect(() => {
+    if (prevLitRef.current && !candlesLit) {
+      if (hierarchyRef.current) {
+        hierarchyRef.current.spawnSmokeBurst();
+      }
+    }
+    prevLitRef.current = candlesLit;
+  }, [candlesLit]);
+
+  // Pointer Handlers for 360° Drag & Orbit
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    isUserInteractingRef.current = true;
+    setHasInteracted(true);
+    pointerPosRef.current = { x: e.clientX, y: e.clientY };
+    velocityRef.current = { x: 0, y: 0 };
+
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+
+    const deltaX = e.clientX - pointerPosRef.current.x;
+    const deltaY = e.clientY - pointerPosRef.current.y;
+
+    const sensitivityX = 0.007;
+    const sensitivityY = 0.004;
+
+    const vx = deltaX * sensitivityX;
+    const vy = deltaY * sensitivityY;
+    velocityRef.current = { x: vx, y: vy };
+
+    cakeRotationRef.current.y += vx;
+    // Clamp tilt angle between -0.15 and 0.45 rad (~ -8° to +26°)
+    cakeRotationRef.current.x = Math.max(
+      -0.12,
+      Math.min(0.42, cakeRotationRef.current.x + vy)
+    );
+
+    pointerPosRef.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    isDraggingRef.current = false;
+    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+
+    // Resume gentle auto-orbit after 2.5 seconds of inactivity
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => {
+      isUserInteractingRef.current = false;
+    }, 2500);
+  }, []);
+
+  // Main Three.js Scene Setup & Render Loop
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    let width = container.clientWidth || 340;
+    let height = container.clientHeight || 380;
+
+    // 1. Scene & Camera
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+    // Position camera looking down slightly at the cake center
+    camera.position.set(0, 5.2, 14.8);
+    camera.lookAt(0, 2.3, 0);
+
+    // 2. WebGL Renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+
+    // 3. Ambient & Studio Lighting
+    const ambientLight = new THREE.AmbientLight(0xFFF9F5, 1.1);
+    scene.add(ambientLight);
+
+    // Warm Key Light (Front-Right Sun)
+    const keyLight = new THREE.DirectionalLight(0xFFF4EB, 1.6);
+    keyLight.position.set(6, 12, 9);
+    scene.add(keyLight);
+
+    // Rose Fill Light (Front-Left)
+    const fillLight = new THREE.DirectionalLight(0xFCE7F3, 0.85);
+    fillLight.position.set(-7, 8, 8);
+    scene.add(fillLight);
+
+    // Warm Gold Rim Backlight
+    const rimLight = new THREE.DirectionalLight(0xF59E0B, 0.6);
+    rimLight.position.set(0, 8, -9);
+    scene.add(rimLight);
+
+    // 4. Subtle Ambient Floating Sparkles / Bokeh around the cake
+    const sparkleCount = 36;
+    const sparkleGeom = new THREE.BufferGeometry();
+    const sparklePos = new Float32Array(sparkleCount * 3);
+    for (let i = 0; i < sparkleCount; i++) {
+      sparklePos[i * 3] = (Math.random() - 0.5) * 14;
+      sparklePos[i * 3 + 1] = Math.random() * 9;
+      sparklePos[i * 3 + 2] = (Math.random() - 0.5) * 14;
+    }
+    sparkleGeom.setAttribute('position', new THREE.BufferAttribute(sparklePos, 3));
+    const sparkleMat = new THREE.PointsMaterial({
+      color: 0xFCD34D,
+      size: 0.18,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending,
+    });
+    const sparkles = new THREE.Points(sparkleGeom, sparkleMat);
+    scene.add(sparkles);
+
+    // 5. Build 3D Cake Hierarchy
+    const materials = createCakeMaterials(recipientName);
+    const cakeHierarchy = build3DCake(materials, recipientName);
+    scene.add(cakeHierarchy.rootGroup);
+    hierarchyRef.current = cakeHierarchy;
+
+    // Center cake vertically
+    cakeHierarchy.cakeGroup.position.y = -0.5;
+
+    // 6. Clock & Render Loop
+    const clock = new THREE.Clock();
+
+    const animate = () => {
+      animFrameRef.current = requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
+
+      // Physics / Orbit Inertia
+      if (!isDraggingRef.current) {
+        // Damping velocity
+        velocityRef.current.x *= 0.94;
+        velocityRef.current.y *= 0.94;
+
+        cakeRotationRef.current.y += velocityRef.current.x;
+        cakeRotationRef.current.x += velocityRef.current.y;
+
+        // Auto-orbit when idle
+        if (!isUserInteractingRef.current) {
+          cakeRotationRef.current.y += 0.0035;
+        }
+      }
+
+      // Apply rotation to cake group
+      cakeHierarchy.cakeGroup.rotation.y = cakeRotationRef.current.y;
+      cakeHierarchy.cakeGroup.rotation.x = cakeRotationRef.current.x;
+
+      // Floating gentle bobbing motion
+      cakeHierarchy.cakeGroup.position.y = -0.5 + Math.sin(time * 1.8) * 0.08;
+
+      // Update flame animations & light flicker
+      cakeHierarchy.updateFlames(time, isBlowingRef.current, candlesLitRef.current);
+
+      // Update smoke simulation
+      cakeHierarchy.updateSmoke(delta);
+
+      // Sparkles slow drift
+      sparkles.rotation.y = time * 0.03;
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // 7. Resize Observer
+    const handleResize = () => {
+      if (!container) return;
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+      if (newWidth === 0 || newHeight === 0) return;
+
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newWidth, newHeight);
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+
+    // 8. Cleanup on unmount
+    return () => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      resizeObserver.disconnect();
+
+      cakeHierarchy.dispose();
+      sparkleGeom.dispose();
+      sparkleMat.dispose();
+      renderer.dispose();
+      hierarchyRef.current = null;
+    };
+  }, [recipientName]);
 
   return (
     <div
-      className="relative flex items-center justify-center select-none py-10 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B] rounded-2xl"
-      style={{ perspective: '1200px' }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      ref={containerRef}
+      className={`relative flex flex-col items-center justify-center select-none w-full max-w-sm sm:max-w-md mx-auto h-[380px] sm:h-[430px] touch-none ${className}`}
+      style={{ touchAction: 'none' }}
       onClick={onCakeClick}
       role="region"
-      aria-label="Bánh sinh nhật 3D với nến lung linh"
+      aria-label="Bánh sinh nhật 3D chân thực, có thể xoay 360 độ và thổi nến"
     >
-      {/* Ambient candle flame warm glow aura with blur-3xl */}
+      {/* Three.js Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full cursor-grab active:cursor-grabbing outline-none"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      />
+
+      {/* Warm Ambient Candle Halo Behind Cake */}
       <div
-        className={`absolute w-80 h-80 rounded-full blur-3xl transition-all duration-1000 pointer-events-none ${
+        className={`absolute -z-10 w-72 h-72 rounded-full blur-3xl transition-all duration-1000 pointer-events-none ${
           candlesLit
             ? isBlowing
-              ? 'bg-amber-500/50 scale-125'
-              : 'bg-amber-400/30 scale-110'
-            : 'bg-purple-900/15 scale-75'
+              ? 'bg-amber-500/35 scale-125'
+              : 'bg-amber-400/25 scale-110'
+            : 'bg-rose-950/15 scale-75'
         }`}
       />
 
-      {/* Main 3D Cake Container */}
-      <motion.div
-        animate={{
-          rotateX: rotate.x,
-          rotateY: rotate.y,
-          y: [0, -6, 0]
-        }}
-        transition={{
-          rotateX: { type: 'spring', stiffness: 180, damping: 15 },
-          rotateY: { type: 'spring', stiffness: 180, damping: 15 },
-          y: { repeat: Infinity, duration: 4.5, ease: 'easeInOut' }
-        }}
-        className="relative w-64 sm:w-72 flex flex-col items-center"
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        {/* CANDLES SECTION (3 Candles) */}
-        <div className="relative z-30 flex items-end justify-center gap-6 sm:gap-8 mb-[-6px]">
-          {[0, 1, 2].map((idx) => {
-            const candleHeight = idx === 1 ? 'h-14 sm:h-16' : 'h-12 sm:h-14';
-            const flameDelay = idx * 0.15;
-
-            return (
-              <div key={idx} className="relative flex flex-col items-center">
-                {/* FLAME & SMOKE */}
-                {candlesLit ? (
-                  <motion.div
-                    animate={
-                      isBlowing
-                        ? {
-                            scale: [1, 0.7, 1.2, 0.4],
-                            x: [0, -6, 8, -4],
-                            opacity: [1, 0.7, 0.9, 0.5]
-                          }
-                        : {
-                            scale: [1, 1.08, 0.96, 1.04],
-                            x: [0, -1, 1.5, 0],
-                            rotate: [0, -3, 3, 0]
-                          }
-                    }
-                    transition={{
-                      repeat: Infinity,
-                      duration: isBlowing ? 0.25 : 0.9 + flameDelay,
-                      ease: 'easeInOut'
-                    }}
-                    className="relative w-4 h-7 mb-1 flex items-center justify-center origin-bottom"
-                  >
-                    {/* Outer orange flame */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-amber-500 via-yellow-400 to-rose-400 rounded-full blur-[0.6px] shadow-[0_0_12px_#F59E0B]" />
-                    {/* Inner yellow-white core */}
-                    <div className="absolute w-2 h-4 bottom-0.5 bg-gradient-to-t from-white via-yellow-100 to-transparent rounded-full" />
-                    {/* Blue base spark */}
-                    <div className="absolute w-2.5 h-1.5 bottom-0 bg-blue-500 rounded-full opacity-60 blur-[0.5px]" />
-                  </motion.div>
-                ) : (
-                  /* Smoke particle puff rising when extinguished */
-                  <div className="relative w-4 h-10 mb-1 flex flex-col items-center pointer-events-none">
-                    <motion.div
-                      initial={{ y: 0, opacity: 0.8, scale: 0.5 }}
-                      animate={{ y: -30, opacity: 0, scale: 2, x: (idx - 1) * 8 }}
-                      transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
-                      className="w-2.5 h-2.5 bg-white/40 rounded-full blur-sm"
-                    />
-                    <div className="w-0.5 h-2 bg-neutral-600 rounded-full mt-auto" />
-                  </div>
-                )}
-
-                {/* Candle Wick */}
-                <div className="w-0.5 h-2 bg-neutral-800 rounded-full" />
-
-                {/* Candle Stick */}
-                <div
-                  className={`w-3.5 sm:w-4 ${candleHeight} rounded-t-sm bg-gradient-to-r from-pink-300 via-rose-100 to-pink-400 border border-pink-200/40 shadow-md relative overflow-hidden`}
-                >
-                  {/* Candle decorative diagonal stripes */}
-                  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,rgba(244,63,94,0.4)_4px,rgba(244,63,94,0.4)_8px)]" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* TOP CAKE LAYER (Small Tier) */}
-        <div className="relative z-20 w-44 sm:w-48 h-18 sm:h-20 rounded-2xl bg-gradient-to-b from-[#FFFDF9] via-[#FCE7F3] to-[#FBCFE8] border border-pink-200/60 shadow-xl flex flex-col justify-between overflow-hidden">
-          {/* Top frosting drips */}
-          <div className="h-5 w-full bg-gradient-to-r from-rose-300 via-rose-400 to-pink-300 flex items-center justify-around px-1 shadow-inner">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="w-3.5 h-3.5 bg-rose-300 rounded-full -mb-2 shadow-sm" />
-            ))}
-          </div>
-
-          {/* Strawberry & cherry decor */}
-          <div className="flex justify-around items-center px-4 my-auto">
-            <span className="text-sm filter drop-shadow">🍓</span>
-            <span className="text-xs filter drop-shadow">✨</span>
-            <span className="text-sm filter drop-shadow">🍓</span>
-            <span className="text-xs filter drop-shadow">✨</span>
-            <span className="text-sm filter drop-shadow">🍓</span>
-          </div>
-
-          {/* Cream piping bottom border */}
-          <div className="h-2 w-full bg-gradient-to-r from-pink-200 via-white to-pink-200 opacity-80" />
-        </div>
-
-        {/* BOTTOM CAKE LAYER (Large Tier) */}
-        <div className="relative z-10 w-56 sm:w-64 h-22 sm:h-24 -mt-2 rounded-2xl bg-gradient-to-b from-[#FFFDF9] via-[#FCE7F3] to-[#F472B6] border border-pink-300/70 shadow-2xl flex flex-col justify-between overflow-hidden">
-          {/* Dripping Chocolate/Berry Glaze */}
-          <div className="h-6 w-full bg-gradient-to-r from-[#881337] via-[#9F1239] to-[#881337] flex items-center justify-around px-2 shadow-inner">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="w-4 bg-[#881337] rounded-b-full shadow-sm"
-                style={{ height: `${12 + (i % 3) * 5}px`, marginTop: '4px' }}
-              />
-            ))}
-          </div>
-
-          {/* Golden Pearl Frosting Ornaments */}
-          <div className="flex justify-around items-center px-6 my-auto">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-amber-400 to-amber-100 shadow-glow-gold/40 border border-amber-200/60"
-              />
-            ))}
-          </div>
-
-          {/* Tier base ribbon */}
-          <div className="h-3 w-full bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 shadow-sm" />
-        </div>
-
-        {/* GOLDEN CAKE STAND / PLATTER */}
-        <div className="relative z-0 w-64 sm:w-72 h-5 -mt-1 rounded-full bg-gradient-to-r from-amber-500 via-amber-300 to-amber-600 shadow-[0_12px_30px_rgba(0,0,0,0.6)] border border-amber-200/50 flex items-center justify-center">
-          <div className="w-56 h-1 bg-amber-200/50 rounded-full" />
-        </div>
-      </motion.div>
+      {/* 360° Floor Orbit Guide & Hint */}
+      <div className="absolute bottom-2 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
+        <RotateCw size={12} className="text-[#E6C29C] animate-spin-slow" />
+        <span className="font-light tracking-wide">
+          {hasInteracted ? 'Xoay 360° tự do' : 'Kéo để xoay 360° chiếc bánh'}
+        </span>
+        <Sparkles size={11} className="text-[#E6C29C]" />
+      </div>
     </div>
   );
 };

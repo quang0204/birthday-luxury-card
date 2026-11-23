@@ -81,7 +81,11 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
         transition={{ duration: 0.8, delay: 0.35 }}
         className="w-full my-3"
       >
-        <BirthdayCake3D candlesLit={true} onCakeClick={handleMakeWish} />
+        <BirthdayCake3D
+          candlesLit={true}
+          onCakeClick={handleMakeWish}
+          recipientName={cfg.recipientName}
+        />
       </motion.div>
 
       {/* Action Button */}
