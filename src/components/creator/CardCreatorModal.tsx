@@ -569,17 +569,6 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           {/* TAB 3: ẢNH KỶ NIỆM */}
           {activeTab === 'memories' && (
             <div className="space-y-4 animate-fadeIn">
-              {/* Sharing Advice Banner */}
-              <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-200 text-xs flex items-start gap-2.5 shadow-sm">
-                <Sparkles size={16} className="text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-amber-300 mb-0.5">Mẹo gửi thiệp online & giữ nguyên ảnh:</p>
-                  <p className="text-amber-200/80 leading-relaxed text-[11px]">
-                    Ảnh tải từ máy được lưu an toàn tại trình duyệt này. Khi gửi link chia sẻ (<code className="text-amber-300 font-mono">?c=...</code>), để người nhận mở xem được ảnh cá nhân trên máy họ, bạn có thể <strong>dán link ảnh online (URL)</strong> vào ô bên dưới mỗi ảnh!
-                  </p>
-                </div>
-              </div>
-
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <p className="text-xs text-white/70">
                   {formData.memories.length > 0
