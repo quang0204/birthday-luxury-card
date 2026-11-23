@@ -1,19 +1,35 @@
 import * as THREE from 'three';
 
 /** Procedural striped candle texture */
-export function createCandleTexture(): THREE.CanvasTexture {
+export function createCandleTexture(color: 'rose' | 'gold' | 'blue' = 'rose'): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 128;
   canvas.height = 256;
   const ctx = canvas.getContext('2d')!;
 
+  const bgMap = {
+    rose: '#FFF5F7',
+    gold: '#FFFDF0',
+    blue: '#F0F9FF',
+  };
+  const stripeMap = {
+    rose: '#F472B6',
+    gold: '#F59E0B',
+    blue: '#38BDF8',
+  };
+  const accentMap = {
+    rose: '#F59E0B',
+    gold: '#FEF08A',
+    blue: '#F59E0B',
+  };
+
   // Base pastel background
-  ctx.fillStyle = '#FFF5F7';
+  ctx.fillStyle = bgMap[color] || bgMap.rose;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Diagonal spiral stripes
   ctx.lineWidth = 14;
-  ctx.strokeStyle = '#F472B6'; // Rose pink stripe
+  ctx.strokeStyle = stripeMap[color] || stripeMap.rose;
   for (let y = -canvas.height; y < canvas.height * 2; y += 32) {
     ctx.beginPath();
     ctx.moveTo(-20, y);
@@ -23,7 +39,7 @@ export function createCandleTexture(): THREE.CanvasTexture {
 
   // Thin gold accent line alongside stripe
   ctx.lineWidth = 3;
-  ctx.strokeStyle = '#F59E0B'; // Gold accent
+  ctx.strokeStyle = accentMap[color] || accentMap.rose;
   for (let y = -canvas.height; y < canvas.height * 2; y += 32) {
     ctx.beginPath();
     ctx.moveTo(-20, y + 10);
@@ -151,7 +167,11 @@ export function createSmokeTexture(): THREE.CanvasTexture {
 }
 
 /** High-res bespoke name plaque texture for front of cake */
-export function createPlaqueTexture(recipientName: string = 'Happy Birthday'): THREE.CanvasTexture {
+export function createPlaqueTexture(
+  recipientName: string = 'Happy Birthday',
+  title: string = 'HAPPY BIRTHDAY',
+  subtitle: string = 'MAKE A WISH & BLOW 🎂'
+): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 256;
@@ -200,11 +220,11 @@ export function createPlaqueTexture(recipientName: string = 'Happy Birthday'): T
   ctx.fillText('✦', x + 30, y + h - 24);
   ctx.fillText('✦', x + w - 30, y + h - 24);
 
-  // "Happy Birthday" header text
+  // Header text
   ctx.fillStyle = '#F472B6';
-  ctx.font = '600 24px "Playfair Display", Georgia, serif';
+  ctx.font = '600 22px "Playfair Display", Georgia, serif';
   ctx.letterSpacing = '3px';
-  ctx.fillText('HAPPY BIRTHDAY', canvas.width / 2, y + 68);
+  ctx.fillText(title || 'HAPPY BIRTHDAY', canvas.width / 2, y + 68);
 
   // Recipient Name in glowing gold script
   ctx.fillStyle = '#FFFDF0';
@@ -212,17 +232,17 @@ export function createPlaqueTexture(recipientName: string = 'Happy Birthday'): T
   ctx.shadowBlur = 12;
 
   // Adapt font size if name is long
-  const cleanName = recipientName.trim() || 'You';
-  const nameFontSize = cleanName.length > 16 ? 38 : cleanName.length > 10 ? 46 : 56;
+  const cleanName = (recipientName || 'You').trim();
+  const nameFontSize = cleanName.length > 16 ? 36 : cleanName.length > 10 ? 44 : 54;
   ctx.font = `italic 700 ${nameFontSize}px "Cinzel Decorative", "Playfair Display", Georgia, serif`;
   ctx.fillText(cleanName, canvas.width / 2, y + 140);
 
   ctx.shadowBlur = 0;
 
-  // Bottom sweet wish line
+  // Bottom wish subtitle line
   ctx.fillStyle = '#E6C29C';
-  ctx.font = '500 18px "Inter", sans-serif';
-  ctx.fillText('MAKE A WISH & BLOW 🎂', canvas.width / 2, y + 185);
+  ctx.font = '500 17px "Inter", sans-serif';
+  ctx.fillText(subtitle || 'MAKE A WISH & BLOW 🎂', canvas.width / 2, y + 185);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;

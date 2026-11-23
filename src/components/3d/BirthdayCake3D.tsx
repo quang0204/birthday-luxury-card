@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { RotateCw, Sparkles } from 'lucide-react';
+import { CakeConfig } from '../../config/birthday.config';
 import { createCakeMaterials } from './cake/cakeMaterials';
 import { build3DCake, Cake3DHierarchy } from './cake/cakeBuilder';
 
@@ -10,6 +11,7 @@ interface BirthdayCake3DProps {
   blowProgress?: number;
   onCakeClick?: () => void;
   recipientName?: string;
+  cakeConfig?: CakeConfig;
   className?: string;
 }
 
@@ -19,6 +21,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   blowProgress = 0,
   onCakeClick,
   recipientName = 'You',
+  cakeConfig,
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -169,8 +172,8 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
     scene.add(sparkles);
 
     // 5. Build 3D Cake Hierarchy
-    const materials = createCakeMaterials(recipientName);
-    const cakeHierarchy = build3DCake(materials, recipientName);
+    const materials = createCakeMaterials(recipientName, cakeConfig);
+    const cakeHierarchy = build3DCake(materials, recipientName, cakeConfig);
     scene.add(cakeHierarchy.rootGroup);
     hierarchyRef.current = cakeHierarchy;
 
@@ -254,7 +257,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       renderer.dispose();
       hierarchyRef.current = null;
     };
-  }, [recipientName]);
+  }, [recipientName, JSON.stringify(cakeConfig)]);
 
   return (
     <div

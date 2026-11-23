@@ -130,6 +130,23 @@ export function decodeConfigFromUrl(): Partial<BirthdayConfig> | null {
       memories = data.memories;
     }
 
+    let cake = BIRTHDAY_CONFIG.cake;
+    if (data.ck || data.cake) {
+      const ck = data.ck || data.cake || {};
+      cake = {
+        ...BIRTHDAY_CONFIG.cake,
+        flavor: ck.f || ck.flavor || 'strawberry',
+        candleCount: typeof ck.cc === 'number' ? ck.cc : (ck.candleCount || 3),
+        candleColor: ck.cl || ck.candleColor || 'rose',
+        showStrawberries: ck.sb !== 0 && ck.showStrawberries !== false,
+        showWafers: ck.wf !== 0 && ck.showWafers !== false,
+        showPearls: ck.pl !== 0 && ck.showPearls !== false,
+        plaqueTitle: ck.pt || ck.plaqueTitle || 'HAPPY BIRTHDAY',
+        plaqueName: ck.pn || ck.plaqueName || name,
+        plaqueSubtitle: ck.ps || ck.plaqueSubtitle || 'MAKE A WISH & BLOW 🎂',
+      };
+    }
+
     return {
       recipientName: name,
       recipientNickname: nick,
@@ -143,6 +160,7 @@ export function decodeConfigFromUrl(): Partial<BirthdayConfig> | null {
         signOff: letterSignOff,
       },
       memories,
+      cake,
       audio: {
         ...BIRTHDAY_CONFIG.audio,
         backgroundMusicUrl: data.mu || data.music || BIRTHDAY_CONFIG.audio.backgroundMusicUrl,

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CakeConfig } from '../../../config/birthday.config';
 import {
   createCandleTexture,
   createWaferTexture,
@@ -25,15 +26,48 @@ export interface CakeMaterials {
   disposables: Array<THREE.Material | THREE.Texture>;
 }
 
-export function createCakeMaterials(recipientName: string = 'You'): CakeMaterials {
+const FLAVOR_PALETTES = {
+  strawberry: {
+    tier1: 0xFFF0F5,
+    tier2: 0xFFFDF8,
+    glaze: 0x881337,
+  },
+  chocolate: {
+    tier1: 0x3E1E16,
+    tier2: 0x5C3327,
+    glaze: 0x220F0A,
+  },
+  champagne: {
+    tier1: 0xFAF0E6,
+    tier2: 0xFFFDF8,
+    glaze: 0xD49B4B,
+  },
+  matcha: {
+    tier1: 0xDCEBD6,
+    tier2: 0xF7FAF6,
+    glaze: 0x476A42,
+  },
+};
+
+export function createCakeMaterials(
+  recipientName: string = 'You',
+  cakeConfig?: CakeConfig
+): CakeMaterials {
   const disposables: Array<THREE.Material | THREE.Texture> = [];
 
+  const flavor = cakeConfig?.flavor || 'strawberry';
+  const palette = FLAVOR_PALETTES[flavor] || FLAVOR_PALETTES.strawberry;
+
   // Textures
-  const candleTex = createCandleTexture();
+  const candleTex = createCandleTexture(cakeConfig?.candleColor || 'rose');
   const waferTex = createWaferTexture();
   const flameTex = createFlameTexture();
   const smokeTex = createSmokeTexture();
-  const plaqueTex = createPlaqueTexture(recipientName);
+
+  const plaqueName = cakeConfig?.plaqueName || recipientName || 'You';
+  const plaqueTitle = cakeConfig?.plaqueTitle || 'HAPPY BIRTHDAY';
+  const plaqueSubtitle = cakeConfig?.plaqueSubtitle || 'MAKE A WISH & BLOW 🎂';
+  const plaqueTex = createPlaqueTexture(plaqueName, plaqueTitle, plaqueSubtitle);
 
   disposables.push(candleTex, waferTex, flameTex, smokeTex, plaqueTex);
 
@@ -44,23 +78,23 @@ export function createCakeMaterials(recipientName: string = 'You'): CakeMaterial
     roughness: 0.22,
   });
 
-  // Tier 1 (bottom): Soft pastel blush fondant
+  // Tier 1 (bottom)
   const cakeBaseTier1 = new THREE.MeshStandardMaterial({
-    color: 0xFFF0F5,
+    color: palette.tier1,
     roughness: 0.42,
     metalness: 0.02,
   });
 
-  // Tier 2 (top): Cream ivory fondant
+  // Tier 2 (top)
   const cakeBaseTier2 = new THREE.MeshStandardMaterial({
-    color: 0xFFFDF8,
+    color: palette.tier2,
     roughness: 0.38,
     metalness: 0.02,
   });
 
-  // Flowing berry ganache glaze
+  // Flowing ganache glaze
   const berryGlaze = new THREE.MeshStandardMaterial({
-    color: 0x881337, // Rich rose noir / deep raspberry glaze
+    color: palette.glaze,
     roughness: 0.12,
     metalness: 0.05,
   });

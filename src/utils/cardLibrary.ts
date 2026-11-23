@@ -160,6 +160,24 @@ export function encodeCardToUrl(config: BirthdayConfig, base = getShareBaseUrl()
       }
     }
 
+    // 3D Cake Customization (only encode if customized)
+    if (config.cake) {
+      const ck: Record<string, any> = {};
+      if (config.cake.flavor && config.cake.flavor !== 'strawberry') ck.f = config.cake.flavor;
+      if (config.cake.candleCount && config.cake.candleCount !== 3) ck.cc = config.cake.candleCount;
+      if (config.cake.candleColor && config.cake.candleColor !== 'rose') ck.cl = config.cake.candleColor;
+      if (config.cake.showStrawberries === false) ck.sb = 0;
+      if (config.cake.showWafers === false) ck.wf = 0;
+      if (config.cake.showPearls === false) ck.pl = 0;
+      if (config.cake.plaqueTitle && config.cake.plaqueTitle !== 'HAPPY BIRTHDAY') ck.pt = config.cake.plaqueTitle;
+      if (config.cake.plaqueName && config.cake.plaqueName !== config.recipientName) ck.pn = config.cake.plaqueName;
+      if (config.cake.plaqueSubtitle && config.cake.plaqueSubtitle !== 'MAKE A WISH & BLOW 🎂') ck.ps = config.cake.plaqueSubtitle;
+
+      if (Object.keys(ck).length > 0) {
+        compact.ck = ck;
+      }
+    }
+
     // Background Music
     if (
       config.audio?.backgroundMusicUrl &&

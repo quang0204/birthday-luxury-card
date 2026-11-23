@@ -390,6 +390,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           isBlowing={isBlowing}
           blowProgress={blowProgress}
           recipientName={cfg.recipientName}
+          cakeConfig={cfg.cake}
         />
       </div>
 

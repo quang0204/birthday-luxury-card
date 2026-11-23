@@ -85,6 +85,7 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
           candlesLit={true}
           onCakeClick={handleMakeWish}
           recipientName={cfg.recipientName}
+          cakeConfig={cfg.cake}
         />
       </motion.div>
 

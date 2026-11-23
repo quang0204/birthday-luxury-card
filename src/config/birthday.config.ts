@@ -37,6 +37,18 @@ export interface GameChallenge3Card {
   auraColor: string;
 }
 
+export interface CakeConfig {
+  flavor?: 'strawberry' | 'chocolate' | 'champagne' | 'matcha';
+  candleCount?: number; // 1, 3, 5
+  candleColor?: 'rose' | 'gold' | 'blue';
+  showStrawberries?: boolean;
+  showWafers?: boolean;
+  showPearls?: boolean;
+  plaqueTitle?: string;
+  plaqueName?: string;
+  plaqueSubtitle?: string;
+}
+
 export interface BirthdayConfig {
   // Personal Info
   recipientName: string;
@@ -129,6 +141,9 @@ export interface BirthdayConfig {
     shareTitle: string;
     shareText: string;
   };
+
+  // 3D Birthday Cake Configuration
+  cake?: CakeConfig;
 
   // Music & Audio
   audio: {
@@ -388,6 +403,18 @@ export const BIRTHDAY_CONFIG: BirthdayConfig = {
     credit: "Made with ❤️, just for you.",
     shareTitle: "The Birthday Experience | Món quà sinh nhật đặc biệt",
     shareText: "Một món quà sinh nhật kỹ thuật số tương tác đặc biệt dành tặng bạn!"
+  },
+
+  cake: {
+    flavor: 'strawberry',
+    candleCount: 3,
+    candleColor: 'rose',
+    showStrawberries: true,
+    showWafers: true,
+    showPearls: true,
+    plaqueTitle: 'HAPPY BIRTHDAY',
+    plaqueName: 'Minh Anh',
+    plaqueSubtitle: 'MAKE A WISH & BLOW 🎂',
   },
 
   audio: {

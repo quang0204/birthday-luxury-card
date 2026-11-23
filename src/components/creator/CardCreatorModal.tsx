@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Sparkles, User, Mail, Image, Music, Plus, Trash2, 
-  Upload, Check, QrCode, Eye, RotateCcw, Heart, Save, Link2, AlertCircle
+  Upload, Check, QrCode, Eye, RotateCcw, Heart, Save, Link2, AlertCircle, Cake
 } from 'lucide-react';
-import { BirthdayConfig, MemoryItem } from '../../config/birthday.config';
+import { BirthdayConfig, MemoryItem, CakeConfig } from '../../config/birthday.config';
+import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { saveDraftToStorage } from '../../utils/configStorage';
 import { saveCard } from '../../utils/cardLibrary';
 
@@ -78,7 +79,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
   onSaveAndPreview,
   onGenerateQR,
 }) => {
-  const [activeTab, setActiveTab] = useState<'info' | 'letter' | 'memories' | 'music'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'cake' | 'letter' | 'memories' | 'music'>('info');
   const [formData, setFormData] = useState<BirthdayConfig>(currentConfig);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
@@ -90,6 +91,26 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
 
   const handleTextChange = (field: keyof BirthdayConfig, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCakeChange = (field: keyof CakeConfig, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      cake: {
+        ...(prev.cake || {
+          flavor: 'strawberry',
+          candleCount: 3,
+          candleColor: 'rose',
+          showStrawberries: true,
+          showWafers: true,
+          showPearls: true,
+          plaqueTitle: 'HAPPY BIRTHDAY',
+          plaqueName: prev.recipientName,
+          plaqueSubtitle: 'MAKE A WISH & BLOW 🎂',
+        }),
+        [field]: value,
+      },
+    }));
   };
 
   const handleLetterChange = (field: string, value: string) => {
@@ -354,6 +375,18 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('cake')}
+            className={`px-4 py-2 rounded-full text-xs font-sans font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'cake'
+                ? 'bg-gradient-to-r from-[#D4627A] to-[#BE4D66] text-white shadow-[0_4px_14px_rgba(212,98,122,0.35)] border border-rose-300/30'
+                : 'bg-white/[0.04] text-white/60 hover:text-white hover:bg-white/[0.08] border border-white/10'
+            }`}
+          >
+            <Cake size={14} />
+            <span>2. Bánh 3D 🎂</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('letter')}
             className={`px-4 py-2 rounded-full text-xs font-sans font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
               activeTab === 'letter'
@@ -362,7 +395,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             }`}
           >
             <Mail size={14} />
-            <span>2. Thư Bí Mật</span>
+            <span>3. Thư Bí Mật</span>
           </button>
 
           <button
@@ -374,7 +407,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             }`}
           >
             <Image size={14} />
-            <span>3. Ảnh Kỷ Niệm ({formData.memories.length})</span>
+            <span>4. Kỷ Niệm ({formData.memories.length})</span>
           </button>
 
           <button
@@ -386,7 +419,7 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             }`}
           >
             <Music size={14} />
-            <span>4. Nhạc Nền</span>
+            <span>5. Nhạc Nền</span>
           </button>
         </div>
 
@@ -451,7 +484,235 @@ export const CardCreatorModal: React.FC<CardCreatorModalProps> = ({
             </div>
           )}
 
-          {/* TAB 2: BỨC THƯ BÍ MẬT */}
+          {/* TAB 2: TÙY CHỈNH BÁNH SINH NHẬT 3D */}
+          {activeTab === 'cake' && (
+            <div className="space-y-4 animate-fadeIn font-sans">
+              {/* Live 3D Cake Preview Card */}
+              <div className="relative rounded-2xl bg-gradient-to-b from-[#1C0912]/80 to-[#12050B]/90 border border-white/15 p-3 flex flex-col items-center shadow-xl overflow-hidden">
+                <div className="w-full flex items-center justify-between px-2 mb-1 text-[11px] text-[#FAF4F0]/65">
+                  <span className="flex items-center gap-1 font-serif italic text-rose-300 font-medium">
+                    <Sparkles size={13} className="text-amber-400" />
+                    <span>Xem trước chiếc bánh 3D thời gian thực</span>
+                  </span>
+                  <span className="text-[10px] text-white/50 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+                    Kéo xoay 360° tự do
+                  </span>
+                </div>
+
+                <div className="w-full h-[240px] flex items-center justify-center">
+                  <BirthdayCake3D
+                    candlesLit={true}
+                    recipientName={formData.cake?.plaqueName || formData.recipientName || 'You'}
+                    cakeConfig={formData.cake}
+                    className="h-[240px]"
+                  />
+                </div>
+              </div>
+
+              {/* 1. Chọn Hương Vị / Phong Cách Bánh */}
+              <div>
+                <label className="text-xs font-serif font-medium text-white/90 block mb-2 tracking-wide">
+                  Hương Vị & Phong Cách Bánh:
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    {
+                      id: 'strawberry',
+                      name: 'Strawberry Dream',
+                      desc: 'Dâu Tây & Hoa Hồng',
+                      badge: 'bg-rose-400',
+                    },
+                    {
+                      id: 'chocolate',
+                      name: 'Midnight Cocoa',
+                      desc: 'Sô-cô-la Hoàng Gia',
+                      badge: 'bg-amber-900',
+                    },
+                    {
+                      id: 'champagne',
+                      name: 'Champagne Velvet',
+                      desc: 'Nhung Kem & Vàng',
+                      badge: 'bg-amber-400',
+                    },
+                    {
+                      id: 'matcha',
+                      name: 'Matcha Serenity',
+                      desc: 'Trà Xanh Thanh Khiết',
+                      badge: 'bg-emerald-500',
+                    },
+                  ].map((flavor) => {
+                    const isSelected = (formData.cake?.flavor || 'strawberry') === flavor.id;
+                    return (
+                      <button
+                        key={flavor.id}
+                        type="button"
+                        onClick={() => handleCakeChange('flavor', flavor.id)}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer relative ${
+                          isSelected
+                            ? 'bg-rose-500/20 border-[#E77C92] shadow-[0_0_12px_rgba(231,124,146,0.3)]'
+                            : 'bg-white/[0.03] border-white/10 hover:bg-white/[0.06] hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span className={`w-2.5 h-2.5 rounded-full ${flavor.badge} shrink-0`} />
+                          <span className="text-xs font-semibold text-white truncate">{flavor.name}</span>
+                        </div>
+                        <p className="text-[10px] text-white/60 truncate">{flavor.desc}</p>
+                        {isSelected && (
+                          <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#E77C92]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. Số Lượng Nến & Màu Sọc Nến */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-serif font-medium text-white/90 block mb-1.5 tracking-wide">
+                    Số Lượng Cây Nến:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { count: 1, label: '1 Nến', hint: 'Tối giản' },
+                      { count: 3, label: '3 Nến', hint: 'Cân đối' },
+                      { count: 5, label: '5 Nến', hint: 'Ngôi sao' },
+                    ].map((c) => {
+                      const isSelected = (formData.cake?.candleCount ?? 3) === c.count;
+                      return (
+                        <button
+                          key={c.count}
+                          type="button"
+                          onClick={() => handleCakeChange('candleCount', c.count)}
+                          className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#D4627A]/25 border-[#D4627A] text-white shadow-sm'
+                              : 'bg-white/[0.04] border-white/10 text-white/70 hover:text-white'
+                          }`}
+                        >
+                          <div className="text-xs font-bold">{c.label}</div>
+                          <div className="text-[9px] text-white/50">{c.hint}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-serif font-medium text-white/90 block mb-1.5 tracking-wide">
+                    Họa Tiết Sọc Nến:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'rose', label: 'Hồng Gold', color: 'from-pink-400 to-amber-300' },
+                      { id: 'gold', label: 'Vàng Kim', color: 'from-amber-300 to-yellow-100' },
+                      { id: 'blue', label: 'Xanh Pastel', color: 'from-sky-300 to-amber-200' },
+                    ].map((col) => {
+                      const isSelected = (formData.cake?.candleColor || 'rose') === col.id;
+                      return (
+                        <button
+                          key={col.id}
+                          type="button"
+                          onClick={() => handleCakeChange('candleColor', col.id)}
+                          className={`py-2 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#D4627A]/25 border-[#D4627A] text-white shadow-sm'
+                              : 'bg-white/[0.04] border-white/10 text-white/70 hover:text-white'
+                          }`}
+                        >
+                          <span className={`w-3.5 h-3.5 rounded-full bg-gradient-to-tr ${col.color} border border-white/30`} />
+                          <span className="text-[11px] font-medium">{col.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Bật / Tắt Toppings Trang Trí */}
+              <div>
+                <label className="text-xs font-serif font-medium text-white/90 block mb-1.5 tracking-wide">
+                  Toppings Trang Trí Trên Mặt Bánh:
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { key: 'showStrawberries', label: '🍓 Dâu Tây Tươi', defaultVal: true },
+                    { key: 'showWafers', label: '🥖 Bánh Quế Sô-cô-la', defaultVal: true },
+                    { key: 'showPearls', label: '✨ Ngọc Trai Vàng', defaultVal: true },
+                  ].map((top) => {
+                    const isChecked = formData.cake?.[top.key as keyof CakeConfig] ?? top.defaultVal;
+                    return (
+                      <button
+                        key={top.key}
+                        type="button"
+                        onClick={() => handleCakeChange(top.key as keyof CakeConfig, !isChecked)}
+                        className={`py-2 px-2 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                          isChecked
+                            ? 'bg-emerald-500/15 border-emerald-400/40 text-emerald-200'
+                            : 'bg-white/[0.02] border-white/10 text-white/40 hover:text-white/60'
+                        }`}
+                      >
+                        <span className="text-xs font-medium">{top.label}</span>
+                        <span className="text-[11px]">{isChecked ? '✓' : '✕'}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 4. Khắc Biển Tên Riêng Trên Bánh */}
+              <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3">
+                <div className="flex items-center gap-1.5 text-xs font-serif font-semibold text-amber-200">
+                  <Sparkles size={14} className="text-amber-400" />
+                  <span>Biển Khắc Vàng Gắn Trên Thân Bánh</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] text-white/70 block mb-1">
+                      Tên khắc trên biển (Mặc định theo tên người nhận):
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.cake?.plaqueName ?? formData.recipientName}
+                      onChange={(e) => handleCakeChange('plaqueName', e.target.value)}
+                      placeholder={formData.recipientName || 'Minh Anh'}
+                      className="w-full bg-white/[0.04] border border-white/15 rounded-xl px-3 py-2 text-xs text-[#FAF4F0] placeholder-white/25 focus:outline-none focus:border-[#D4627A]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-white/70 block mb-1">
+                      Tiêu đề phía trên biển:
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.cake?.plaqueTitle ?? 'HAPPY BIRTHDAY'}
+                      onChange={(e) => handleCakeChange('plaqueTitle', e.target.value)}
+                      placeholder="HAPPY BIRTHDAY"
+                      className="w-full bg-white/[0.04] border border-white/15 rounded-xl px-3 py-2 text-xs text-[#FAF4F0] placeholder-white/25 focus:outline-none focus:border-[#D4627A]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] text-white/70 block mb-1">
+                    Dòng chúc nhỏ bên dưới biển:
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.cake?.plaqueSubtitle ?? 'MAKE A WISH & BLOW 🎂'}
+                    onChange={(e) => handleCakeChange('plaqueSubtitle', e.target.value)}
+                    placeholder="MAKE A WISH & BLOW 🎂"
+                    className="w-full bg-white/[0.04] border border-white/15 rounded-xl px-3 py-2 text-xs text-[#FAF4F0] placeholder-white/25 focus:outline-none focus:border-[#D4627A]"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: BỨC THƯ BÍ MẬT */}
           {activeTab === 'letter' && (
             <div className="space-y-4 animate-fadeIn">
               {/* Quick Template Inspirations */}

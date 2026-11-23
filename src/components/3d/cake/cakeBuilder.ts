@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CakeConfig } from '../../../config/birthday.config';
 import { CakeMaterials } from './cakeMaterials';
 
 export interface CandleItem {
@@ -28,7 +29,11 @@ interface SmokeParticle {
   initialScale: number;
 }
 
-export function build3DCake(materials: CakeMaterials, recipientName: string = 'You'): Cake3DHierarchy {
+export function build3DCake(
+  materials: CakeMaterials,
+  recipientName: string = 'You',
+  cakeConfig?: CakeConfig
+): Cake3DHierarchy {
   const rootGroup = new THREE.Group();
   const cakeGroup = new THREE.Group();
   rootGroup.add(cakeGroup);
@@ -218,82 +223,98 @@ export function build3DCake(materials: CakeMaterials, recipientName: string = 'Y
   }
 
   // Fresh 3D Glossy Strawberries (5 strawberries around top tier)
-  const strawberryGeom = new THREE.ConeGeometry(0.32, 0.65, 16);
-  const strawberryTipGeom = new THREE.SphereGeometry(0.28, 14, 14);
-  const calyxLeafGeom = new THREE.ConeGeometry(0.1, 0.3, 5);
-  disposablesGeom.push(strawberryGeom, strawberryTipGeom, calyxLeafGeom);
+  if (cakeConfig?.showStrawberries !== false) {
+    const strawberryGeom = new THREE.ConeGeometry(0.32, 0.65, 16);
+    const strawberryTipGeom = new THREE.SphereGeometry(0.28, 14, 14);
+    const calyxLeafGeom = new THREE.ConeGeometry(0.1, 0.3, 5);
+    disposablesGeom.push(strawberryGeom, strawberryTipGeom, calyxLeafGeom);
 
-  for (let i = 0; i < 5; i++) {
-    const angle = (i / 5) * Math.PI * 2 + 0.32;
-    const sGroup = new THREE.Group();
-    sGroup.position.set(
-      Math.cos(angle) * (tier2Radius - 0.8),
-      tier2TopY + 0.28,
-      Math.sin(angle) * (tier2Radius - 0.8)
-    );
-    // Slight organic tilt towards center
-    sGroup.rotation.z = Math.cos(angle) * 0.25;
-    sGroup.rotation.x = Math.sin(angle) * 0.25;
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * Math.PI * 2 + 0.32;
+      const sGroup = new THREE.Group();
+      sGroup.position.set(
+        Math.cos(angle) * (tier2Radius - 0.8),
+        tier2TopY + 0.28,
+        Math.sin(angle) * (tier2Radius - 0.8)
+      );
+      sGroup.rotation.z = Math.cos(angle) * 0.25;
+      sGroup.rotation.x = Math.sin(angle) * 0.25;
 
-    const sBody = new THREE.Mesh(strawberryGeom, materials.strawberryBody);
-    sBody.rotation.x = Math.PI; // Point tip upward
-    sGroup.add(sBody);
+      const sBody = new THREE.Mesh(strawberryGeom, materials.strawberryBody);
+      sBody.rotation.x = Math.PI;
+      sGroup.add(sBody);
 
-    const sRound = new THREE.Mesh(strawberryTipGeom, materials.strawberryBody);
-    sRound.position.y = -0.12;
-    sGroup.add(sRound);
+      const sRound = new THREE.Mesh(strawberryTipGeom, materials.strawberryBody);
+      sRound.position.y = -0.12;
+      sGroup.add(sRound);
 
-    // Green Calyx leaves radiating
-    for (let l = 0; l < 5; l++) {
-      const leafAngle = (l / 5) * Math.PI * 2;
-      const leaf = new THREE.Mesh(calyxLeafGeom, materials.strawberryLeaf);
-      leaf.position.set(Math.cos(leafAngle) * 0.16, -0.22, Math.sin(leafAngle) * 0.16);
-      leaf.rotation.x = Math.PI / 2 + 0.3;
-      leaf.rotation.y = leafAngle;
-      sGroup.add(leaf);
+      for (let l = 0; l < 5; l++) {
+        const leafAngle = (l / 5) * Math.PI * 2;
+        const leaf = new THREE.Mesh(calyxLeafGeom, materials.strawberryLeaf);
+        leaf.position.set(Math.cos(leafAngle) * 0.16, -0.22, Math.sin(leafAngle) * 0.16);
+        leaf.rotation.x = Math.PI / 2 + 0.3;
+        leaf.rotation.y = leafAngle;
+        sGroup.add(leaf);
+      }
+
+      cakeGroup.add(sGroup);
     }
-
-    cakeGroup.add(sGroup);
   }
 
   // Chocolate Wafer Pirouette Rolls (2 diagonal sticks)
-  const waferGeom = new THREE.CylinderGeometry(0.12, 0.12, 2.2, 16);
-  disposablesGeom.push(waferGeom);
+  if (cakeConfig?.showWafers !== false) {
+    const waferGeom = new THREE.CylinderGeometry(0.12, 0.12, 2.2, 16);
+    disposablesGeom.push(waferGeom);
 
-  const wafer1 = new THREE.Mesh(waferGeom, materials.chocolateWafer);
-  wafer1.position.set(-0.8, tier2TopY + 0.8, 0.4);
-  wafer1.rotation.set(0.4, 0.2, 0.55);
-  cakeGroup.add(wafer1);
+    const wafer1 = new THREE.Mesh(waferGeom, materials.chocolateWafer);
+    wafer1.position.set(-0.8, tier2TopY + 0.8, 0.4);
+    wafer1.rotation.set(0.4, 0.2, 0.55);
+    cakeGroup.add(wafer1);
 
-  const wafer2 = new THREE.Mesh(waferGeom, materials.chocolateWafer);
-  wafer2.position.set(-0.55, tier2TopY + 0.75, 0.65);
-  wafer2.rotation.set(0.35, -0.3, 0.62);
-  cakeGroup.add(wafer2);
+    const wafer2 = new THREE.Mesh(waferGeom, materials.chocolateWafer);
+    wafer2.position.set(-0.55, tier2TopY + 0.75, 0.65);
+    wafer2.rotation.set(0.35, -0.3, 0.62);
+    cakeGroup.add(wafer2);
+  }
 
   // Golden Pearls scattered on top
-  const goldPearlGeom = new THREE.SphereGeometry(0.1, 12, 12);
-  disposablesGeom.push(goldPearlGeom);
-  for (let i = 0; i < 14; i++) {
-    const pearlAngle = i * 2.399; // Golden angle distribution
-    const pearlRadius = 0.5 + Math.sqrt(i / 14) * (tier2Radius - 1.0);
-    const pearl = new THREE.Mesh(goldPearlGeom, materials.goldPearl);
-    pearl.position.set(
-      Math.cos(pearlAngle) * pearlRadius,
-      tier2TopY + 0.08,
-      Math.sin(pearlAngle) * pearlRadius
-    );
-    cakeGroup.add(pearl);
+  if (cakeConfig?.showPearls !== false) {
+    const goldPearlGeom = new THREE.SphereGeometry(0.1, 12, 12);
+    disposablesGeom.push(goldPearlGeom);
+    for (let i = 0; i < 14; i++) {
+      const pearlAngle = i * 2.399; // Golden angle distribution
+      const pearlRadius = 0.5 + Math.sqrt(i / 14) * (tier2Radius - 1.0);
+      const pearl = new THREE.Mesh(goldPearlGeom, materials.goldPearl);
+      pearl.position.set(
+        Math.cos(pearlAngle) * pearlRadius,
+        tier2TopY + 0.08,
+        Math.sin(pearlAngle) * pearlRadius
+      );
+      cakeGroup.add(pearl);
+    }
   }
 
   // ==========================================
   // 5. CANDLES, FLAMES & LIGHTING
   // ==========================================
   const candles: CandleItem[] = [];
-  const candlePositions = [
+  let candlePositions = [
     { x: 0, z: -0.2, h: 1.7 },      // Center main candle
     { x: -1.0, z: -0.5, h: 1.45 },  // Left candle
     { x: 1.0, z: -0.5, h: 1.45 },   // Right candle
   ];
+
+  if (cakeConfig?.candleCount === 1) {
+    candlePositions = [{ x: 0, z: 0, h: 1.8 }];
+  } else if (cakeConfig?.candleCount === 5) {
+    candlePositions = [
+      { x: 0, z: -0.35, h: 1.7 },
+      { x: -1.0, z: -0.55, h: 1.45 },
+      { x: 1.0, z: -0.55, h: 1.45 },
+      { x: -0.65, z: 0.35, h: 1.35 },
+      { x: 0.65, z: 0.35, h: 1.35 },
+    ];
+  }
 
   const wickGeom = new THREE.CylinderGeometry(0.025, 0.025, 0.2, 8);
   disposablesGeom.push(wickGeom);
