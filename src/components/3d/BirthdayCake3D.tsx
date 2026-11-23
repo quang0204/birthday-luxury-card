@@ -77,17 +77,17 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
     const deltaY = e.clientY - pointerPosRef.current.y;
 
     const sensitivityX = 0.007;
-    const sensitivityY = 0.004;
+    const sensitivityY = 0.003;
 
     const vx = deltaX * sensitivityX;
     const vy = deltaY * sensitivityY;
     velocityRef.current = { x: vx, y: vy };
 
     cakeRotationRef.current.y += vx;
-    // Clamp tilt angle between -0.15 and 0.45 rad (~ -8° to +26°)
+    // Tightly clamp vertical tilt angle between -0.08 and 0.20 rad so platter base never cuts off
     cakeRotationRef.current.x = Math.max(
-      -0.12,
-      Math.min(0.42, cakeRotationRef.current.x + vy)
+      -0.08,
+      Math.min(0.20, cakeRotationRef.current.x + vy)
     );
 
     pointerPosRef.current = { x: e.clientX, y: e.clientY };
@@ -117,24 +117,24 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
 
-    // Responsive Camera Fitting: Dynamically adapts camera distance to prevent cake sides from clipping on any aspect ratio
+    // Responsive Camera Fitting: Dynamically adapts camera distance to prevent cake sides & base from clipping on any screen or tilt
     const fitCamera = (w: number, h: number) => {
       const aspect = w / h;
       camera.aspect = aspect;
 
-      // Target bounding volume: fits the 10.0-unit platter and full cake height with ample breathing margins
-      const targetFitWidth = 12.6;
-      const targetFitHeight = 10.4;
+      // Target bounding volume: fits the 10.0-unit platter and full cake height with generous breathing margins
+      const targetFitWidth = 13.5;
+      const targetFitHeight = 12.8;
       const vFovRad = (36 * Math.PI) / 180;
 
       // Distance required to satisfy both horizontal and vertical bounds
       const distH = targetFitWidth / (2 * aspect) / Math.tan(vFovRad / 2);
       const distV = targetFitHeight / 2 / Math.tan(vFovRad / 2);
-      const targetDist = Math.max(distH, distV, 16.5);
+      const targetDist = Math.max(distH, distV, 18.2);
 
       // Elevated angle looking down at cake center
-      camera.position.set(0, targetDist * 0.33, targetDist * 0.94);
-      camera.lookAt(0, 1.9, 0);
+      camera.position.set(0, 2.5 + targetDist * 0.28, targetDist * 0.94);
+      camera.lookAt(0, 2.5, 0);
       camera.updateProjectionMatrix();
     };
 
@@ -197,8 +197,8 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
     scene.add(cakeHierarchy.rootGroup);
     hierarchyRef.current = cakeHierarchy;
 
-    // Center cake vertically
-    cakeHierarchy.cakeGroup.position.y = -0.5;
+    // Center cake vertically with safe upward offset
+    cakeHierarchy.cakeGroup.position.y = 0.15;
 
     // 6. Clock & Render Loop
     const clock = new THREE.Clock();
@@ -212,11 +212,20 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       // Physics / Orbit Inertia
       if (!isDraggingRef.current) {
         // Damping velocity
-        velocityRef.current.x *= 0.94;
-        velocityRef.current.y *= 0.94;
+        velocityRef.current.x *= 0.92;
+        velocityRef.current.y *= 0.90;
 
         cakeRotationRef.current.y += velocityRef.current.x;
         cakeRotationRef.current.x += velocityRef.current.y;
+
+        // Ensure vertical tilt remains within safe boundary even during velocity coasting
+        cakeRotationRef.current.x = Math.max(
+          -0.08,
+          Math.min(0.20, cakeRotationRef.current.x)
+        );
+
+        // Smoothly restore tilt to default resting angle (0.0) when released
+        cakeRotationRef.current.x += (0.0 - cakeRotationRef.current.x) * 0.04;
 
         // Auto-orbit when idle
         if (!isUserInteractingRef.current) {
@@ -228,8 +237,8 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       cakeHierarchy.cakeGroup.rotation.y = cakeRotationRef.current.y;
       cakeHierarchy.cakeGroup.rotation.x = cakeRotationRef.current.x;
 
-      // Floating gentle bobbing motion
-      cakeHierarchy.cakeGroup.position.y = -0.5 + Math.sin(time * 1.8) * 0.08;
+      // Floating gentle bobbing motion elevated safely above platter clipping boundary
+      cakeHierarchy.cakeGroup.position.y = 0.15 + Math.sin(time * 1.8) * 0.05;
 
       // Update flame animations & light flicker with blowProgress
       cakeHierarchy.updateFlames(
@@ -281,7 +290,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col items-center justify-center select-none w-full max-w-md sm:max-w-xl mx-auto h-[380px] sm:h-[430px] touch-none ${className}`}
+      className={`relative flex flex-col items-center justify-center select-none w-full max-w-md sm:max-w-xl mx-auto h-[400px] sm:h-[450px] touch-none ${className}`}
       style={{ touchAction: 'none' }}
       onClick={onCakeClick}
       role="region"
@@ -309,7 +318,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       />
 
       {/* 360° Floor Orbit Guide & Hint */}
-      <div className="absolute bottom-1 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
+      <div className="absolute bottom-1.5 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
         <RotateCw size={12} className="text-[#E6C29C] animate-spin-slow" />
         <span className="font-light tracking-wide">
           {hasInteracted ? 'Xoay 360° tự do' : 'Kéo để xoay 360° chiếc bánh'}
