@@ -112,17 +112,21 @@ export function decodeConfigFromUrl(): Partial<BirthdayConfig> | null {
       data.ls || data.letter?.signOff || BIRTHDAY_CONFIG.secretLetter.signOff;
 
     let memories: MemoryItem[] = BIRTHDAY_CONFIG.memories;
-    if (Array.isArray(data.m) && data.m.length > 0) {
-      memories = data.m.map((item: any, idx: number) => ({
-        id: `mem-${idx}`,
-        image: item.u || item.image || BIRTHDAY_CONFIG.memories[0].image,
-        title: item.t || item.title || 'Khoảnh khắc đáng nhớ',
-        caption: item.c || item.caption || '',
-        description: item.description || item.c || '',
-        date: item.d || item.date || '',
-        sticker: item.s || item.sticker || '✨',
-      }));
-    } else if (Array.isArray(data.memories) && data.memories.length > 0) {
+    if (Array.isArray(data.m)) {
+      if (data.m.length === 0) {
+        memories = [];
+      } else {
+        memories = data.m.map((item: any, idx: number) => ({
+          id: `mem-${idx}`,
+          image: item.u || item.image || '',
+          title: item.t || item.title || 'Khoảnh khắc đáng nhớ',
+          caption: item.c || item.caption || '',
+          description: item.description || item.c || '',
+          date: item.d || item.date || '',
+          sticker: item.s || item.sticker || '✨',
+        }));
+      }
+    } else if (Array.isArray(data.memories)) {
       memories = data.memories;
     }
 

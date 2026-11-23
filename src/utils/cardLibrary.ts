@@ -96,33 +96,78 @@ export function deleteCard(id: string) {
   saveLibrary(loadLibrary().filter((c) => c.id !== id));
 }
 
+/**
+ * Resolves the appropriate base URL for QR code and public sharing.
+ * If running on localhost or loopback, defaults to public production Vercel URL
+ * so phone cameras can scan and open the card immediately.
+ */
+export function getShareBaseUrl(): string {
+  if (typeof window === 'undefined') return 'https://birthday-luxury-card.vercel.app';
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'https://birthday-luxury-card.vercel.app';
+  }
+  return window.location.origin;
+}
+
 /** Encode a config to shareable URL (?c=...) */
-export function encodeCardToUrl(config: BirthdayConfig, base = typeof window !== 'undefined' ? window.location.origin : ''): string {
+export function encodeCardToUrl(config: BirthdayConfig, base = getShareBaseUrl()): string {
   try {
-    const compact = {
+    // Check if memories are identical to default template memories
+    const isDefaultMemories =
+      config.memories &&
+      config.memories.length === BIRTHDAY_CONFIG.memories.length &&
+      config.memories.every((m, idx) => m.image === BIRTHDAY_CONFIG.memories[idx]?.image);
+
+    const compact: Record<string, any> = {
       n: config.recipientName,
-      k: config.recipientNickname,
-      d: config.birthdayDate,
-      by: config.birthYear,
-      s: config.senderName,
-      lt: config.secretLetter?.title,
-      lp: config.secretLetter?.paragraphs,
-      lc: config.secretLetter?.closing,
-      ls: config.secretLetter?.signOff,
-      m: config.memories
-        ?.filter((item) => item && !item.image.startsWith('data:'))
-        .map((item) => ({
-          u: item.image,
-          t: item.title,
-          c: item.caption,
-          d: item.date,
-          s: item.sticker,
-        })),
-      mu:
-        config.audio?.backgroundMusicUrl !== BIRTHDAY_CONFIG.audio.backgroundMusicUrl
-          ? config.audio?.backgroundMusicUrl
-          : undefined,
     };
+
+    if (config.recipientNickname) compact.k = config.recipientNickname;
+    if (config.birthdayDate) compact.d = config.birthdayDate;
+    if (config.birthYear) compact.by = config.birthYear;
+    if (config.senderName && config.senderName !== BIRTHDAY_CONFIG.senderName) compact.s = config.senderName;
+
+    // Secret Letter: only include if customized
+    if (config.secretLetter) {
+      if (config.secretLetter.title && config.secretLetter.title !== BIRTHDAY_CONFIG.secretLetter.title) {
+        compact.lt = config.secretLetter.title;
+      }
+      if (Array.isArray(config.secretLetter.paragraphs) && config.secretLetter.paragraphs.length > 0) {
+        compact.lp = config.secretLetter.paragraphs;
+      }
+      if (config.secretLetter.closing && config.secretLetter.closing !== BIRTHDAY_CONFIG.secretLetter.closing) {
+        compact.lc = config.secretLetter.closing;
+      }
+      if (config.secretLetter.signOff && config.secretLetter.signOff !== BIRTHDAY_CONFIG.secretLetter.signOff) {
+        compact.ls = config.secretLetter.signOff;
+      }
+    }
+
+    // Memories
+    if (Array.isArray(config.memories)) {
+      if (config.memories.length === 0) {
+        compact.m = [];
+      } else if (!isDefaultMemories) {
+        compact.m = config.memories
+          .filter((item) => item && !item.image.startsWith('data:'))
+          .map((item) => ({
+            u: item.image,
+            t: item.title,
+            c: item.caption,
+            d: item.date,
+            s: item.sticker,
+          }));
+      }
+    }
+
+    // Background Music
+    if (
+      config.audio?.backgroundMusicUrl &&
+      config.audio.backgroundMusicUrl !== BIRTHDAY_CONFIG.audio.backgroundMusicUrl
+    ) {
+      compact.mu = config.audio.backgroundMusicUrl;
+    }
+
     const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(compact));
     return `${base}/?c=${compressed}`;
   } catch {
