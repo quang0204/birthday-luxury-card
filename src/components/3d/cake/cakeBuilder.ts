@@ -15,7 +15,7 @@ export interface Cake3DHierarchy {
   candles: CandleItem[];
   smokeGroup: THREE.Group;
   spawnSmokeBurst: () => void;
-  updateFlames: (time: number, isBlowing: boolean, candlesLit: boolean) => void;
+  updateFlames: (time: number, isBlowing: boolean, candlesLit: boolean, blowProgress?: number) => void;
   updateSmoke: (delta: number) => void;
   dispose: () => void;
 }
@@ -413,7 +413,12 @@ export function build3DCake(materials: CakeMaterials, recipientName: string = 'Y
   // ==========================================
   // 7. FLAME DYNAMICS (Flicker, Sway & Blow)
   // ==========================================
-  const updateFlames = (time: number, isBlowing: boolean, candlesLit: boolean) => {
+  const updateFlames = (
+    time: number,
+    isBlowing: boolean,
+    candlesLit: boolean,
+    blowProgress: number = 0
+  ) => {
     candles.forEach((c, idx) => {
       if (!candlesLit) {
         c.flame.visible = false;
@@ -423,13 +428,21 @@ export function build3DCake(materials: CakeMaterials, recipientName: string = 'Y
 
       c.flame.visible = true;
 
-      if (isBlowing) {
+      if (isBlowing || blowProgress > 0) {
+        const p = Math.min(1, Math.max(0, blowProgress / 100));
         // Strong violent flicker & sideways deflection under breath wind
-        const blowNoise = Math.sin(time * 30 + idx * 2.5);
-        const deflection = 0.25 + Math.sin(time * 22) * 0.15;
+        const blowNoise = Math.sin(time * 36 + idx * 3);
+        const deflection = (0.2 + p * 0.35) * (1 + blowNoise * 0.25);
         c.flame.position.x = deflection;
-        c.flame.scale.set(0.55 + blowNoise * 0.2, 0.95 + blowNoise * 0.3, 1);
-        c.light.intensity = 1.0 + blowNoise * 0.6;
+
+        // As blow progress increases, flame compresses and shrinks
+        const shrinkFactor = Math.max(0.35, 1.0 - p * 0.6);
+        c.flame.scale.set(
+          (0.68 + blowNoise * 0.2) * shrinkFactor,
+          (1.25 + blowNoise * 0.3) * shrinkFactor,
+          1
+        );
+        c.light.intensity = Math.max(0.3, (1.8 - p * 1.3) + blowNoise * 0.4);
         c.light.color.setHex(0xF59E0B);
       } else {
         // Gentle warm natural flicker

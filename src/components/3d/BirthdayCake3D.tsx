@@ -7,6 +7,7 @@ import { build3DCake, Cake3DHierarchy } from './cake/cakeBuilder';
 interface BirthdayCake3DProps {
   candlesLit: boolean;
   isBlowing?: boolean;
+  blowProgress?: number;
   onCakeClick?: () => void;
   recipientName?: string;
   className?: string;
@@ -15,6 +16,7 @@ interface BirthdayCake3DProps {
 export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   candlesLit,
   isBlowing = false,
+  blowProgress = 0,
   onCakeClick,
   recipientName = 'You',
   className = '',
@@ -40,6 +42,8 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   candlesLitRef.current = candlesLit;
   const isBlowingRef = useRef(isBlowing);
   isBlowingRef.current = isBlowing;
+  const blowProgressRef = useRef(blowProgress);
+  blowProgressRef.current = blowProgress;
 
   // Detect candle extinguish event to spawn smoke burst
   useEffect(() => {
@@ -204,8 +208,13 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       // Floating gentle bobbing motion
       cakeHierarchy.cakeGroup.position.y = -0.5 + Math.sin(time * 1.8) * 0.08;
 
-      // Update flame animations & light flicker
-      cakeHierarchy.updateFlames(time, isBlowingRef.current, candlesLitRef.current);
+      // Update flame animations & light flicker with blowProgress
+      cakeHierarchy.updateFlames(
+        time,
+        isBlowingRef.current,
+        candlesLitRef.current,
+        blowProgressRef.current
+      );
 
       // Update smoke simulation
       cakeHierarchy.updateSmoke(delta);

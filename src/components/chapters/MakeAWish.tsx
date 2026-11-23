@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Wind, ArrowRight, Sparkles, AlertCircle, Flame, PartyPopper } from 'lucide-react';
+import { Wind, ArrowRight, Sparkles, Flame, PartyPopper } from 'lucide-react';
 import { BirthdayCake3D } from '../3d/BirthdayCake3D';
 import { Fireworks } from '../common/Fireworks';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
@@ -28,6 +28,11 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const animFrameRef = useRef<number | null>(null);
+
+  // Equalizer direct DOM refs for buttery 60 FPS performance without React re-renders
+  const eqBarsRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const pillBarsRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const acousticRingRef = useRef<HTMLDivElement | null>(null);
 
   const { playBlowCandle, playFanfare, playFirework, playGiftPop } = useAudio();
 
@@ -71,12 +76,13 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
     setMicActive(false);
   };
 
-  // Re-light candles (Like birthday-cake.online)
+  // Re-light candles (Inspired by birthday-cake.online)
   const handleRelight = () => {
     candlesLitRef.current = true;
     setCandlesLit(true);
     setBlowProgress(0);
     setIsBlowing(false);
+    setSoundState('idle');
     playGiftPop();
   };
 
@@ -90,6 +96,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
 
   // Start & activate microphone detection
   const startMicrophone = async () => {
+    if (micActive || isRequestingMic) return;
     setIsRequestingMic(true);
     try {
       // Disable noiseSuppression & echoCancellation so physical breath turbulence isn't filtered out
@@ -137,19 +144,14 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       const timeBuffer = new Uint8Array(bufferLength);
       let blowAccumulator = 0;
 
-      // Warmup: wait 1000ms after mic activation so audio hardware settles
-      const readyTimestamp = Date.now() + 1000;
+      // Warmup: wait 900ms after mic activation so audio hardware settles
+      const readyTimestamp = Date.now() + 900;
+
+      const barIndices = [2, 5, 8, 12, 16, 22, 28, 35, 45, 55, 68, 80, 95, 110, 130];
+      const pillIndices = [4, 12, 25, 45, 75];
 
       const checkBlow = () => {
         if (!candlesLitRef.current || !analyserRef.current) return;
-
-        // Skip during initial 1000ms calibration period
-        if (Date.now() < readyTimestamp) {
-          setSoundState('idle');
-          setBlowProgress(0);
-          animFrameRef.current = requestAnimationFrame(checkBlow);
-          return;
-        }
 
         analyser.getByteFrequencyData(freqBuffer);
         analyser.getByteTimeDomainData(timeBuffer);
@@ -162,8 +164,42 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         }
         const rms = Math.sqrt(sumSq / bufferLength);
 
+        // Update 15 visual equalizer bars directly via DOM transforms
+        barIndices.forEach((bandIdx, idx) => {
+          const el = eqBarsRef.current[idx];
+          if (el) {
+            const rawVal = (freqBuffer[bandIdx] || 0) / 200;
+            const val = Math.min(1, Math.max(0.12, rawVal));
+            el.style.transform = `scaleY(${val.toFixed(2)})`;
+          }
+        });
+
+        // Update 5 pill equalizer bars
+        pillIndices.forEach((bandIdx, idx) => {
+          const el = pillBarsRef.current[idx];
+          if (el) {
+            const rawVal = (freqBuffer[bandIdx] || 0) / 190;
+            const val = Math.min(1, Math.max(0.2, rawVal));
+            el.style.transform = `scaleY(${val.toFixed(2)})`;
+          }
+        });
+
+        // Update concentric acoustic ring
+        if (acousticRingRef.current) {
+          const normRms = Math.min(1, rms * 4.5);
+          acousticRingRef.current.style.opacity = String(0.04 + normRms * 0.22);
+          acousticRingRef.current.style.transform = `translate(-50%, -50%) scale(${(0.88 + normRms * 0.12).toFixed(2)})`;
+        }
+
+        // Skip detection accumulation during initial warmup period
+        if (Date.now() < readyTimestamp) {
+          setSoundState('idle');
+          setBlowProgress(0);
+          animFrameRef.current = requestAnimationFrame(checkBlow);
+          return;
+        }
+
         // 2. Wind turbulence: Bins 1 to 3 (~86Hz - 340Hz).
-        // NOTE: Bin 0 is strictly excluded because it represents DC offset (0 Hz)!
         const windEnergy = (freqBuffer[1] + freqBuffer[2] + freqBuffer[3]) / 3;
 
         // 3. Speech formant zone: Bins 5 to 22 (~430Hz - 1900Hz)
@@ -193,16 +229,8 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           }
         } else {
           // Discriminate: Speech vs Blowing
-          // Speech characteristic:
-          // Speech formant energy is high, and formants are close to or exceed wind turbulence
           const isSpeech = speechEnergy > 48 && speechEnergy >= windEnergy * 0.85;
 
-          // Blowing characteristic:
-          // Exhaled air jet hitting the mic capsule MUST create:
-          // 1. High wind turbulence (windEnergy >= 72)
-          // 2. High-frequency breath friction hiss (hissEnergy >= 24)
-          // 3. Wind energy outpaces speech formant energy (> 1.25x)
-          // 4. Not speech
           const isBlowingAir =
             windEnergy >= 72 &&
             hissEnergy >= 24 &&
@@ -212,8 +240,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           if (isBlowingAir) {
             setSoundState('blowing');
             setIsBlowing(true);
-            // Steady accumulation: ~1.0 - 1.2s of continuous sustained blowing (at 60fps, +1.8 per frame)
-            blowAccumulator += 1.8;
+            blowAccumulator += 2.0;
             const progress = Math.min(100, Math.round(blowAccumulator));
             setBlowProgress(progress);
 
@@ -224,11 +251,9 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           } else if (isSpeech) {
             setSoundState('speech');
             setIsBlowing(false);
-            // Decay progress during speech so talking CANNOT blow out candles
             blowAccumulator = Math.max(0, blowAccumulator - 2.5);
             setBlowProgress(Math.round(blowAccumulator));
           } else {
-            // General ambient noise
             setSoundState('idle');
             blowAccumulator = Math.max(0, blowAccumulator - 1.8);
             setBlowProgress(Math.round(blowAccumulator));
@@ -250,13 +275,13 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
     }
   };
 
-  // Manual fallback (ONLY used if mic access is denied or device has no mic hardware)
+  // Manual fallback button (Long press / hold to extinguish - Cheat button like birthday-cake.online)
   const startHolding = () => {
     if (!candlesLit) return;
     setIsBlowing(true);
     let current = blowProgress;
     holdIntervalRef.current = window.setInterval(() => {
-      current += 5;
+      current += 6;
       setBlowProgress(Math.min(current, 100));
       if (current >= 100) {
         clearInterval(holdIntervalRef.current!);
@@ -291,7 +316,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
+    <div className="flex flex-col items-center justify-center text-center max-w-xl mx-auto w-full relative px-4 select-none">
       {/* Soft celebration fireworks when extinguished */}
       {!candlesLit && <Fireworks active={true} burstCount={4} continuous={true} />}
 
@@ -305,221 +330,214 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
         <span>Chapter IV • The Wish</span>
       </motion.div>
 
-      {/* Instructions / Wish Headline */}
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
-        className="px-4 mb-2 max-w-md"
-      >
-        <h2 className="font-serif text-2xl sm:text-3xl font-normal leading-snug text-[#FAF4F0] tracking-tight">
-          {candlesLit ? cfg.makeAWish.title : cfg.makeAWish.blownTitle}
-        </h2>
-        <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-2 font-sans font-light leading-relaxed">
-          {candlesLit
-            ? micActive
-              ? 'Hãy ghé sát miệng và thổi một luồng hơi thật mạnh vào micro để tắt nến!'
-              : 'Hãy bật micro và thổi một luồng hơi trực tiếp vào mic để dập tắt nến sinh nhật.'
-            : cfg.makeAWish.blownSubtitle}
-        </p>
-      </motion.div>
+      {/* Dynamic Header (Inspired by birthday-cake.online) */}
+      <div className="px-4 mb-2 max-w-lg min-h-[72px] flex flex-col items-center justify-center">
+        <AnimatePresence mode="wait">
+          {candlesLit ? (
+            <motion.div
+              key="pre-blow"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-1"
+            >
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#FAF4F0] tracking-tight drop-shadow-[0_4px_24px_rgba(2,6,23,0.75)]">
+                Make a wish & blow out the candles
+              </h1>
+              <p className="text-xs sm:text-sm text-[#FAF4F0]/70 font-sans font-light leading-relaxed">
+                Hãy ước một điều ước thật đẹp và thổi vào micro để dập tắt ngọn nến
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="post-blow"
+              initial={{ opacity: 0, scale: 0.92, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-1.5"
+            >
+              <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white drop-shadow-[0_4px_30px_rgba(225,29,72,0.6)]">
+                🎉 Happy Birthday {cfg.recipientName}!
+              </h1>
+              <p className="text-amber-300 font-medium text-sm sm:text-base tracking-widest animate-pulse">
+                ✧ 🎂 🎊 🎉 ✨ ✧
+              </p>
+              <p className="text-xs text-[#FAF4F0]/75 font-serif italic">
+                Ước nguyện đã được gửi gắm tới các vì sao
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-      {/* 3D Birthday Cake (Note: Direct click to extinguish is intentionally disabled) */}
-      <div className="w-full relative my-2">
+      {/* 3D Birthday Cake Stage & Concentric Acoustic Shockwaves */}
+      <div className="w-full relative my-1">
+        {/* Concentric Acoustic Shockwave Ring (Pulses with voice/blowing) */}
+        <div
+          ref={acousticRingRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 left-1/2 w-[85%] h-[85%] rounded-full border border-amber-400/30 transition-colors duration-200 will-change-transform"
+          style={{
+            opacity: 0.05,
+            transform: 'translate(-50%, -50%) scale(0.88)',
+            boxShadow: '0 0 35px rgba(251, 191, 36, 0.15)',
+          }}
+        />
+
         <BirthdayCake3D
           candlesLit={candlesLit}
           isBlowing={isBlowing}
+          blowProgress={blowProgress}
           recipientName={cfg.recipientName}
         />
-
-        {/* Ethereal glowing halo ring when candles are blown */}
-        {!candlesLit && (
-          <motion.div
-            initial={{ scale: 0.4, opacity: 0 }}
-            animate={{ scale: [1, 1.3, 1.1], opacity: [0.6, 0.25, 0.5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-0 m-auto w-72 h-72 rounded-full border border-[#E6C29C]/40 pointer-events-none"
-          />
-        )}
       </div>
 
-      {/* Interaction Controls */}
+      {/* CANDLE BLOWING INTERACTION SECTION */}
       {candlesLit ? (
-        <div className="w-full px-4 flex flex-col items-center gap-3 mt-3">
-          {/* STATE 1: Mic not yet enabled (Mandatory Prompt + Tactile Manual Fallback) */}
-          {!micActive && !micDenied && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center gap-2.5 w-full sm:w-84"
-            >
-              <button
-                onClick={startMicrophone}
-                disabled={isRequestingMic}
-                className="btn-luxury w-full py-4 px-6 rounded-full font-sans font-bold text-xs sm:text-sm tracking-[0.12em] uppercase bg-[#D4627A] hover:bg-[#C2526A] text-white flex items-center justify-center gap-2.5 shadow-xl transition-all cursor-pointer group"
-              >
-                <Mic size={18} className="text-white group-hover:scale-110 transition-transform animate-pulse" />
-                <span>{isRequestingMic ? 'Đang mở micro...' : 'Bật Micro Để Thổi Nến'}</span>
-              </button>
-
-              {/* Accessible Manual Hold Option for noisy environments or in-app webviews */}
-              <button
-                onMouseDown={startHolding}
-                onMouseUp={stopHolding}
-                onTouchStart={startHolding}
-                onTouchEnd={stopHolding}
-                className="w-full py-2.5 px-4 rounded-full bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.18] border border-white/15 text-white/80 hover:text-white text-xs font-sans font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer select-none"
-                title="Nhấn giữ nút này trong khoảng 1 giây để thổi nến bằng tay"
-              >
-                <Sparkles size={14} className="text-amber-300" />
-                <span>Hoặc nhấn giữ đây để thổi bằng tay</span>
-              </button>
-
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-full text-xs text-[#FAF4F0]/70 font-sans text-center max-w-sm">
-                <span>🌬️</span>
-                <span>Thổi trực tiếp vào micro hoặc nhấn giữ nút để dập tắt nến</span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STATE 2: Mic is active (Interactive Wind & Breath Analyzer) */}
-          {micActive && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full sm:w-88 flex flex-col items-center gap-3 bg-[#FAF4F0]/5 border border-[#FAF4F0]/15 rounded-2xl p-4 backdrop-blur-md shadow-2xl"
-            >
-              {/* Dynamic status feedback pill */}
-              <div className="min-h-[28px] flex items-center justify-center w-full">
-                <AnimatePresence mode="wait">
-                  {soundState === 'blowing' ? (
-                    <motion.div
-                      key="blowing"
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-400/40 rounded-full text-emerald-300 text-xs font-bold shadow-sm"
-                    >
-                      <Wind size={14} className="animate-pulse" />
-                      <span>Đang nhận diện hơi thổi! Giữ tiếp tục...</span>
-                    </motion.div>
-                  ) : soundState === 'speech' ? (
-                    <motion.div
-                      key="speech"
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-amber-200 text-xs font-semibold"
-                    >
-                      <span>🗣️</span>
-                      <span>Đang nói chuyện (không tính) — Hãy thổi hơi vào mic!</span>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="idle"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-[#FAF4F0]/10 border border-[#FAF4F0]/15 rounded-full text-[#FAF4F0]/75 text-xs"
-                    >
-                      <Mic size={13} className="text-[#E77C92] animate-pulse" />
-                      <span>Micro đang lắng nghe... Thổi một luồng hơi vào mic</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Wind Gauge Progress Bar */}
-              <div className="w-full bg-black/40 h-3.5 rounded-full overflow-hidden border border-[#FAF4F0]/20 p-0.5 relative shadow-inner">
-                <div
-                  className="h-full rounded-full transition-all duration-75 bg-gradient-to-r from-[#D4627A] via-[#E6C29C] to-emerald-400 shadow-[0_0_12px_rgba(230,194,156,0.6)]"
-                  style={{ width: `${blowProgress}%` }}
+        <div className="w-full px-4 flex flex-col items-center gap-2.5 mt-1 relative z-20">
+          {/* Glassmorphism Mic Prompt Pill (Exact birthday-cake.online style) */}
+          <div
+            onClick={startMicrophone}
+            role="button"
+            tabIndex={0}
+            className={`inline-flex items-center justify-center gap-2.5 px-5 py-2 rounded-full backdrop-blur-md border text-xs font-medium tracking-wide shadow-xl transition-all duration-300 select-none cursor-pointer max-w-[94vw] group ${
+              soundState === 'blowing'
+                ? 'bg-emerald-950/70 border-emerald-400/50 text-emerald-200 shadow-emerald-500/20 scale-[1.02]'
+                : soundState === 'speech'
+                ? 'bg-amber-950/70 border-amber-400/50 text-amber-200'
+                : 'bg-slate-900/65 border-white/20 text-white/90 hover:bg-slate-800/80 hover:border-amber-400/40 active:scale-95'
+            }`}
+            title={micActive ? 'Microphone đang hoạt động' : 'Nhấn để mở micro thổi nến'}
+          >
+            {/* 5-bar animated equalizer icon */}
+            <span aria-hidden="true" className="inline-flex items-center justify-center gap-[2.5px] h-4 w-5 shrink-0">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <span
+                  key={i}
+                  ref={(el) => {
+                    pillBarsRef.current[i] = el;
+                  }}
+                  className="w-[2.5px] h-full rounded-full origin-center transition-all duration-150 will-change-transform bg-amber-400"
+                  style={{
+                    transform: micActive ? 'scaleY(0.3)' : `scaleY(${0.25 + (i % 2) * 0.3})`,
+                  }}
                 />
-              </div>
+              ))}
+            </span>
 
-              <div className="flex items-center justify-between w-full text-[11px] text-[#FAF4F0]/60 font-sans">
-                <span className="font-semibold text-[#FAF4F0]/80">Lực thổi: {blowProgress}%</span>
-                <span>Thổi giữ ~1s để nến tắt</span>
-              </div>
-            </motion.div>
-          )}
+            {/* Prompt Status Text */}
+            <span className="truncate">
+              {micDenied
+                ? 'Micro bị từ chối — Hãy dùng nút gió góc phải để thổi'
+                : isRequestingMic
+                ? 'Đang kết nối micro...'
+                : micActive
+                ? soundState === 'blowing'
+                  ? `Đang nhận diện hơi thổi! Giữ tiếp tục... (${blowProgress}%)`
+                  : soundState === 'speech'
+                  ? 'Đang nói chuyện (không tính) — Hãy thổi hơi vào mic!'
+                  : 'Thổi vào micro để dập tắt ngọn nến!'
+                : 'Thổi vào micro để tắt nến! (Nhấn để bật mic)'}
+            </span>
+          </div>
 
-          {/* STATE 3: Mic access denied / unsupported fallback */}
-          {micDenied && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center gap-3 w-full sm:w-80"
+          {/* 15-Bar Bottom Equalizer (Real-time sound frequency bars) */}
+          <div
+            aria-hidden="true"
+            className="flex items-end justify-center gap-1 h-6 px-3 transition-opacity duration-200 pointer-events-none"
+            style={{ opacity: micActive ? 0.75 : 0.2 }}
+          >
+            {Array.from({ length: 15 }).map((_, i) => (
+              <span
+                key={i}
+                ref={(el) => {
+                  eqBarsRef.current[i] = el;
+                }}
+                className="w-1 h-full rounded-full origin-bottom will-change-transform transition-transform duration-75"
+                style={{
+                  transform: 'scaleY(0.14)',
+                  background: 'linear-gradient(to top, rgba(251, 191, 36, 0.7), rgba(254, 240, 138, 0.95))',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Floating Wind Cheat Button (Bottom-Right, exactly like birthday-cake.online) */}
+          <div className="fixed bottom-20 right-4 sm:right-8 z-40 flex flex-col items-center gap-1">
+            <button
+              type="button"
+              onMouseDown={startHolding}
+              onMouseUp={stopHolding}
+              onTouchStart={startHolding}
+              onTouchEnd={stopHolding}
+              className="w-11 h-11 flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-pink-500 text-white transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer relative select-none group border border-white/20"
+              title="Nhấn giữ để thổi tắt nến (Thủ công / Cheat)"
+              aria-label="Nhấn giữ để thổi tắt nến thủ công"
             >
-              <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-400/30 rounded-xl text-amber-200 text-xs text-left">
-                <AlertCircle size={18} className="shrink-0 text-amber-300" />
-                <span>Không thể truy cập micro trên thiết bị này. Bạn có thể dùng nút nhấn giữ bên dưới để thổi nến:</span>
-              </div>
-
-              <button
-                onMouseDown={startHolding}
-                onMouseUp={stopHolding}
-                onTouchStart={startHolding}
-                onTouchEnd={stopHolding}
-                className="relative overflow-hidden w-full px-8 py-3.5 rounded-full font-sans font-bold text-xs tracking-[0.14em] uppercase bg-[#FAF4F0]/10 text-white border border-[#FAF4F0]/25 shadow-lg select-none cursor-pointer flex items-center justify-center gap-2 group transition-all"
-              >
-                <div
-                  className="absolute inset-0 bg-[#E6C29C] transition-all duration-75 pointer-events-none opacity-90"
-                  style={{ width: `${blowProgress}%` }}
+              {/* Circular progress SVG ring when holding */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-0.5">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="18"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.85)"
+                  strokeWidth="2.5"
+                  strokeDasharray={113}
+                  strokeDashoffset={113 - (113 * blowProgress) / 100}
+                  className="transition-all duration-75"
                 />
-                <Wind size={16} className="relative z-10 text-white" />
-                <span className="relative z-10 text-white">
-                  {blowProgress > 0 ? `Đang Thổi Thủ Công... ${blowProgress}%` : 'Nhấn Giữ Để Thổi Nến'}
-                </span>
-              </button>
-
-              <button
-                onClick={startMicrophone}
-                className="text-[11px] text-[#E77C92] underline underline-offset-2 hover:text-[#FAF4F0] cursor-pointer"
-              >
-                Thử kết nối lại micro
-              </button>
-            </motion.div>
-          )}
+              </svg>
+              <Wind size={18} className="text-white group-hover:scale-110 transition-transform" />
+            </button>
+            <span className="text-[10px] text-white/65 font-sans tracking-tight bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-sm pointer-events-none">
+              {blowProgress > 0 ? `${blowProgress}%` : 'Thổi thủ công'}
+            </span>
+          </div>
         </div>
       ) : (
-        /* Post-blowing celebration controls (Inspired by birthday-cake.online) */
+        /* POST-BLOWING CELEBRATION CONTROLS (Exact birthday-cake.online layout) */
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full px-4 flex flex-col items-center gap-3 mt-3"
+          className="w-full px-4 flex flex-col items-center gap-3 mt-2"
         >
-          <div className="flex items-center gap-2 text-[#E77C92] text-xs font-serif italic tracking-wider mb-0.5">
-            <Sparkles size={14} className="text-[#E6C29C]" />
-            <span>Ước nguyện đã được thắp sáng trên những vì sao</span>
-            <Sparkles size={14} className="text-[#E6C29C]" />
-          </div>
-
-          {/* Interactive Action Buttons */}
-          <div className="flex items-center justify-center gap-2.5 w-full flex-wrap">
+          {/* Action Button Bar */}
+          <div className="flex items-center gap-3 w-full max-w-sm justify-center">
+            {/* Cheer Button */}
             <button
-              onClick={handleRelight}
-              className="py-2.5 px-4 rounded-full bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 border border-amber-400/30 text-amber-200 text-xs font-sans font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:border-amber-400/50"
-              title="Thắp lại nến trên bánh để trải nghiệm lại"
-            >
-              <Flame size={14} className="text-amber-400" />
-              <span>Thắp Lại Nến</span>
-            </button>
-
-            <button
+              type="button"
               onClick={handleCheer}
-              className="py-2.5 px-4 rounded-full bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-400/30 text-rose-200 text-xs font-sans font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:border-rose-400/50"
-              title="Bắn pháo hoa ăn mừng"
+              className="shrink-0 px-4 sm:px-5 py-3 rounded-full bg-slate-900/70 backdrop-blur-md border border-white/20 hover:bg-slate-800/85 text-white font-bold text-xs shadow-xl transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              title="Tung hoa giấy chúc mừng"
             >
-              <PartyPopper size={14} className="text-rose-400" />
-              <span>Tung Hoa Ăn Mừng!</span>
+              <PartyPopper size={15} className="text-pink-400" />
+              <span>🎉 Cheer!</span>
+            </button>
+
+            {/* Light Again Button */}
+            <button
+              type="button"
+              onClick={handleRelight}
+              className="flex-1 py-3 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:scale-[1.02] text-white font-black rounded-full shadow-2xl shadow-pink-500/30 transition-all active:scale-95 uppercase tracking-[0.18em] text-xs flex items-center justify-center gap-2 cursor-pointer"
+              title="Thắp lại nến trên bánh"
+            >
+              <Flame size={15} className="text-white" />
+              <span>LIGHT AGAIN</span>
             </button>
           </div>
 
+          {/* Pulse helper hint */}
+          <div className="text-[11px] text-pink-200/80 font-medium animate-pulse">
+            Click to light candles again
+          </div>
+
+          {/* Editorial Next Chapter Button */}
           <button
             onClick={onProceed}
-            className="btn-editorial-primary px-9 py-4 tracking-[0.14em] text-xs uppercase gap-2 mt-1.5"
+            className="btn-editorial-primary px-9 py-3.5 tracking-[0.14em] text-xs uppercase gap-2 mt-1 shadow-lg"
           >
             <span>{cfg.makeAWish.continueButton}</span>
             <ArrowRight size={15} />
