@@ -43,20 +43,20 @@ export function build3DCake(
   // ==========================================
   // 1. GOLDEN PLATTER & PEDESTAL STAND
   // ==========================================
-  const platterBaseGeom = new THREE.CylinderGeometry(5.4, 5.1, 0.3, 64);
+  const platterBaseGeom = new THREE.CylinderGeometry(5.0, 4.7, 0.28, 64);
   const platterBase = new THREE.Mesh(platterBaseGeom, materials.goldPlatter);
-  platterBase.position.y = 0.15;
+  platterBase.position.y = 0.14;
   cakeGroup.add(platterBase);
   disposablesGeom.push(platterBaseGeom);
 
-  const platterRimGeom = new THREE.TorusGeometry(5.3, 0.15, 16, 64);
+  const platterRimGeom = new THREE.TorusGeometry(4.9, 0.13, 16, 64);
   const platterRim = new THREE.Mesh(platterRimGeom, materials.goldPlatter);
   platterRim.rotation.x = Math.PI / 2;
-  platterRim.position.y = 0.28;
+  platterRim.position.y = 0.26;
   cakeGroup.add(platterRim);
   disposablesGeom.push(platterRimGeom);
 
-  const pedestalGeom = new THREE.CylinderGeometry(4.0, 4.4, 0.25, 48);
+  const pedestalGeom = new THREE.CylinderGeometry(3.8, 4.1, 0.22, 48);
   const pedestal = new THREE.Mesh(pedestalGeom, materials.goldPlatter);
   pedestal.position.y = -0.12;
   cakeGroup.add(pedestal);

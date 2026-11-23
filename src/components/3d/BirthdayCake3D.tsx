@@ -115,10 +115,30 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
 
     // 1. Scene & Camera
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    // Position camera looking down slightly at the cake center
-    camera.position.set(0, 5.2, 14.8);
-    camera.lookAt(0, 2.3, 0);
+    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+
+    // Responsive Camera Fitting: Dynamically adapts camera distance to prevent cake sides from clipping on any aspect ratio
+    const fitCamera = (w: number, h: number) => {
+      const aspect = w / h;
+      camera.aspect = aspect;
+
+      // Target bounding volume: fits the 10.0-unit platter and full cake height with ample breathing margins
+      const targetFitWidth = 12.6;
+      const targetFitHeight = 10.4;
+      const vFovRad = (36 * Math.PI) / 180;
+
+      // Distance required to satisfy both horizontal and vertical bounds
+      const distH = targetFitWidth / (2 * aspect) / Math.tan(vFovRad / 2);
+      const distV = targetFitHeight / 2 / Math.tan(vFovRad / 2);
+      const targetDist = Math.max(distH, distV, 16.5);
+
+      // Elevated angle looking down at cake center
+      camera.position.set(0, targetDist * 0.33, targetDist * 0.94);
+      camera.lookAt(0, 1.9, 0);
+      camera.updateProjectionMatrix();
+    };
+
+    fitCamera(width, height);
 
     // 2. WebGL Renderer
     const renderer = new THREE.WebGLRenderer({
@@ -237,8 +257,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       const newHeight = container.clientHeight;
       if (newWidth === 0 || newHeight === 0) return;
 
-      camera.aspect = newWidth / newHeight;
-      camera.updateProjectionMatrix();
+      fitCamera(newWidth, newHeight);
       renderer.setSize(newWidth, newHeight);
     };
 
@@ -262,7 +281,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col items-center justify-center select-none w-full max-w-sm sm:max-w-md mx-auto h-[380px] sm:h-[430px] touch-none ${className}`}
+      className={`relative flex flex-col items-center justify-center select-none w-full max-w-md sm:max-w-xl mx-auto h-[380px] sm:h-[430px] touch-none ${className}`}
       style={{ touchAction: 'none' }}
       onClick={onCakeClick}
       role="region"
@@ -290,7 +309,7 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       />
 
       {/* 360° Floor Orbit Guide & Hint */}
-      <div className="absolute bottom-2 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
+      <div className="absolute bottom-1 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
         <RotateCw size={12} className="text-[#E6C29C] animate-spin-slow" />
         <span className="font-light tracking-wide">
           {hasInteracted ? 'Xoay 360° tự do' : 'Kéo để xoay 360° chiếc bánh'}
