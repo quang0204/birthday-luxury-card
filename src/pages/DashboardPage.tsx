@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { MenuItem, MenuContainer } from '../components/ui/fluid-menu';
 import { getAllCards, deleteCard, cloneCard, encodeCardToUrl, SavedCard } from '../utils/cardLibrary';
-import LucianFooter from '../components/ui/lucian-footer';
 
 interface DashboardPageProps {
   onOpenCard: (cardId: string) => void;
@@ -319,13 +318,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         )}
       </main>
 
-      {/* Footer Colophon (Lucian UX/UI Prompt #418) */}
-      <div className="mt-10 mb-4 flex justify-center">
-        <LucianFooter
-          onCreateNew={onCreateNew}
-          isDashboard={true}
-        />
-      </div>
+      {/* Subtle Minimal Footer */}
+      <footer className="mt-12 mb-6 text-center text-xs text-white/30 font-light font-sans tracking-wider uppercase">
+        Keepsake Studio • Bespoke Digital Keepsake
+      </footer>
 
       {/* Floating Fluid Menu on Dashboard */}
       <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3">

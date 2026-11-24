@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ParticleBackground } from '../components/common/ParticleBackground';
 import { MusicController } from '../components/common/MusicController';
 import HalftoneNebula, { NEBULA_PRESETS } from '../components/ui/halftone-nebula';
-import ChapterRailNav from '../components/ui/chapter-rail-nav';
-import LucianFooter from '../components/ui/lucian-footer';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
 import { Sparkles, QrCode, PenTool, Layers, Menu as MenuIcon, X, BookOpen } from 'lucide-react';
 import { MenuItem, MenuContainer } from '../components/ui/fluid-menu';
@@ -230,18 +228,6 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         </div>
       </header>
 
-      {/* Floating Desktop Chapter Rail Sidebar (Lucian UX/UI #417) */}
-      <div className="fixed left-3 lg:left-6 top-1/2 -translate-y-1/2 z-40 hidden md:block">
-        <ChapterRailNav
-          currentChapter={currentChapter}
-          maxUnlockedChapter={maxUnlockedChapter}
-          isRecipientMode={isRecipientMode}
-          onSelectChapter={onSelectChapter}
-          recipientName={config.recipientName}
-          memoriesCount={config.memories?.length || 8}
-        />
-      </div>
-
       {/* Floating Chapter Trigger & Drawer with Fluid Menu (Visible on Desktop & Mobile) */}
       <div className="z-50">
         {/* Floating Fluid Menu at bottom-left */}
@@ -317,24 +303,58 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
           </button>
         </div>
 
-        {/* Mobile Slide-in Drawer */}
+        {/* Chapter Selection Drawer */}
         {mobileNavOpen && (
           <div 
-            className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-start p-4 animate-fadeIn"
+            className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-start p-4 sm:p-6 animate-fadeIn"
             onClick={() => setMobileNavOpen(false)}
           >
-            <div onClick={(e) => e.stopPropagation()} className="animate-slideInLeft">
-              <ChapterRailNav
-                currentChapter={currentChapter}
-                maxUnlockedChapter={maxUnlockedChapter}
-                isRecipientMode={isRecipientMode}
-                onSelectChapter={(ch) => {
-                  onSelectChapter(ch);
-                  setMobileNavOpen(false);
-                }}
-                recipientName={config.recipientName}
-                memoriesCount={config.memories?.length || 8}
-              />
+            <div 
+              onClick={(e) => e.stopPropagation()} 
+              className="animate-slideInLeft max-w-sm w-full bg-[#180b14]/95 border border-white/15 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl"
+            >
+              <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/10">
+                <div>
+                  <h3 className="font-serif text-sm font-semibold text-[#FAF4F0] uppercase tracking-wider">
+                    Danh Sách 8 Chương
+                  </h3>
+                  <p className="text-[11px] text-white/50 font-sans mt-0.5">Chọn một chương để di chuyển nhanh</p>
+                </div>
+                <button
+                  onClick={() => setMobileNavOpen(false)}
+                  className="p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {chapterTitles.map((title, idx) => {
+                  const chNum = (idx + 1) as ChapterNumber;
+                  const isActive = currentChapter === chNum;
+                  return (
+                    <button
+                      key={chNum}
+                      onClick={() => {
+                        onSelectChapter(chNum);
+                        setMobileNavOpen(false);
+                      }}
+                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left text-xs font-sans transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#D4627A] text-white font-semibold shadow-md'
+                          : 'text-[#FAF4F0]/80 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-serif font-bold text-[#E77C92] w-6 text-center">
+                          {romanNumerals[idx]}
+                        </span>
+                        <span>{title}</span>
+                      </div>
+                      {isActive && <span className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
@@ -345,15 +365,9 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         {children}
       </main>
 
-      {/* Editorial Colophon / Footer (Lucian UX/UI Prompt #418) */}
-      <footer className="safe-bottom relative z-20 py-8 px-4 flex justify-center">
-        <LucianFooter
-          onOpenCreator={onOpenCreator}
-          onOpenQR={onOpenQR}
-          onOpenDashboard={onOpenDashboard}
-          recipientName={config.recipientName}
-          isRecipientMode={isRecipientMode}
-        />
+      {/* Minimal Editorial Footer */}
+      <footer className="safe-bottom relative z-20 py-6 px-4 flex justify-center text-[11px] text-[#FAF4F0]/30 font-light font-sans tracking-widest uppercase">
+        The Birthday Experience • {config.recipientName}
       </footer>
     </div>
   );
