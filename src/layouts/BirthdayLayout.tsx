@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ParticleBackground } from '../components/common/ParticleBackground';
 import { MusicController } from '../components/common/MusicController';
 import HalftoneNebula, { NEBULA_PRESETS } from '../components/ui/halftone-nebula';
+import ChapterRailNav from '../components/ui/chapter-rail-nav';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
 import { Sparkles, QrCode, PenTool, Layers } from 'lucide-react';
 import { BirthdayConfig } from '../config/birthday.config';
@@ -62,6 +63,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
     return 'crimson';
   });
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const handleSelectTheme = (theme: BackgroundThemeType) => {
     setBgTheme(theme);
@@ -226,39 +228,78 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         </div>
       </header>
 
-      {/* Editorial Chapter Navigation Bar */}
-      <div className="relative z-30 flex flex-col items-center justify-center pt-3 pb-1 gap-1">
+      {/* Floating Desktop Chapter Rail Sidebar (Lucian UX/UI #417) */}
+      <div className="fixed left-3 lg:left-6 top-1/2 -translate-y-1/2 z-40 hidden md:block">
+        <ChapterRailNav
+          currentChapter={currentChapter}
+          maxUnlockedChapter={maxUnlockedChapter}
+          isRecipientMode={isRecipientMode}
+          onSelectChapter={onSelectChapter}
+          recipientName={config.recipientName}
+          memoriesCount={config.memories?.length || 8}
+        />
+      </div>
+
+      {/* Mobile Floating Chapter Trigger & Drawer */}
+      <div className="md:hidden">
+        {/* Floating pill button at bottom-left */}
+        <button
+          onClick={() => setMobileNavOpen(!mobileNavOpen)}
+          className="fixed bottom-20 left-4 z-40 btn-glass-interactive px-3 py-1.5 rounded-full flex items-center gap-2 shadow-2xl text-xs border border-white/20 bg-[#160a12]/90 backdrop-blur-xl cursor-pointer"
+          title="Mở danh sách chương"
+          aria-label="Mở danh sách chương"
+        >
+          <span className="w-2 h-2 rounded-full bg-[#E77C92] animate-ping" />
+          <span className="font-serif font-bold text-[#E77C92]">{romanNumerals[currentChapter - 1]}</span>
+          <span className="text-white/80 text-[11px] font-sans font-medium">{chapterTitles[currentChapter - 1]}</span>
+        </button>
+
+        {/* Mobile Slide-in Drawer */}
+        {mobileNavOpen && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-start p-4 animate-fadeIn"
+            onClick={() => setMobileNavOpen(false)}
+          >
+            <div onClick={(e) => e.stopPropagation()} className="animate-slideInLeft">
+              <ChapterRailNav
+                currentChapter={currentChapter}
+                maxUnlockedChapter={maxUnlockedChapter}
+                isRecipientMode={isRecipientMode}
+                onSelectChapter={(ch) => {
+                  onSelectChapter(ch);
+                  setMobileNavOpen(false);
+                }}
+                recipientName={config.recipientName}
+                memoriesCount={config.memories?.length || 8}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Editorial Chapter Top Navigation Bar */}
+      <div className="relative z-30 flex flex-col items-center justify-center pt-2 pb-1 gap-1">
         {/* Folio Step Indicators */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-2 px-3 py-1 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/10 shadow-sm">
           {romanNumerals.map((roman, idx) => {
             const num = idx + 1;
             const isCurrent = num === currentChapter;
             const isPassed = num < currentChapter;
             const isLocked = isRecipientMode && num > maxUnlockedChapter;
 
-            if (isLocked) {
-              return (
-                <button
-                  key={num}
-                  disabled
-                  className="opacity-25 cursor-not-allowed font-serif text-xs tracking-wider py-1.5 px-2 min-w-[30px] rounded flex items-center justify-center text-[#FAF4F0]/30 select-none"
-                  title={`Chương ${roman}: Hãy trải nghiệm tuần tự để mở khóa`}
-                >
-                  {roman}
-                </button>
-              );
-            }
-
             return (
               <button
                 key={num}
-                onClick={() => onSelectChapter(num as ChapterNumber)}
-                className={`transition-all duration-300 font-serif text-xs tracking-wider cursor-pointer py-1.5 px-2 min-w-[30px] rounded flex items-center justify-center ${
+                disabled={isLocked}
+                onClick={() => !isLocked && onSelectChapter(num as ChapterNumber)}
+                className={`transition-all duration-300 font-serif text-[11px] sm:text-xs tracking-wider cursor-pointer py-1 px-2.5 rounded-lg flex items-center justify-center ${
                   isCurrent
-                    ? 'text-[#FEEBEF] font-bold border-b-2 border-[#D4627A] scale-110'
+                    ? 'text-white font-bold bg-[#D4627A] shadow-md scale-105'
                     : isPassed
-                    ? 'text-[#FAF4F0]/80 hover:text-[#FAF4F0]'
-                    : 'text-[#FAF4F0]/60 hover:text-[#FAF4F0]'
+                    ? 'text-[#FAF4F0]/85 hover:text-white hover:bg-white/10'
+                    : isLocked
+                    ? 'opacity-25 cursor-not-allowed text-[#FAF4F0]/30'
+                    : 'text-[#FAF4F0]/60 hover:text-white hover:bg-white/10'
                 }`}
                 title={`Chương ${roman}: ${chapterTitles[idx]}`}
               >
@@ -269,7 +310,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         </div>
 
         {/* Current Chapter Subtitle */}
-        <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#E77C92] font-semibold">
+        <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#E77C92] font-semibold mt-0.5">
           Chương {romanNumerals[currentChapter - 1]} — {chapterTitles[currentChapter - 1]}
         </span>
       </div>
