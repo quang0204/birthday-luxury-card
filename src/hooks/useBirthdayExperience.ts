@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-export type ChapterNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type ChapterNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface BirthdayState {
   currentChapter: ChapterNumber;
@@ -32,7 +32,7 @@ export const useBirthdayExperience = () => {
 
   const nextChapter = useCallback(() => {
     setCurrentChapter((prev) => {
-      const next = Math.min(prev + 1, 8) as ChapterNumber;
+      const next = Math.min(prev + 1, 7) as ChapterNumber;
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return next;
     });

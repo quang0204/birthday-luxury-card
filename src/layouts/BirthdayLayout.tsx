@@ -42,7 +42,6 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
   const chapterTitles = [
     'Lời Mời',
     'Hộp Quà',
-    'Đại Tiệc',
     'Ước Nguyện',
     'Kỷ Niệm',
     'Thử Thách',
@@ -50,7 +49,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
     'Bất Ngờ',
   ];
 
-  const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+  const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
   // Background Theme: Halftone Nebula presets or Classic Particles
   const [bgTheme, setBgTheme] = useState<BackgroundThemeType>(() => {
@@ -316,7 +315,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
               <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-white/10">
                 <div>
                   <h3 className="font-serif text-sm font-semibold text-[#FAF4F0] uppercase tracking-wider">
-                    Danh Sách 8 Chương
+                    Danh Sách 7 Chương
                   </h3>
                   <p className="text-[11px] text-white/50 font-sans mt-0.5">Chọn một chương để di chuyển nhanh</p>
                 </div>

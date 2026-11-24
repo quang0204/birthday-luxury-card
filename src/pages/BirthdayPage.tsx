@@ -3,7 +3,6 @@ import { BirthdayLayout } from '../layouts/BirthdayLayout';
 import { SceneTransition } from '../components/common/SceneTransition';
 import { SecretInvitation } from '../components/chapters/SecretInvitation';
 import { GiftOpening } from '../components/chapters/GiftOpening';
-import { BirthdayCelebration } from '../components/chapters/BirthdayCelebration';
 import { MakeAWish } from '../components/chapters/MakeAWish';
 import { MemoryGallery } from '../components/chapters/MemoryGallery';
 import { BirthdayChallenge } from '../components/chapters/BirthdayChallenge';
@@ -112,22 +111,20 @@ export const BirthdayPage: React.FC<BirthdayPageProps> = ({
       case 2:
         return <GiftOpening config={config} onProceed={nextChapter} />;
       case 3:
-        return <BirthdayCelebration config={config} onProceed={nextChapter} />;
-      case 4:
         return <MakeAWish config={config} onProceed={nextChapter} />;
-      case 5:
+      case 4:
         return <MemoryGallery config={config} onProceed={nextChapter} />;
-      case 6:
+      case 5:
         return <BirthdayChallenge config={config} onProceed={nextChapter} />;
-      case 7:
+      case 6:
         return <SecretLetter config={config} onProceed={nextChapter} />;
-      case 8:
+      case 7:
         return (
           <FinalSurprise
             config={config}
             isRecipientMode={isRecipientMode}
             onReplay={resetExperience}
-            onGoToMemories={() => goToChapter(5)}
+            onGoToMemories={() => goToChapter(4)}
             onOpenQRModal={() => {
               setGeneratedUrl(encodeCardToUrl(config));
               setIsQRModalOpen(true);

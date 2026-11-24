@@ -14,7 +14,7 @@ export interface ChapterRailNavProps {
 
 export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
   currentChapter,
-  maxUnlockedChapter = 8,
+  maxUnlockedChapter = 7,
   isRecipientMode = false,
   onSelectChapter,
   recipientName = 'Bạn',
@@ -74,17 +74,6 @@ export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
     {
       num: 3,
       roman: 'III',
-      title: 'Đại Tiệc',
-      icon: (
-        <svg viewBox="0 0 18 18" aria-hidden="true">
-          <path d="M2.8 14.8h12.4M3.8 14.8v-4.2a1 1 0 0 1 1-1h8.4a1 1 0 0 1 1 1v4.2" />
-          <path d="M6 9.6V6.8a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2.8M7.5 5.8V3.5M10.5 5.8V3.5" />
-        </svg>
-      ),
-    },
-    {
-      num: 4,
-      roman: 'IV',
       title: 'Ước Nguyện',
       icon: (
         <svg viewBox="0 0 18 18" aria-hidden="true">
@@ -94,8 +83,8 @@ export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
       ),
     },
     {
-      num: 5,
-      roman: 'V',
+      num: 4,
+      roman: 'IV',
       title: 'Kỷ Niệm',
       badge: memoriesCount > 0 ? memoriesCount : undefined,
       icon: (
@@ -107,8 +96,8 @@ export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
       ),
     },
     {
-      num: 6,
-      roman: 'VI',
+      num: 5,
+      roman: 'V',
       title: 'Thử Thách',
       badge: 3,
       icon: (
@@ -119,8 +108,8 @@ export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
       ),
     },
     {
-      num: 7,
-      roman: 'VII',
+      num: 6,
+      roman: 'VI',
       title: 'Bức Thư',
       badge: '❤️',
       icon: (
@@ -131,8 +120,8 @@ export const ChapterRailNav: React.FC<ChapterRailNavProps> = ({
       ),
     },
     {
-      num: 8,
-      roman: 'VIII',
+      num: 7,
+      roman: 'VII',
       title: 'Bất Ngờ',
       icon: (
         <svg viewBox="0 0 18 18" aria-hidden="true">
