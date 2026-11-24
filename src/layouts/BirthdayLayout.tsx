@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ParticleBackground } from '../components/common/ParticleBackground';
 import { MusicController } from '../components/common/MusicController';
 import HalftoneNebula, { NEBULA_PRESETS } from '../components/ui/halftone-nebula';
+import Antigravity from '../components/ui/Antigravity';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
 import { Sparkles, QrCode, PenTool, Layers, Menu as MenuIcon, X, BookOpen } from 'lucide-react';
 import { MenuItem, MenuContainer } from '../components/ui/fluid-menu';
 import { BirthdayConfig } from '../config/birthday.config';
 
-export type BackgroundThemeType = 'crimson' | 'ultraviolet' | 'solar' | 'abyssal' | 'phosphor' | 'particles';
+export type BackgroundThemeType = 'antigravity' | 'crimson' | 'ultraviolet' | 'solar' | 'abyssal' | 'phosphor' | 'particles';
 
 const THEME_OPTIONS: Array<{ id: BackgroundThemeType; label: string; icon: string }> = [
+  { id: 'antigravity', label: 'Antigravity ✨', icon: '🪐' },
   { id: 'crimson', label: 'Crimson Rose', icon: '🌌' },
   { id: 'ultraviolet', label: 'Tím Mộng Mơ', icon: '🔮' },
   { id: 'solar', label: 'Hoàng Kim', icon: '☀️' },
@@ -51,15 +53,15 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
   const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
-  // Background Theme: Halftone Nebula presets or Classic Particles
+  // Background Theme: Antigravity Cosmic Canvas, Halftone Nebula presets or Classic Particles
   const [bgTheme, setBgTheme] = useState<BackgroundThemeType>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('birthday_bg_theme');
-      if (saved && ['crimson', 'ultraviolet', 'solar', 'abyssal', 'phosphor', 'particles'].includes(saved)) {
-        return saved as BackgroundThemeType;
+      if (saved && ['antigravity', 'crimson', 'ultraviolet', 'solar', 'abyssal', 'phosphor', 'particles'].includes(saved)) {
+        if (saved !== 'crimson' && saved !== 'solar') return saved as BackgroundThemeType;
       }
     }
-    return 'crimson';
+    return 'antigravity';
   });
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -80,8 +82,19 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
   return (
     <div className={`min-h-screen relative overflow-x-hidden ${bgTheme === 'particles' ? 'bg-[#12060C]' : 'bg-[#050309]'} text-[#FAF4F0] flex flex-col justify-between selection:bg-[#D4627A]/30 selection:text-white film-grain`}>
-      {/* Halftone Nebula Living Pixel-Art Cosmic Canvas */}
-      {bgTheme !== 'particles' ? (
+      {/* Background Layer: Antigravity, Halftone Nebula, or Starlight Particles */}
+      {bgTheme === 'antigravity' ? (
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" style={{ width: '100vw', height: '100vh', position: 'fixed' }}>
+          <Antigravity
+            colors={['#5227FF', '#FF9FFC', '#B497CF']}
+            count={1500}
+            magnetRadius={9}
+            ringRadius={7}
+            particleSize={0.9}
+            autoAnimate={true}
+          />
+        </div>
+      ) : bgTheme !== 'particles' ? (
         <div className="fixed inset-0 pointer-events-none z-0">
           <HalftoneNebula
             height="100vh"
