@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, ArrowRight, Heart } from 'lucide-react';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
+import { BorderBeam } from '../ui/border-beam';
 
 interface SecretLetterProps {
   config?: BirthdayConfig;
@@ -47,80 +48,84 @@ export const SecretLetter: React.FC<SecretLetterProps> = ({ config, onProceed })
 
       {/* UNOPENED ENVELOPE STATE */}
       {!isOpen ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
-          transition={{
-            y: { repeat: Infinity, duration: 4, ease: 'easeInOut' },
-            duration: 0.5,
-          }}
-          whileHover={{ scale: 1.04, y: -10 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={handleOpenLetter}
-          className="w-full max-w-sm p-8 rounded-2xl bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 shadow-xl cursor-pointer flex flex-col items-center justify-center my-4 group hover:shadow-2xl transition-all"
-        >
-          <div className="w-14 h-14 rounded-full bg-[#FAF4F0] border border-[#2D1117]/15 flex items-center justify-center group-hover:scale-105 transition-transform mb-3">
-            <Mail size={24} className="text-[#D4627A]" />
-          </div>
+        <BorderBeam size="md" colorVariant="colorful" borderRadius={16} className="w-full max-w-sm my-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
+            transition={{
+              y: { repeat: Infinity, duration: 4, ease: 'easeInOut' },
+              duration: 0.5,
+            }}
+            whileHover={{ scale: 1.04, y: -10 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={handleOpenLetter}
+            className="w-full p-8 rounded-2xl bg-[#FCFAF7] text-[#2D1117] border border-[#2D1117]/15 shadow-xl cursor-pointer flex flex-col items-center justify-center group hover:shadow-2xl transition-all"
+          >
+            <div className="w-14 h-14 rounded-full bg-[#FAF4F0] border border-[#2D1117]/15 flex items-center justify-center group-hover:scale-105 transition-transform mb-3">
+              <Mail size={24} className="text-[#D4627A]" />
+            </div>
 
-          <h3 className="font-serif text-xl font-semibold text-[#2D1117]">
-            Bức Thư Đang Được Niêm Phong
-          </h3>
-          <p className="text-xs text-[#2D1117]/65 mt-1.5 font-sans font-light">
-            Chạm vào đây để mở phong bì và đọc từng lời tâm tình
-          </p>
+            <h3 className="font-serif text-xl font-semibold text-[#2D1117]">
+              Bức Thư Đang Được Niêm Phong
+            </h3>
+            <p className="text-xs text-[#2D1117]/65 mt-1.5 font-sans font-light">
+              Chạm vào đây để mở phong bì và đọc từng lời tâm tình
+            </p>
 
-          <div className="mt-4 flex items-center gap-1.5 text-[11px] font-sans font-bold uppercase tracking-wider text-[#FAF4F0] bg-[#D4627A] px-4 py-1.5 rounded-full shadow-sm">
-            <span>MỞ THƯ TAY</span>
-          </div>
-        </motion.div>
+            <div className="mt-4 flex items-center gap-1.5 text-[11px] font-sans font-bold uppercase tracking-wider text-[#FAF4F0] bg-[#D4627A] px-4 py-1.5 rounded-full shadow-sm">
+              <span>MỞ THƯ TAY</span>
+            </div>
+          </motion.div>
+        </BorderBeam>
       ) : (
         /* OPENED LETTER ON FINE ARCHIVAL STATIONERY PAPER */
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full bg-[#FCFAF7] text-[#2D1117] rounded-2xl p-6 sm:p-9 border border-[#2D1117]/15 shadow-2xl text-left relative overflow-hidden"
-        >
-          {/* Vintage Postage Foil Stamp */}
-          <div className="absolute top-5 right-5 flex items-center gap-1 text-[10px] font-sans font-semibold text-[#9E334D] bg-[#FAF4F0] px-3 py-1 rounded-full border border-[#D4627A]/30">
-            <Heart size={11} className="fill-[#D4627A] text-[#D4627A]" />
-            <span className="uppercase tracking-wider">For {cfg.recipientName}</span>
-          </div>
+        <BorderBeam size="md" colorVariant="colorful" borderRadius={16} className="w-full my-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full bg-[#FCFAF7] text-[#2D1117] rounded-2xl p-6 sm:p-9 border border-[#2D1117]/15 shadow-2xl text-left relative overflow-hidden"
+          >
+            {/* Vintage Postage Foil Stamp */}
+            <div className="absolute top-5 right-5 flex items-center gap-1 text-[10px] font-sans font-semibold text-[#9E334D] bg-[#FAF4F0] px-3 py-1 rounded-full border border-[#D4627A]/30">
+              <Heart size={11} className="fill-[#D4627A] text-[#D4627A]" />
+              <span className="uppercase tracking-wider">For {cfg.recipientName}</span>
+            </div>
 
-          {/* Letter Salutation */}
-          <div className="mb-6 pr-24">
-            <h3 className="font-serif text-2xl sm:text-3xl font-medium text-[#2D1117] tracking-tight">
-              Gửi {cfg.recipientName} thân mến,
-            </h3>
-            <p className="text-[11px] text-[#2D1117]/50 font-sans tracking-wide mt-1">{letter.date}</p>
-          </div>
+            {/* Letter Salutation */}
+            <div className="mb-6 pr-24">
+              <h3 className="font-serif text-2xl sm:text-3xl font-medium text-[#2D1117] tracking-tight">
+                Gửi {cfg.recipientName} thân mến,
+              </h3>
+              <p className="text-[11px] text-[#2D1117]/50 font-sans tracking-wide mt-1">{letter.date}</p>
+            </div>
 
-          {/* Letter Body Paragraphs */}
-          <div className="space-y-4 font-sans text-xs sm:text-sm text-[#2D1117]/85 font-light leading-[1.85]">
-            {letter.paragraphs.map((p, idx) => (
-              <motion.p
-                key={idx}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: idx * 0.12 }}
-                className={idx === 0 ? 'drop-cap' : ''}
-              >
-                {p}
-              </motion.p>
-            ))}
-          </div>
+            {/* Letter Body Paragraphs */}
+            <div className="space-y-4 font-sans text-xs sm:text-sm text-[#2D1117]/85 font-light leading-[1.85]">
+              {letter.paragraphs.map((p, idx) => (
+                <motion.p
+                  key={idx}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: idx * 0.12 }}
+                  className={idx === 0 ? 'drop-cap' : ''}
+                >
+                  {p}
+                </motion.p>
+              ))}
+            </div>
 
-          {/* Signoff */}
-          <div className="mt-8 pt-5 border-t border-[#2D1117]/10 text-right">
-            <p className="font-serif italic text-base text-[#2D1117]/80">
-              {letter.closing}
-            </p>
-            <p className="font-script text-2xl sm:text-3xl text-[#D4627A] font-bold mt-1">
-              {letter.signOff}
-            </p>
-          </div>
-        </motion.div>
+            {/* Signoff */}
+            <div className="mt-8 pt-5 border-t border-[#2D1117]/10 text-right">
+              <p className="font-serif italic text-base text-[#2D1117]/80">
+                {letter.closing}
+              </p>
+              <p className="font-script text-2xl sm:text-3xl text-[#D4627A] font-bold mt-1">
+                {letter.signOff}
+              </p>
+            </div>
+          </motion.div>
+        </BorderBeam>
       )}
 
       {/* Button to Proceed to Final Surprise */}

@@ -24,6 +24,7 @@
     "vite": "^8.3.6"
   },
   "dependencies": {
+    "border-beam": "^1.4.1",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "framer-motion": "^14.14.0",

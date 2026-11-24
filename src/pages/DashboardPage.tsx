@@ -5,7 +5,7 @@ import {
   Sparkles, Calendar, Layers, X
 } from 'lucide-react';
 import { getAllCards, deleteCard, cloneCard, encodeCardToUrl, SavedCard } from '../utils/cardLibrary';
-import Demo from '../components/ui/demo';
+import NebulaDemo from '../components/ui/nebula-demo';
 
 interface DashboardPageProps {
   onOpenCard: (cardId: string) => void;
@@ -341,7 +341,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             </button>
           </div>
           <div className="flex-1 w-full h-full overflow-hidden">
-            <Demo />
+            <NebulaDemo />
           </div>
         </div>
       )}
