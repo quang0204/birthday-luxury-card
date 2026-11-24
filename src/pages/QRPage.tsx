@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'qrcode';
 import { Download, Printer, Copy, Check, X, Sparkles, Heart, AlertCircle, Maximize2, Scan, Globe } from 'lucide-react';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../config/birthday.config';
+import { LucianQRCard } from '../components/ui/lucian-qr-card';
 
 interface QRPageProps {
   isOpen: boolean;
@@ -180,42 +181,20 @@ export const QRPage: React.FC<QRPageProps> = ({
                   Happy Birthday, {config.recipientName}!
                 </h4>
 
-                {/* QR Code Graphic Frame (Pure Contrast, Ultra Sharp, Large) */}
-                <div className="relative my-3 inline-block group">
-                  <div
-                    onClick={() => setIsZoomed(true)}
-                    className="p-3.5 bg-white rounded-2xl border-2 border-neutral-900 shadow-md inline-block cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all"
-                    title="Bấm để phóng to mã QR toàn màn hình"
-                  >
-                    {qrDataUrl ? (
-                      <img
-                        src={qrDataUrl}
-                        alt={`Mã QR Sinh Nhật ${config.recipientName}`}
-                        className="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto select-none"
-                      />
-                    ) : (
-                      <div className="w-56 h-56 sm:w-64 sm:h-64 flex flex-col items-center justify-center text-xs text-[#2D1117] gap-2 font-sans font-semibold">
-                        <div className="w-8 h-8 border-3 border-[#D4627A] border-t-transparent rounded-full animate-spin" />
-                        <span>Đang tạo mã QR siêu nét...</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Quick Zoom Pill */}
-                  {qrDataUrl && (
-                    <button
-                      type="button"
-                      onClick={() => setIsZoomed(true)}
-                      className="absolute bottom-5 right-5 bg-neutral-900/85 hover:bg-neutral-900 text-white text-[11px] font-sans font-semibold px-2.5 py-1 rounded-lg backdrop-blur-sm flex items-center gap-1 shadow-md transition-all cursor-pointer opacity-90 group-hover:opacity-100"
-                    >
-                      <Maximize2 size={12} />
-                      <span>Phóng to</span>
-                    </button>
-                  )}
+                {/* Lucian UX/UI Prompt #478 Interactive QR Card */}
+                <div className="my-3 flex justify-center">
+                  <LucianQRCard
+                    url={customUrl}
+                    onZoom={() => setIsZoomed(true)}
+                    onCopy={() => {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                  />
                 </div>
 
                 {/* Scanning Guidance */}
-                <div className="flex items-center justify-center gap-1.5 text-xs font-sans font-medium text-[#2D1117]/85 mt-1">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-sans font-medium text-[#2D1117]/85 mt-2">
                   <Scan size={14} className="text-[#D4627A]" />
                   <span>Dùng Camera điện thoại hoặc Zalo để quét mã</span>
                 </div>
@@ -313,26 +292,18 @@ export const QRPage: React.FC<QRPageProps> = ({
               <h4 className="font-serif text-xl font-bold text-neutral-900 mb-1">
                 Mã QR Sinh Nhật
               </h4>
-              <p className="text-xs text-neutral-500 mb-4 font-sans">
+              <p className="text-xs text-neutral-500 mb-2 font-sans">
                 Hướng Camera hoặc Zalo vào mã bên dưới:
               </p>
 
-              <div className="p-3 bg-white border-2 border-neutral-900 rounded-2xl inline-block shadow-sm">
-                <img
-                  src={qrDataUrl}
-                  alt={`Mã QR Sinh Nhật ${config.recipientName}`}
-                  className="w-64 h-64 sm:w-72 sm:h-72 object-contain mx-auto"
+              <div className="my-2 flex justify-center">
+                <LucianQRCard
+                  url={customUrl}
+                  onCopy={() => {
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
                 />
-              </div>
-
-              <div className="mt-4 flex items-center justify-center gap-2">
-                <button
-                  onClick={handleCopyLink}
-                  className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-sans font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
-                >
-                  {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-                  <span>{copied ? 'Đã sao chép link!' : 'Sao chép link web'}</span>
-                </button>
               </div>
             </motion.div>
           </motion.div>
