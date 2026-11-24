@@ -5,7 +5,8 @@ import HalftoneNebula, { NEBULA_PRESETS } from '../components/ui/halftone-nebula
 import ChapterRailNav from '../components/ui/chapter-rail-nav';
 import LucianFooter from '../components/ui/lucian-footer';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
-import { Sparkles, QrCode, PenTool, Layers } from 'lucide-react';
+import { Sparkles, QrCode, PenTool, Layers, Menu as MenuIcon, X, BookOpen } from 'lucide-react';
+import { MenuItem, MenuContainer } from '../components/ui/fluid-menu';
 import { BirthdayConfig } from '../config/birthday.config';
 
 export type BackgroundThemeType = 'crimson' | 'ultraviolet' | 'solar' | 'abyssal' | 'phosphor' | 'particles';
@@ -241,19 +242,80 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         />
       </div>
 
-      {/* Mobile Floating Chapter Trigger & Drawer */}
+      {/* Mobile Floating Chapter Trigger & Drawer with Fluid Menu */}
       <div className="md:hidden">
-        {/* Floating pill button at bottom-left */}
-        <button
-          onClick={() => setMobileNavOpen(!mobileNavOpen)}
-          className="fixed bottom-20 left-4 z-40 btn-glass-interactive px-3 py-1.5 rounded-full flex items-center gap-2 shadow-2xl text-xs border border-white/20 bg-[#160a12]/90 backdrop-blur-xl cursor-pointer"
-          title="Mở danh sách chương"
-          aria-label="Mở danh sách chương"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#E77C92] animate-ping" />
-          <span className="font-serif font-bold text-[#E77C92]">{romanNumerals[currentChapter - 1]}</span>
-          <span className="text-white/80 text-[11px] font-sans font-medium">{chapterTitles[currentChapter - 1]}</span>
-        </button>
+        {/* Floating Fluid Menu at bottom-left */}
+        <div className="fixed bottom-20 left-4 z-40 flex items-center gap-2.5">
+          <MenuContainer
+            direction="up"
+            triggerClassName="bg-[#180d15]/95 border border-[#E77C92]/40 text-[#FAF4F0] shadow-2xl backdrop-blur-xl hover:border-[#E77C92]"
+            itemClassName="bg-[#1f101a]/95 border border-white/20 text-[#FAF4F0] shadow-2xl backdrop-blur-xl hover:border-[#E77C92]"
+            spacing={56}
+          >
+            {/* Trigger Button */}
+            <MenuItem
+              title="Menu điều hướng"
+              icon={
+                <div className="relative w-6 h-6 flex items-center justify-center">
+                  <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-100 scale-100 rotate-0 [div[data-expanded=true]_&]:opacity-0 [div[data-expanded=true]_&]:scale-0 [div[data-expanded=true]_&]:rotate-180 flex items-center justify-center">
+                    <MenuIcon size={22} className="text-[#E77C92]" strokeWidth={2} />
+                  </div>
+                  <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-0 scale-0 -rotate-180 [div[data-expanded=true]_&]:opacity-100 [div[data-expanded=true]_&]:scale-100 [div[data-expanded=true]_&]:rotate-0 flex items-center justify-center">
+                    <X size={22} className="text-[#E77C92]" strokeWidth={2} />
+                  </div>
+                </div>
+              }
+            />
+
+            {/* Item 1: Open Chapter List Drawer */}
+            <MenuItem
+              title="Danh sách chương"
+              onClick={() => setMobileNavOpen(true)}
+              icon={<BookOpen size={20} className="text-[#E77C92]" />}
+            />
+
+            {/* Item 2: QR Code modal */}
+            <MenuItem
+              title="Mã QR & Thiệp in"
+              onClick={onOpenQR}
+              icon={<QrCode size={20} className="text-[#FAF4F0]" />}
+            />
+
+            {/* Item 3: Cosmic Background Theme */}
+            <MenuItem
+              title="Đổi vũ trụ sao"
+              onClick={() => setShowThemePicker((prev) => !prev)}
+              icon={<Sparkles size={20} className="text-[#E6C29C]" />}
+            />
+
+            {/* Item 4: Dashboard or Creator */}
+            {!isRecipientMode && onOpenDashboard ? (
+              <MenuItem
+                title="Kho thiệp"
+                onClick={onOpenDashboard}
+                icon={<Layers size={20} className="text-[#FAF4F0]" />}
+              />
+            ) : (
+              <MenuItem
+                title="Chỉnh sửa thiệp"
+                onClick={onOpenCreator}
+                icon={<PenTool size={20} className="text-[#FAF4F0]" />}
+              />
+            )}
+          </MenuContainer>
+
+          {/* Quick Chapter Pill Badge */}
+          <button
+            onClick={() => setMobileNavOpen(true)}
+            className="btn-glass-interactive px-3 py-2 rounded-full flex items-center gap-2 shadow-2xl text-xs border border-white/20 bg-[#160a12]/90 backdrop-blur-xl cursor-pointer"
+            title="Mở danh sách chương"
+            aria-label="Mở danh sách chương"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#E77C92] animate-ping" />
+            <span className="font-serif font-bold text-[#E77C92]">{romanNumerals[currentChapter - 1]}</span>
+            <span className="text-white/80 text-[11px] font-sans font-medium">{chapterTitles[currentChapter - 1]}</span>
+          </button>
+        </div>
 
         {/* Mobile Slide-in Drawer */}
         {mobileNavOpen && (
