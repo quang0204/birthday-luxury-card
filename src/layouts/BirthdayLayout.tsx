@@ -277,44 +277,6 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         )}
       </div>
 
-      {/* Editorial Chapter Top Navigation Bar */}
-      <div className="relative z-30 flex flex-col items-center justify-center pt-2 pb-1 gap-1">
-        {/* Folio Step Indicators */}
-        <div className="flex items-center gap-1 sm:gap-2 px-3 py-1 rounded-full bg-white/[0.04] backdrop-blur-md border border-white/10 shadow-sm">
-          {romanNumerals.map((roman, idx) => {
-            const num = idx + 1;
-            const isCurrent = num === currentChapter;
-            const isPassed = num < currentChapter;
-            const isLocked = isRecipientMode && num > maxUnlockedChapter;
-
-            return (
-              <button
-                key={num}
-                disabled={isLocked}
-                onClick={() => !isLocked && onSelectChapter(num as ChapterNumber)}
-                className={`transition-all duration-300 font-serif text-[11px] sm:text-xs tracking-wider cursor-pointer py-1 px-2.5 rounded-lg flex items-center justify-center ${
-                  isCurrent
-                    ? 'text-white font-bold bg-[#D4627A] shadow-md scale-105'
-                    : isPassed
-                    ? 'text-[#FAF4F0]/85 hover:text-white hover:bg-white/10'
-                    : isLocked
-                    ? 'opacity-25 cursor-not-allowed text-[#FAF4F0]/30'
-                    : 'text-[#FAF4F0]/60 hover:text-white hover:bg-white/10'
-                }`}
-                title={`Chương ${roman}: ${chapterTitles[idx]}`}
-              >
-                {roman}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Current Chapter Subtitle */}
-        <span className="text-[11px] uppercase font-sans tracking-[0.2em] text-[#E77C92] font-semibold mt-0.5">
-          Chương {romanNumerals[currentChapter - 1]} — {chapterTitles[currentChapter - 1]}
-        </span>
-      </div>
-
       {/* Main Stage Content */}
       <main className="flex-1 flex flex-col justify-center items-center relative z-20 w-full max-w-4xl mx-auto py-3 px-3 sm:px-6">
         {children}
