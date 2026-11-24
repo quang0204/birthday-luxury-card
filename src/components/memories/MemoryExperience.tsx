@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Sparkles } from 'lucide-react';
 import { Memory } from '../../data/memories';
 import { MemoryItem } from '../../config/birthday.config';
 import { useMemorySphere } from '../../hooks/useMemorySphere';
-import { MemorySphere } from './MemorySphere';
+import CoverflowCarousel, { CoverflowSlide } from '../ui/coverflow-carousel';
 import { MemoryControls } from './MemoryControls';
 import { MemoryDetailModal } from './MemoryDetailModal';
 
@@ -36,11 +36,24 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
     toggleLike,
   } = useMemorySphere(inputMemories, playClick);
 
+  const slides: CoverflowSlide[] = useMemo(() => {
+    return memories.map((item) => ({
+      src: item.image,
+      alt: item.title,
+      title: item.title,
+      subtitle: item.caption,
+      meta: [
+        ...(item.date ? [{ label: 'Thời gian', value: item.date }] : []),
+        ...(item.location ? [{ label: 'Địa điểm', value: item.location }] : []),
+      ],
+    }));
+  }, [memories]);
+
   return (
     <div className="relative w-full max-w-4xl mx-auto py-2 px-2 sm:px-4 flex flex-col items-center min-h-[82vh] justify-between">
       {/* 1. Header Section */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-xl mb-1">
-{/* Title */}
+        {/* Title */}
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,7 +78,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           transition={{ delay: 0.2 }}
           className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 max-w-md font-sans font-light leading-relaxed"
         >
-          Mỗi bức ảnh là một câu chuyện. Hãy xoay quả cầu và tìm lại những khoảnh khắc đáng nhớ nhé.
+          Mỗi bức ảnh là một câu chuyện. Hãy lật giở từng trang kỷ niệm 3D Coverflow để tìm lại những khoảnh khắc đáng nhớ nhé.
         </motion.p>
 
         {/* Controls: Drag hint, Counter, Random Memory, View Switcher */}
@@ -79,7 +92,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
         </div>
       </div>
 
-      {/* 2. Main Gallery: 3D Mist Orb Photo Sphere OR Flat Scrapbook Grid */}
+      {/* 2. Main Gallery: 3D Coverflow Carousel OR Flat Scrapbook Grid */}
       {memories.length === 0 ? (
         <div className="relative z-10 w-full max-w-md mx-auto my-12 p-8 rounded-3xl bg-white/[0.04] border border-white/10 text-center flex flex-col items-center justify-center gap-4 animate-fadeIn">
           <div className="w-16 h-16 rounded-2xl bg-[#D4627A]/15 border border-[#D4627A]/30 flex items-center justify-center text-[#E77C92]">
@@ -93,14 +106,26 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           </div>
         </div>
       ) : viewMode === 'sphere' ? (
-        <div className="relative z-10 w-full flex items-center justify-center my-1">
-          <MemorySphere
-            memories={memories}
-            selectedMemory={selectedMemory}
-            onSelectMemory={openDetail}
-            hoveredId={hoveredId}
-            setHoveredId={setHoveredId}
+        <div className="relative z-10 w-full flex flex-col items-center justify-center my-1 max-w-3xl">
+          <CoverflowCarousel
+            slides={slides}
+            cardWidth="clamp(200px, 30vw, 290px)"
+            rotate={42}
+            depth={0.65}
+            gap={0.06}
+            showNavigation={true}
+            showPagination={true}
+            showCaption={true}
+            cardClassName="border border-white/25 shadow-2xl hover:border-[#E77C92]/70 transition-all duration-300"
+            onCardClick={(index) => {
+              if (memories[index]) {
+                openDetail(memories[index]);
+              }
+            }}
           />
+          <p className="text-[11px] text-white/50 font-sans tracking-wide mt-3 text-center">
+            ✨ Vuốt hoặc dùng phím mũi tên ← → để lật ảnh • Bấm vào ảnh trung tâm để phóng to chi tiết
+          </p>
         </div>
       ) : (
         /* Alternative 2D Editorial Photo Grid */

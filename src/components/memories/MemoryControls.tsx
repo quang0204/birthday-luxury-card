@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Move3d, Globe, LayoutGrid, Shuffle, Sparkles } from 'lucide-react';
+import { MoveHorizontal, Layers, LayoutGrid, Shuffle, Sparkles } from 'lucide-react';
 
 interface MemoryControlsProps {
   totalCount: number;
@@ -27,8 +27,8 @@ export const MemoryControls: React.FC<MemoryControlsProps> = ({
           transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
           className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF4F0]/8 backdrop-blur-md border border-[#FAF4F0]/20 text-[11px] font-sans font-medium text-[#FAF4F0]/85"
         >
-          <Move3d size={13} className="text-[#E77C92]" />
-          <span>Xoay 360° để khám phá</span>
+          <MoveHorizontal size={13} className="text-[#E77C92]" />
+          <span>Kéo hoặc vuốt để lật ảnh</span>
         </motion.div>
 
         {/* Counter */}
@@ -48,7 +48,7 @@ export const MemoryControls: React.FC<MemoryControlsProps> = ({
         </button>
       </div>
 
-      {/* Mode switcher: Sphere vs Grid */}
+      {/* Mode switcher: Coverflow vs Grid */}
       <div className="inline-flex items-center p-0.5 rounded-full bg-[#FAF4F0]/10 border border-[#FAF4F0]/20 backdrop-blur-md gap-0.5">
         <button
           onClick={() => onToggleViewMode('sphere')}
@@ -58,8 +58,8 @@ export const MemoryControls: React.FC<MemoryControlsProps> = ({
               : 'text-[#FAF4F0]/70 hover:text-[#FAF4F0]'
           }`}
         >
-          <Globe size={13} />
-          <span>Quả Cầu 3D</span>
+          <Layers size={13} />
+          <span>Coverflow 3D</span>
         </button>
 
         <button
@@ -71,7 +71,7 @@ export const MemoryControls: React.FC<MemoryControlsProps> = ({
           }`}
         >
           <LayoutGrid size={13} />
-          <span>Bộ Sưu Tập ({totalCount})</span>
+          <span>Lưới Ảnh ({totalCount})</span>
         </button>
       </div>
     </div>
