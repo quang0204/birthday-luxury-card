@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Gift, ExternalLink, Trash2, Edit3, QrCode, Copy, Check, 
-  Sparkles, Calendar, Layers, X
+  Sparkles, Calendar, Layers
 } from 'lucide-react';
 import { getAllCards, deleteCard, cloneCard, encodeCardToUrl, SavedCard } from '../utils/cardLibrary';
-import NebulaDemo from '../components/ui/nebula-demo';
 
 interface DashboardPageProps {
   onOpenCard: (cardId: string) => void;
@@ -46,7 +45,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const [cards, setCards] = useState<SavedCard[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [showNebulaDemo, setShowNebulaDemo] = useState(false);
 
   const refresh = useCallback(() => setCards(getAllCards()), []);
 
@@ -110,15 +108,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setShowNebulaDemo(true)}
-              className="btn-glass-interactive px-3.5 py-2 text-xs sm:text-sm tracking-wide flex items-center gap-2 cursor-pointer border-[#ff1f5a]/40 hover:border-[#ff1f5a] text-[#f6e2e8]"
-              title="Mở toàn màn hình demo pixel art Halftone Nebula"
-            >
-              <Sparkles size={14} className="text-[#ff1f5a]" />
-              <span>Demo Nebula</span>
-            </button>
-
             <button
               onClick={onCreateNew}
               className="btn-luxury px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold tracking-wide flex items-center gap-2 cursor-pointer shadow-lg shadow-rose-950/50"
@@ -327,24 +316,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </motion.div>
         )}
       </main>
-
-      {/* Halftone Nebula Interactive Demo Full-Screen Modal */}
-      {showNebulaDemo && (
-        <div className="fixed inset-0 z-50 bg-[#050309] flex flex-col animate-fadeIn">
-          <div className="absolute top-5 right-6 z-50">
-            <button
-              onClick={() => setShowNebulaDemo(false)}
-              className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-mono tracking-wider backdrop-blur-md border border-white/25 cursor-pointer flex items-center gap-1.5 shadow-xl transition-all"
-            >
-              <X size={14} />
-              <span>Đóng Demo</span>
-            </button>
-          </div>
-          <div className="flex-1 w-full h-full overflow-hidden">
-            <NebulaDemo />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
