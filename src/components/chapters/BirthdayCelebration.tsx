@@ -25,17 +25,7 @@ export const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ config
       {/* Background fireworks - soft and ambient */}
       <Fireworks active={true} burstCount={3} continuous={true} />
 
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-4"
-      >
-        <span>Chapter III • The Celebration</span>
-      </motion.div>
-
-      {/* Grand Typographic Centerpiece */}
+{/* Grand Typographic Centerpiece */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

@@ -320,17 +320,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
       {/* Soft celebration fireworks when extinguished */}
       {!candlesLit && <Fireworks active={true} burstCount={4} continuous={true} />}
 
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-3"
-      >
-        <span>Chapter IV • The Wish</span>
-      </motion.div>
-
-      {/* Dynamic Header (Inspired by birthday-cake.online) */}
+{/* Dynamic Header (Inspired by birthday-cake.online) */}
       <div className="px-4 mb-2 max-w-lg min-h-[72px] flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
           {candlesLit ? (

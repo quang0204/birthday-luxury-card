@@ -30,17 +30,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full px-4">
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-5"
-      >
-        <span>Chapter I • The Prologue</span>
-      </motion.div>
-
-      {/* Main Editorial Headline */}
+{/* Main Editorial Headline */}
       <motion.h1
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}

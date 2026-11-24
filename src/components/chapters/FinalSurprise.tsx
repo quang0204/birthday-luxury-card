@@ -67,17 +67,7 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
       {/* Celebration Fireworks when revealed */}
       {isRevealed && <Fireworks active={true} burstCount={5} continuous={true} />}
 
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-4"
-      >
-        <span>Chapter VIII • The Epilogue</span>
-      </motion.div>
-
-      {!isRevealed ? (
+{!isRevealed ? (
         /* BEFORE REVEAL: MYSTERY CURIOSITY */
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

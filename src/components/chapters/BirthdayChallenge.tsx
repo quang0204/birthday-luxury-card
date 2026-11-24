@@ -48,17 +48,7 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-3"
-      >
-        <span>Chapter VI • Three Whimsical Challenges</span>
-      </motion.div>
-
-      {/* Slender Minimalist Progress Indicator */}
+{/* Slender Minimalist Progress Indicator */}
       <div className="w-full max-w-xs mb-6">
         <div className="flex justify-between items-center text-[11px] text-[#FAF4F0]/60 mb-2 px-1 font-sans tracking-widest uppercase">
           <span>Tiến độ thử thách</span>

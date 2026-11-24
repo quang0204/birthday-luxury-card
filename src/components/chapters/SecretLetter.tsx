@@ -23,17 +23,7 @@ export const SecretLetter: React.FC<SecretLetterProps> = ({ config, onProceed })
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-3"
-      >
-        <span>Chapter VII • The Secret Letter</span>
-      </motion.div>
-
-      <motion.h2
+<motion.h2
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}

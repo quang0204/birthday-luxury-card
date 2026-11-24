@@ -40,17 +40,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
     <div className="relative w-full max-w-4xl mx-auto py-2 px-2 sm:px-4 flex flex-col items-center min-h-[82vh] justify-between">
       {/* 1. Header Section */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-xl mb-1">
-        {/* Editorial Chapter Tag */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="editorial-badge mb-3"
-        >
-          <span>Chapter V • Universe of Moments</span>
-        </motion.div>
-
-        {/* Title */}
+{/* Title */}
         <motion.h2
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

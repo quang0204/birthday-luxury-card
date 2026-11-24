@@ -29,17 +29,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full px-4">
-      {/* Editorial Chapter Tag */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="editorial-badge mb-5"
-      >
-        <span>Chapter II • The Unboxing</span>
-      </motion.div>
-
-      {/* Headline */}
+{/* Headline */}
       <motion.h2
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
