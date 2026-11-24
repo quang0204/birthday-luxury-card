@@ -332,10 +332,10 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
               transition={{ duration: 0.4 }}
               className="space-y-1"
             >
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#FAF4F0] tracking-tight drop-shadow-[0_4px_24px_rgba(2,6,23,0.75)]">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
                 Make a wish & blow out the candles
               </h1>
-              <p className="text-xs sm:text-sm text-[#FAF4F0]/70 font-sans font-light leading-relaxed">
+              <p className="text-xs sm:text-sm font-sans leading-relaxed subcaption-contrast">
                 Hãy ước một điều ước thật đẹp và thổi vào micro để dập tắt ngọn nến
               </p>
             </motion.div>
@@ -350,10 +350,10 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
               <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white drop-shadow-[0_4px_30px_rgba(225,29,72,0.6)]">
                 🎉 Happy Birthday {cfg.recipientName}!
               </h1>
-              <p className="text-amber-300 font-medium text-sm sm:text-base tracking-widest animate-pulse">
+              <p className="text-amber-300 font-medium text-sm sm:text-base tracking-widest animate-pulse drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                 ✧ 🎂 🎊 🎉 ✨ ✧
               </p>
-              <p className="text-xs text-[#FAF4F0]/75 font-serif italic">
+              <p className="text-xs font-serif italic subcaption-contrast">
                 Ước nguyện đã được gửi gắm tới các vì sao
               </p>
             </motion.div>
@@ -488,7 +488,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
           </div>
 
           {/* Pulse helper hint */}
-          <div className="text-[11px] text-pink-200/80 font-medium animate-pulse">
+          <div className="text-xs text-pink-200 font-medium tracking-wide animate-pulse subcaption-contrast">
             Click to light candles again
           </div>
 

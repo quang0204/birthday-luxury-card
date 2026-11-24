@@ -353,20 +353,20 @@ export function CoverflowCarousel({
           key={selected}
           className="mt-2 flex flex-col items-center px-6 duration-300 animate-in fade-in"
         >
-          <p className="text-[16px] sm:text-[18px] font-semibold tracking-tight text-foreground font-serif">
+          <p className="text-[16px] sm:text-[18px] font-semibold tracking-tight text-[#FAF4F0] font-serif title-contrast">
             {active.title}
           </p>
           {active.subtitle && (
-            <p className="mt-1 text-[13px] sm:text-[14px] text-muted-foreground italic font-serif">
+            <p className="mt-1 text-[13px] sm:text-[14px] italic font-serif subcaption-contrast">
               "{active.subtitle}"
             </p>
           )}
           {active.meta && active.meta.length > 0 && (
-            <dl className="mt-4 w-full max-w-[260px] text-[12px] bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 backdrop-blur-md">
+            <dl className="mt-4 w-full max-w-[270px] text-[12px] bg-[#12060C]/80 border border-white/20 rounded-xl px-3.5 py-2 backdrop-blur-xl shadow-2xl">
               {active.meta.map((row) => (
-                <div key={row.label} className="flex justify-between py-[4px] border-b border-white/5 last:border-none">
-                  <dt className="text-muted-foreground font-light">{row.label}</dt>
-                  <dd className="font-medium text-foreground">{row.value}</dd>
+                <div key={row.label} className="flex justify-between py-[4px] border-b border-white/10 last:border-none">
+                  <dt className="text-white/80 font-normal subcaption-contrast">{row.label}</dt>
+                  <dd className="font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">{row.value}</dd>
                 </div>
               ))}
             </dl>

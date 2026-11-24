@@ -29,12 +29,12 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full px-4">
-{/* Main Editorial Headline */}
+      {/* Main Editorial Headline */}
       <motion.h1
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal leading-[1.2] text-[#FAF4F0] max-w-md tracking-tight"
+        className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal leading-[1.2] text-[#FAF4F0] max-w-md tracking-tight title-contrast"
       >
         {cfg.invitation.teaser}
       </motion.h1>
@@ -43,7 +43,7 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.25 }}
-        className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-3 max-w-xs sm:max-w-sm font-sans font-light leading-relaxed tracking-wide"
+        className="text-xs sm:text-sm mt-3 max-w-xs sm:max-w-sm font-sans leading-relaxed tracking-wide subcaption-contrast"
       >
         {cfg.invitation.subTeaser}
       </motion.p>

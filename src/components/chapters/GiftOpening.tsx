@@ -28,12 +28,12 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full px-4">
-{/* Headline */}
+      {/* Headline */}
       <motion.h2
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal leading-snug text-[#FAF4F0] max-w-md tracking-tight"
+        className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal leading-snug text-[#FAF4F0] max-w-md tracking-tight title-contrast"
       >
         {cfg.giftOpening.promptText}
       </motion.h2>
@@ -42,7 +42,7 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.2 }}
-        className="text-xs sm:text-sm text-[#FAF4F0]/60 mt-2 font-sans font-light tracking-wide"
+        className="text-xs sm:text-sm mt-2 font-sans tracking-wide subcaption-contrast"
       >
         Một món quà kỹ thuật số được thiết kế riêng cho ngày đặc biệt
       </motion.p>

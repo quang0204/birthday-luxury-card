@@ -50,13 +50,13 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
 {/* Slender Minimalist Progress Indicator */}
       <div className="w-full max-w-xs mb-6">
-        <div className="flex justify-between items-center text-[11px] text-[#FAF4F0]/60 mb-2 px-1 font-sans tracking-widest uppercase">
+        <div className="flex justify-between items-center text-xs mb-2 px-1 font-sans font-medium tracking-widest uppercase subcaption-contrast">
           <span>Tiến độ thử thách</span>
           <span className="text-[#E77C92] font-semibold">
             {Math.min(step, 3)} / 3
           </span>
         </div>
-        <div className="w-full h-1 bg-[#FAF4F0]/10 rounded-full overflow-hidden">
+        <div className="w-full h-1 bg-[#FAF4F0]/15 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-[#D4627A] to-[#E6C29C] rounded-full"
             initial={{ width: '0%' }}
@@ -76,10 +76,10 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight">
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
               {gameData.challenge1.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 mb-6 font-sans font-light">
+            <p className="text-xs sm:text-sm mt-1.5 mb-6 font-sans subcaption-contrast">
               {gameData.challenge1.prompt}
             </p>
 
@@ -128,14 +128,14 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E77C92] font-sans font-medium mb-1">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E77C92] font-sans font-medium mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
               <HelpCircle size={14} />
               <span>Thử Thách 2: Điều Bạn Mong Ước</span>
             </div>
-            <h2 className="font-serif text-xl sm:text-2xl font-normal text-[#FAF4F0] tracking-tight">
+            <h2 className="font-serif text-xl sm:text-2xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
               {gameData.challenge2.question}
             </h2>
-            <p className="text-xs text-[#FAF4F0]/65 mt-1.5 mb-5 font-sans font-light">
+            <p className="text-xs sm:text-sm mt-1.5 mb-5 font-sans subcaption-contrast">
               {gameData.challenge2.subtitle}
             </p>
 
@@ -186,14 +186,14 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
             exit={{ opacity: 0, scale: 0.96 }}
             className="w-full"
           >
-            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E6C29C] font-sans font-medium mb-1">
+            <div className="flex items-center justify-center gap-1.5 text-xs text-[#E6C29C] font-sans font-medium mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
               <Sparkles size={14} />
               <span>Thử Thách 3: Lá Bài May Mắn</span>
             </div>
-            <h2 className="font-serif text-2xl font-normal text-[#FAF4F0] tracking-tight">
+            <h2 className="font-serif text-2xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
               {gameData.challenge3.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 mb-6 font-sans font-light">
+            <p className="text-xs sm:text-sm mt-1.5 mb-6 font-sans subcaption-contrast">
               {gameData.challenge3.prompt}
             </p>
 
@@ -252,11 +252,11 @@ export const BirthdayChallenge: React.FC<BirthdayChallengeProps> = ({ config, on
               <Trophy size={24} className="text-[#E6C29C]" />
             </div>
 
-            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight">
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
               {gameData.completedTitle}
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#FAF4F0]/70 mt-2 max-w-sm font-sans font-light leading-relaxed">
+            <p className="text-xs sm:text-sm mt-2 max-w-sm font-sans leading-relaxed subcaption-contrast">
               {gameData.completedMessage}
             </p>
 

@@ -137,14 +137,14 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-serif tracking-[0.2em] text-xs font-semibold text-[#FAF4F0]/90 uppercase block">
+              <span className="font-serif tracking-[0.2em] text-xs font-semibold text-[#FAF4F0] uppercase block drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
                 The Birthday Experience
               </span>
-              <span className="text-[11px] font-sans font-bold tracking-widest text-[#E77C92] uppercase border-l border-[#FAF4F0]/20 pl-2">
+              <span className="text-[11px] font-sans font-bold tracking-widest text-[#FF9EAF] uppercase border-l border-[#FAF4F0]/30 pl-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
                 Vol. 20
               </span>
             </div>
-            <p className="text-xs text-[#FAF4F0]/80 font-sans tracking-wide">
+            <p className="text-xs text-[#FAF4F0]/95 font-sans tracking-wide subcaption-contrast">
               Dành riêng cho <span className="text-[#FAF4F0] font-semibold">{config.recipientName}</span>
             </p>
           </div>
@@ -298,7 +298,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
           >
             <span className="w-2 h-2 rounded-full bg-[#E77C92] animate-ping" />
             <span className="font-serif font-bold text-[#E77C92]">{romanNumerals[currentChapter - 1]}</span>
-            <span className="text-white/80 text-[11px] font-sans font-medium">{chapterTitles[currentChapter - 1]}</span>
+            <span className="text-white text-xs font-sans font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">{chapterTitles[currentChapter - 1]}</span>
           </button>
         </div>
 
@@ -317,7 +317,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
                   <h3 className="font-serif text-sm font-semibold text-[#FAF4F0] uppercase tracking-wider">
                     Danh Sách 7 Chương
                   </h3>
-                  <p className="text-[11px] text-white/50 font-sans mt-0.5">Chọn một chương để di chuyển nhanh</p>
+                  <p className="text-xs text-white/80 font-sans mt-0.5">Chọn một chương để di chuyển nhanh</p>
                 </div>
                 <button
                   onClick={() => setMobileNavOpen(false)}
@@ -365,7 +365,7 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
       </main>
 
       {/* Minimal Editorial Footer */}
-      <footer className="safe-bottom relative z-20 py-6 px-4 flex justify-center text-[11px] text-[#FAF4F0]/30 font-light font-sans tracking-widest uppercase">
+      <footer className="safe-bottom relative z-20 py-6 px-4 flex justify-center text-xs text-[#FAF4F0]/70 font-medium font-sans tracking-widest uppercase subcaption-contrast">
         The Birthday Experience • {config.recipientName}
       </footer>
     </div>

@@ -58,7 +58,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#FAF4F0]"
+          className="font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#FAF4F0] title-contrast"
         >
           OUR MEMORIES
         </motion.h2>
@@ -67,7 +67,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className="font-serif italic text-base sm:text-lg text-[#E77C92] font-normal mt-1"
+          className="font-serif italic text-base sm:text-lg text-[#FF9EAF] font-medium mt-1 subcaption-contrast"
         >
           "Some moments deserve to live forever."
         </motion.p>
@@ -76,7 +76,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1.5 max-w-md font-sans font-light leading-relaxed"
+          className="text-xs sm:text-sm mt-1.5 max-w-md font-sans leading-relaxed subcaption-contrast"
         >
           Mỗi bức ảnh là một câu chuyện. Hãy lật giở từng trang kỷ niệm 3D Coverflow để tìm lại những khoảnh khắc đáng nhớ nhé.
         </motion.p>
@@ -123,7 +123,7 @@ export const MemoryExperience: React.FC<MemoryExperienceProps> = ({
               }
             }}
           />
-          <p className="text-[11px] text-white/50 font-sans tracking-wide mt-3 text-center">
+          <p className="text-xs font-sans tracking-wide mt-3 text-center subcaption-contrast">
             ✨ Vuốt hoặc dùng phím mũi tên ← → để lật ảnh • Bấm vào ảnh trung tâm để phóng to chi tiết
           </p>
         </div>

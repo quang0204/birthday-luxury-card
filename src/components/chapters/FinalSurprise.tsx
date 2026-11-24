@@ -82,11 +82,11 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
             <Sparkles size={26} className="text-[#E6C29C] animate-spin-slow" />
           </motion.div>
 
-          <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#FAF4F0] tracking-tight">
+          <h2 className="font-serif text-2xl sm:text-4xl font-normal text-[#FAF4F0] tracking-tight title-contrast">
             {surprise.preTitle}
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-2 max-w-xs sm:max-w-sm font-sans font-light leading-relaxed">
+          <p className="text-xs sm:text-sm mt-2 max-w-xs sm:max-w-sm font-sans leading-relaxed subcaption-contrast">
             Còn một điều bất ngờ cuối cùng được lưu giữ lại tới phút chót...
           </p>
 
@@ -106,11 +106,11 @@ export const FinalSurprise: React.FC<FinalSurpriseProps> = ({
           transition={{ duration: 0.7 }}
           className="w-full flex flex-col items-center px-2"
         >
-          <span className="font-sans text-[11px] uppercase tracking-[0.3em] text-[#E77C92] font-semibold mb-2">
+          <span className="font-sans text-xs uppercase tracking-[0.3em] text-[#FF9EAF] font-semibold mb-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
             The Final Keepsake
           </span>
 
-          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#FAF4F0] tracking-tight leading-tight">
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-[#FAF4F0] tracking-tight leading-tight title-contrast">
             HAPPY BIRTHDAY, {cfg.recipientName.toUpperCase()}!
           </h1>
 

@@ -318,12 +318,12 @@ export const BirthdayCake3D: React.FC<BirthdayCake3DProps> = ({
       />
 
       {/* 360° Floor Orbit Guide & Hint */}
-      <div className="absolute bottom-1.5 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/10 text-white/70 text-[11px] font-sans pointer-events-none transition-opacity duration-300">
-        <RotateCw size={12} className="text-[#E6C29C] animate-spin-slow" />
-        <span className="font-light tracking-wide">
+      <div className="absolute bottom-1.5 flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white/95 text-xs font-sans font-medium pointer-events-none transition-opacity duration-300 subcaption-contrast">
+        <RotateCw size={12} className="text-[#FFC480] animate-spin-slow" />
+        <span className="tracking-wide">
           {hasInteracted ? 'Xoay 360° tự do' : 'Kéo để xoay 360° chiếc bánh'}
         </span>
-        <Sparkles size={11} className="text-[#E6C29C]" />
+        <Sparkles size={11} className="text-[#FFC480]" />
       </div>
     </div>
   );

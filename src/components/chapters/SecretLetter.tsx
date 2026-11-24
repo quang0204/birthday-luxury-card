@@ -23,16 +23,16 @@ export const SecretLetter: React.FC<SecretLetterProps> = ({ config, onProceed })
 
   return (
     <div className="flex flex-col items-center justify-center text-center max-w-lg mx-auto w-full relative px-4">
-<motion.h2
+      <motion.h2
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="font-serif text-2xl sm:text-4xl font-normal text-[#FAF4F0] tracking-tight"
+        className="font-serif text-2xl sm:text-4xl font-normal text-[#FAF4F0] tracking-tight title-contrast"
       >
         {letter.title}
       </motion.h2>
 
-      <p className="text-xs sm:text-sm text-[#FAF4F0]/65 mt-1 max-w-sm mb-5 font-sans font-light">
+      <p className="text-xs sm:text-sm mt-1 max-w-sm mb-5 font-sans subcaption-contrast">
         {letter.senderNote} • {letter.date}
       </p>
 
