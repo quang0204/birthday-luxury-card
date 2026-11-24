@@ -242,10 +242,10 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         />
       </div>
 
-      {/* Mobile Floating Chapter Trigger & Drawer with Fluid Menu */}
-      <div className="md:hidden">
+      {/* Floating Chapter Trigger & Drawer with Fluid Menu (Visible on Desktop & Mobile) */}
+      <div className="z-50">
         {/* Floating Fluid Menu at bottom-left */}
-        <div className="fixed bottom-20 left-4 z-40 flex items-center gap-2.5">
+        <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3">
           <MenuContainer
             direction="up"
             triggerClassName="bg-[#180d15]/95 border border-[#E77C92]/40 text-[#FAF4F0] shadow-2xl backdrop-blur-xl hover:border-[#E77C92]"

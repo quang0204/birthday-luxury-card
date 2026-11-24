@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Gift, ExternalLink, Trash2, Edit3, QrCode, Copy, Check, 
-  Sparkles, Calendar, Layers
+  Sparkles, Calendar, Layers, Menu as MenuIcon, X, Eye, ArrowUp
 } from 'lucide-react';
+import { MenuItem, MenuContainer } from '../components/ui/fluid-menu';
 import { getAllCards, deleteCard, cloneCard, encodeCardToUrl, SavedCard } from '../utils/cardLibrary';
 import LucianFooter from '../components/ui/lucian-footer';
 
@@ -324,6 +325,58 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           onCreateNew={onCreateNew}
           isDashboard={true}
         />
+      </div>
+
+      {/* Floating Fluid Menu on Dashboard */}
+      <div className="fixed bottom-6 left-6 z-50 flex items-center gap-3">
+        <MenuContainer
+          direction="up"
+          triggerClassName="bg-[#180d15]/95 border border-[#E77C92]/40 text-[#FAF4F0] shadow-2xl backdrop-blur-xl hover:border-[#E77C92]"
+          itemClassName="bg-[#1f101a]/95 border border-white/20 text-[#FAF4F0] shadow-2xl backdrop-blur-xl hover:border-[#E77C92]"
+          spacing={56}
+        >
+          <MenuItem
+            title="Menu điều hướng"
+            icon={
+              <div className="relative w-6 h-6 flex items-center justify-center">
+                <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-100 scale-100 rotate-0 [div[data-expanded=true]_&]:opacity-0 [div[data-expanded=true]_&]:scale-0 [div[data-expanded=true]_&]:rotate-180 flex items-center justify-center">
+                  <MenuIcon size={22} className="text-[#E77C92]" strokeWidth={2} />
+                </div>
+                <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-0 scale-0 -rotate-180 [div[data-expanded=true]_&]:opacity-100 [div[data-expanded=true]_&]:scale-100 [div[data-expanded=true]_&]:rotate-0 flex items-center justify-center">
+                  <X size={22} className="text-[#E77C92]" strokeWidth={2} />
+                </div>
+              </div>
+            }
+          />
+          {cards.length > 0 && (
+            <MenuItem
+              title="Xem thiệp"
+              onClick={() => onOpenCard(cards[0].id)}
+              icon={<Eye size={20} className="text-[#E77C92]" />}
+            />
+          )}
+          <MenuItem
+            title="Tạo thiệp mới"
+            onClick={onCreateNew}
+            icon={<Plus size={20} className="text-[#FAF4F0]" />}
+          />
+          {cards.length > 0 && (
+            <MenuItem
+              title="Mã QR & Thiệp in"
+              onClick={() => onOpenQR(cards[0])}
+              icon={<QrCode size={20} className="text-[#FAF4F0]" />}
+            />
+          )}
+          <MenuItem
+            title="Lên đầu trang"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            icon={<ArrowUp size={20} className="text-[#E6C29C]" />}
+          />
+        </MenuContainer>
+
+        <div className="px-3.5 py-2 rounded-full shadow-2xl text-xs border border-white/20 bg-[#160a12]/90 backdrop-blur-xl text-white/80 font-medium hidden sm:block">
+          Studio Menu
+        </div>
       </div>
     </div>
   );

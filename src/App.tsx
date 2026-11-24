@@ -19,11 +19,8 @@ export const App: React.FC = () => {
     return new URLSearchParams(window.location.search).get('card');
   }, []);
 
-  // View state: 'dashboard' | 'card'
-  const [currentView, setCurrentView] = useState<'dashboard' | 'card'>(() => {
-    if (isDirectRecipientLink || urlCardId) return 'card';
-    return 'dashboard';
-  });
+  // View state: 'dashboard' | 'card' (default to 'card' so user sees the birthday experience & menu immediately)
+  const [currentView, setCurrentView] = useState<'dashboard' | 'card'>('card');
 
   const [activeCardId, setActiveCardId] = useState<string | undefined>(() => {
     if (urlCardId) return urlCardId;
