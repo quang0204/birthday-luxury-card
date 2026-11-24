@@ -5,6 +5,7 @@ import { CardCreatorModal } from './components/creator/CardCreatorModal';
 import { QRPage } from './pages/QRPage';
 import { getCard, saveCard, getAllCards, encodeCardToUrl, SavedCard } from './utils/cardLibrary';
 import { BIRTHDAY_CONFIG, BirthdayConfig } from './config/birthday.config';
+import ArcCursor from './components/ui/arc-cursor';
 
 export const App: React.FC = () => {
   // Check if visitor has ?c=... parameter (direct recipient link)
@@ -83,6 +84,9 @@ export const App: React.FC = () => {
 
   return (
     <>
+      {/* React Bits Electric Arc Cursor */}
+      <ArcCursor colors={['#E77C92', '#FFC0CB', '#FFFFFF']} strands={3} glow={16} />
+
       {currentView === 'dashboard' && !isDirectRecipientLink ? (
         <DashboardPage
           onOpenCard={handleOpenCard}
