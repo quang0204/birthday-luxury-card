@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { GiftBox3D } from '../3d/GiftBox3D';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
@@ -60,36 +59,6 @@ export const GiftOpening: React.FC<GiftOpeningProps> = ({ config, onProceed }) =
           onOpen={handleOpenGift}
           recipientName={cfg.recipientName}
         />
-      </motion.div>
-
-      {/* Action Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.45 }}
-        className="w-full px-6 flex flex-col items-center gap-2 mt-2"
-      >
-        <button
-          onClick={handleOpenGift}
-          disabled={isOpened}
-          className="btn-editorial-primary px-8 py-3.5 tracking-[0.12em] text-xs uppercase group disabled:opacity-85 disabled:pointer-events-none"
-        >
-          {isOpened ? (
-            <>
-              <CheckCircle2 size={16} className="text-[#FEEBEF] animate-pulse mr-1" />
-              <span>Đang Mở Ra Điều Diệu Kỳ...</span>
-            </>
-          ) : (
-            <>
-              <span>{cfg.giftOpening.buttonText}</span>
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform ml-1" />
-            </>
-          )}
-        </button>
-
-        <p className="text-[11px] text-[#FAF4F0]/40 font-serif italic tracking-wider mt-1">
-          Chạm vào chiếc nơ để tự tay mở hộp quà
-        </p>
       </motion.div>
     </div>
   );
