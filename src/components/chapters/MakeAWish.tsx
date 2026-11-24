@@ -420,7 +420,7 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
             {/* Prompt Status Text */}
             <span className="truncate">
               {micDenied
-                ? 'Micro bị từ chối — Hãy dùng nút gió góc phải để thổi'
+                ? 'Micro bị từ chối — Chạm trực tiếp vào bánh để tắt nến'
                 : isRequestingMic
                 ? 'Đang kết nối micro...'
                 : micActive
@@ -452,39 +452,6 @@ export const MakeAWish: React.FC<MakeAWishProps> = ({ config, onProceed }) => {
                 }}
               />
             ))}
-          </div>
-
-          {/* Floating Wind Cheat Button (Bottom-Right, exactly like birthday-cake.online) */}
-          <div className="fixed bottom-20 right-4 sm:right-8 z-40 flex flex-col items-center gap-1">
-            <button
-              type="button"
-              onMouseDown={startHolding}
-              onMouseUp={stopHolding}
-              onTouchStart={startHolding}
-              onTouchEnd={stopHolding}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-pink-500 text-white transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer relative select-none group border border-white/20"
-              title="Nhấn giữ để thổi tắt nến (Thủ công / Cheat)"
-              aria-label="Nhấn giữ để thổi tắt nến thủ công"
-            >
-              {/* Circular progress SVG ring when holding */}
-              <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none p-0.5">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="18"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.85)"
-                  strokeWidth="2.5"
-                  strokeDasharray={113}
-                  strokeDashoffset={113 - (113 * blowProgress) / 100}
-                  className="transition-all duration-75"
-                />
-              </svg>
-              <Wind size={18} className="text-white group-hover:scale-110 transition-transform" />
-            </button>
-            <span className="text-[10px] text-white/65 font-sans tracking-tight bg-black/40 px-2 py-0.5 rounded-full backdrop-blur-sm pointer-events-none">
-              {blowProgress > 0 ? `${blowProgress}%` : 'Thổi thủ công'}
-            </span>
           </div>
         </div>
       ) : (

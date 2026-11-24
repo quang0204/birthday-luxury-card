@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import { Envelope3D } from '../3d/Envelope3D';
 import { BirthdayConfig, BIRTHDAY_CONFIG } from '../../config/birthday.config';
 import { useAudio } from '../../hooks/useAudio';
@@ -57,28 +56,6 @@ export const SecretInvitation: React.FC<SecretInvitationProps> = ({ config, onPr
         className="w-full my-4"
       >
         <Envelope3D isOpened={isOpened} onOpen={handleOpen} />
-      </motion.div>
-
-      {/* Action Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.45 }}
-        className="mt-2 w-full px-6 flex flex-col items-center gap-3"
-      >
-        <button
-          onClick={handleOpen}
-          disabled={isOpened}
-          className="btn-editorial-primary px-8 py-3.5 tracking-[0.12em] text-xs uppercase group disabled:opacity-75 disabled:pointer-events-none"
-        >
-          <span>{isOpened ? 'Đang Mở Món Quà...' : cfg.invitation.buttonText}</span>
-          <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform ml-1" />
-        </button>
-
-        <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-[#FAF4F0]/80 font-serif italic tracking-wider">
-          <span>Chạm vào bức thư hoặc nút bấm để bước vào hành trình</span>
-          <span className="text-rose-300 font-sans font-medium text-[11px] not-italic px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10">♫ Bật âm thanh</span>
-        </div>
       </motion.div>
     </div>
   );
