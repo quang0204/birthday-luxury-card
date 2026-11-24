@@ -3,6 +3,7 @@ import { ParticleBackground } from '../components/common/ParticleBackground';
 import { MusicController } from '../components/common/MusicController';
 import HalftoneNebula, { NEBULA_PRESETS } from '../components/ui/halftone-nebula';
 import ChapterRailNav from '../components/ui/chapter-rail-nav';
+import LucianFooter from '../components/ui/lucian-footer';
 import { ChapterNumber } from '../hooks/useBirthdayExperience';
 import { Sparkles, QrCode, PenTool, Layers } from 'lucide-react';
 import { BirthdayConfig } from '../config/birthday.config';
@@ -282,26 +283,15 @@ export const BirthdayLayout: React.FC<BirthdayLayoutProps> = ({
         {children}
       </main>
 
-      {/* Editorial Colophon / Footer */}
-      <footer className="safe-bottom relative z-20 py-4 px-4 text-center text-[11px] text-[#FAF4F0]/50 font-sans tracking-wide flex flex-col items-center gap-1 border-t border-[#FAF4F0]/8">
-        {!isRecipientMode ? (
-          <div>
-            Bạn muốn tạo một thiệp sinh nhật tinh tế cho người thân?{' '}
-            <button
-              onClick={onOpenCreator}
-              className="text-[#E77C92] hover:text-[#FEEBEF] transition-colors font-medium underline underline-offset-4 ml-1 cursor-pointer"
-            >
-              Mở xưởng tạo thiệp riêng
-            </button>
-          </div>
-        ) : (
-          <div className="italic font-serif text-xs text-[#FAF4F0]/70">
-            A bespoke birthday publication, crafted with love for{' '}
-            <span className="not-italic font-sans font-semibold text-[#FAF4F0]">
-              {config.recipientName}
-            </span>
-          </div>
-        )}
+      {/* Editorial Colophon / Footer (Lucian UX/UI Prompt #418) */}
+      <footer className="safe-bottom relative z-20 py-8 px-4 flex justify-center">
+        <LucianFooter
+          onOpenCreator={onOpenCreator}
+          onOpenQR={onOpenQR}
+          onOpenDashboard={onOpenDashboard}
+          recipientName={config.recipientName}
+          isRecipientMode={isRecipientMode}
+        />
       </footer>
     </div>
   );

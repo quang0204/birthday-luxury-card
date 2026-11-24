@@ -5,6 +5,7 @@ import {
   Sparkles, Calendar, Layers
 } from 'lucide-react';
 import { getAllCards, deleteCard, cloneCard, encodeCardToUrl, SavedCard } from '../utils/cardLibrary';
+import LucianFooter from '../components/ui/lucian-footer';
 
 interface DashboardPageProps {
   onOpenCard: (cardId: string) => void;
@@ -316,6 +317,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </motion.div>
         )}
       </main>
+
+      {/* Footer Colophon (Lucian UX/UI Prompt #418) */}
+      <div className="mt-10 mb-4 flex justify-center">
+        <LucianFooter
+          onCreateNew={onCreateNew}
+          isDashboard={true}
+        />
+      </div>
     </div>
   );
 };
