@@ -115,19 +115,33 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ isOpened, onOpen }) => {
           }}
         />
 
-        {/* Wax Seal with Heart Emblem */}
+        {/* Wax Seal with Heart Emblem & Radiant Pulse Glow */}
         {!isOpened && (
-          <motion.div
-            whileHover={{ scale: 1.15, rotate: 4 }}
-            whileTap={{ scale: 0.95 }}
-            className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-rose-glow via-rose-600 to-[#9B1138] shadow-lg border-2 border-rose-300/40 flex items-center justify-center cursor-pointer group"
-          >
-            <div className="absolute inset-1 rounded-full border border-rose-300/30 flex items-center justify-center">
-              <Heart className="w-6 h-6 text-warm-white fill-rose-100 drop-shadow-md group-hover:scale-110 transition-transform" />
-            </div>
-            {/* Wax seal edge ridges */}
-            <div className="absolute -inset-1 rounded-full border border-rose-500/20 pointer-events-none animate-ping opacity-30" />
-          </motion.div>
+          <div className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
+            {/* Concentric Pulse Halo Rings */}
+            <div className="absolute -inset-3.5 rounded-full bg-[#E77C92]/35 blur-md animate-pulse pointer-events-none" />
+            <div className="absolute -inset-2.5 rounded-full border-2 border-[#E77C92]/70 animate-ping opacity-60 pointer-events-none" />
+
+            <motion.div
+              whileHover={{ scale: 1.18, rotate: 6 }}
+              whileTap={{ scale: 0.92 }}
+              className="relative w-14 h-14 rounded-full bg-gradient-to-br from-[#FF6B8B] via-[#E11D48] to-[#881337] shadow-[0_0_25px_rgba(225,29,72,0.7)] hover:shadow-[0_0_35px_rgba(231,124,146,0.95)] border-2 border-rose-200/60 flex items-center justify-center cursor-pointer group transition-shadow"
+            >
+              <div className="absolute inset-1 rounded-full border border-rose-200/40 flex items-center justify-center bg-rose-950/20">
+                <Heart className="w-6 h-6 text-white fill-rose-100 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] group-hover:scale-115 transition-transform" />
+              </div>
+            </motion.div>
+
+            {/* Micro Touch / Tap Indicator Pill with Floating Hand */}
+            <motion.div
+              animate={{ y: [0, -3, 0], opacity: [0.85, 1, 0.85] }}
+              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+              className="mt-2.5 px-2.5 py-0.5 rounded-full bg-black/80 border border-[#E77C92]/60 backdrop-blur-md text-[10px] font-sans font-medium text-[#FAF4F0] flex items-center gap-1 shadow-xl pointer-events-none whitespace-nowrap subcaption-contrast"
+            >
+              <span className="text-xs">👆</span>
+              <span>Chạm con dấu để mở</span>
+            </motion.div>
+          </div>
         )}
 
         {/* Ethereal light beam when opened */}

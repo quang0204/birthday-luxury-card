@@ -124,28 +124,38 @@ export const GiftBox3D: React.FC<GiftBox3DProps> = ({ isOpened, onOpen, recipien
           {/* Lid Vertical Ribbon */}
           <div className="w-10 sm:w-12 h-full bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 shadow-sm" />
 
-          {/* 3D Ribbon Bow on top */}
-          <div className="absolute -top-7 sm:-top-8 flex items-center justify-center">
+          {/* 3D Ribbon Bow on top with Radiant Golden Pulse Glow */}
+          <div className="absolute -top-7 sm:-top-8 flex items-center justify-center cursor-pointer group">
+            {/* Concentric Golden Pulse Halo */}
+            {!isOpened && (
+              <>
+                <div className="absolute -inset-3.5 rounded-full bg-amber-300/40 blur-md animate-pulse pointer-events-none" />
+                <div className="absolute -inset-2.5 rounded-full border-2 border-amber-300/80 animate-ping opacity-60 pointer-events-none" />
+              </>
+            )}
+
             {/* Left Bow Loop */}
-            <div className="w-9 h-11 rounded-full border-4 border-amber-300 bg-gradient-to-br from-amber-200 to-amber-400 shadow-lg -rotate-45 transform origin-bottom-right" />
+            <div className="w-9 h-11 rounded-full border-4 border-amber-200 bg-gradient-to-br from-amber-100 via-amber-300 to-amber-500 shadow-[0_0_20px_rgba(251,191,36,0.65)] group-hover:shadow-[0_0_30px_rgba(251,191,36,0.95)] -rotate-45 transform origin-bottom-right transition-shadow" />
             {/* Right Bow Loop */}
-            <div className="w-9 h-11 rounded-full border-4 border-amber-300 bg-gradient-to-bl from-amber-200 to-amber-400 shadow-lg rotate-45 transform origin-bottom-left" />
+            <div className="w-9 h-11 rounded-full border-4 border-amber-200 bg-gradient-to-bl from-amber-100 via-amber-300 to-amber-500 shadow-[0_0_20px_rgba(251,191,36,0.65)] group-hover:shadow-[0_0_30px_rgba(251,191,36,0.95)] rotate-45 transform origin-bottom-left transition-shadow" />
             {/* Center Bow Knot */}
-            <div className="absolute w-6 h-6 rounded-full bg-amber-200 border-2 border-amber-400 shadow-md" />
+            <div className="absolute w-7 h-7 rounded-full bg-gradient-to-b from-amber-100 via-amber-200 to-amber-400 border-2 border-amber-200 shadow-xl flex items-center justify-center">
+              <Sparkles size={13} className="text-amber-800 animate-spin-slow" />
+            </div>
+
+            {/* Micro Touch / Tap Indicator Pill with Floating Hand */}
+            {!isOpened && (
+              <motion.div
+                animate={{ y: [0, -3, 0], opacity: [0.85, 1, 0.85] }}
+                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                className="absolute -top-8 z-40 px-2.5 py-0.5 rounded-full bg-black/85 border border-amber-300/60 backdrop-blur-md text-[10px] font-sans font-medium text-[#FAF4F0] flex items-center gap-1 shadow-2xl pointer-events-none whitespace-nowrap subcaption-contrast"
+              >
+                <span className="text-xs">👆</span>
+                <span>Chạm nơ để mở</span>
+              </motion.div>
+            )}
           </div>
         </motion.div>
-
-        {/* Tap hint when not opened */}
-        {!isOpened && (
-          <motion.div
-            animate={{ scale: [1, 1.08, 1], y: [0, -4, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute -bottom-8 z-30 flex items-center gap-1.5 text-xs text-rose-soft font-medium tracking-wide bg-midnight-900/80 px-3 py-1 rounded-full border border-rose-400/30 shadow-md"
-          >
-            <Gift size={13} className="text-rose-accent" />
-            <span>Chạm để mở hộp</span>
-          </motion.div>
-        )}
       </motion.div>
     </div>
   );
